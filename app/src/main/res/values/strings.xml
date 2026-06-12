@@ -63,6 +63,8 @@
     <string name="album_form_title_edit">Modifier le tome</string>
     <string name="album_form_tome_number_label">Numéro de tome</string>
     <string name="album_form_unnumbered_checkbox">Hors-série (sans numéro)</string>
+    <string name="album_form_tome_label">Tome %1$d</string>
+    <string name="album_form_unnumbered_label">Hors-série</string>
     <string name="album_form_title_label">Titre (optionnel)</string>
     <string name="album_form_owned_label">Je possède ce tome</string>
     <string name="album_form_read_status_label">Statut de lecture</string>

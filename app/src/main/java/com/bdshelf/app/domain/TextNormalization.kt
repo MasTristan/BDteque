@@ -8,3 +8,7 @@ fun String.normalizedForSearch(): String {
         .replace(Regex("\\p{Mn}+"), "")
     return withoutAccents.lowercase()
 }
+
+/** Slug stable pour servir d'identifiant de série, ex: "Buck Danny Classic" -> "buck-danny-classic" (§6.8). */
+fun String.toSlug(): String =
+    normalizedForSearch().replace(Regex("[^a-z0-9]+"), "-").trim('-')
