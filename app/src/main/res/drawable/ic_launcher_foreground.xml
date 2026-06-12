@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Étagère stylisée : quelques tranches de livres de hauteurs et couleurs
+     variées, posées sur une ligne d'étagère. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Tranche 1 -->
+    <path
+        android:pathData="M22,30H34V86H22Z"
+        android:fillColor="#7B6B8D" />
+    <!-- Tranche 2 -->
+    <path
+        android:pathData="M38,20H50V86H38Z"
+        android:fillColor="#5B8A6F" />
+    <!-- Tranche 3 -->
+    <path
+        android:pathData="M54,34H66V86H54Z"
+        android:fillColor="#4A7A9B" />
+    <!-- Tranche 4 -->
+    <path
+        android:pathData="M70,24H82V86H70Z"
+        android:fillColor="#9B6B5B" />
+
+    <!-- Étagère -->
+    <path
+        android:pathData="M14,86H94V92H14Z"
+        android:fillColor="#1C1A17" />
+</vector>

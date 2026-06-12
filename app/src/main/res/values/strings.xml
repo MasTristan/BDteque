@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BDShelf</string>
+
+    <!-- Tranches (SpineTile) -->
+    <string name="spine_cd_owned">Tome %1$d, possédé</string>
+    <string name="spine_cd_missing">Tome %1$d, manquant</string>
+    <string name="spine_cd_unnumbered_owned">Hors-série, possédé</string>
+    <string name="spine_cd_unnumbered_missing">Hors-série, manquant</string>
+    <string name="spine_cd_read_suffix">, lu</string>
+    <string name="spine_cd_lent_suffix">, prêté</string>
+    <string name="spine_cd_add_tome_action">Ajouter ce tome</string>
+    <string name="spine_cd_highlighted_suffix">, tome recherché</string>
+    <string name="spine_unnumbered_marker">—</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_subtitle">Avant de commencer, comment t\'appelles-tu ?</string>
+    <string name="onboarding_name_label">Ton prénom</string>
+    <string name="onboarding_submit_button">C\'est parti</string>
+    <string name="onboarding_importing">Préparation de ta bibliothèque…</string>
+
+    <!-- Commun -->
+    <string name="common_back_cd">Retour</string>
+    <string name="common_cancel">Annuler</string>
+    <string name="common_delete">Supprimer</string>
+    <string name="common_save">Enregistrer</string>
+
+    <!-- Accueil (§6.2) -->
+    <string name="home_wordmark">La Bédéthèque de %1$s</string>
+    <string name="home_scan_button">Scanner un code-barres</string>
+    <string name="home_settings_cd">Réglages</string>
+    <string name="home_collection_title">Ma collection</string>
+    <string name="home_collection_stats">%1$d séries · %2$d albums · %3$d trous</string>
+    <string name="home_releases_title">À paraître</string>
+    <string name="home_releases_count_zero">Aucune nouveauté pour l\'instant</string>
+    <plurals name="home_releases_count">
+        <item quantity="one">%d nouveauté à découvrir</item>
+        <item quantity="other">%d nouveautés à découvrir</item>
+    </plurals>
+
+    <!-- Statuts de série (partagés liste / détail / formulaire) -->
+    <string name="series_status_ongoing">En cours</string>
+    <string name="series_status_finished">Terminée</string>
+    <string name="series_status_unknown">Statut inconnu</string>
+
+    <!-- Liste des séries (§6.5) -->
+    <string name="series_list_title">Mes séries</string>
+    <string name="series_list_search_label">Rechercher une série</string>
+    <string name="series_list_search_clear_cd">Effacer la recherche</string>
+    <string name="series_list_add_cd">Ajouter une série</string>
+    <string name="series_list_counts">%1$d / %2$d</string>
+    <string name="series_list_gap_cd">, il manque des tomes</string>
+    <string name="series_list_empty">Aucune série ne correspond à ta recherche.</string>
+
+    <!-- Détail série / étagère (§6.6) -->
+    <string name="series_detail_owned_of_total">%1$d possédés sur %2$d</string>
+    <string name="series_detail_edit_series_cd">Modifier la série</string>
+    <string name="series_detail_add_tome_button">Ajouter un tome</string>
+    <string name="series_detail_empty_shelf">Aucun tome enregistré pour cette série.</string>
+
+    <!-- Fiche tome (§6.6, §6.8) -->
+    <string name="album_form_title_add">Ajouter un tome</string>
+    <string name="album_form_title_edit">Modifier le tome</string>
+    <string name="album_form_tome_number_label">Numéro de tome</string>
+    <string name="album_form_unnumbered_checkbox">Hors-série (sans numéro)</string>
+    <string name="album_form_tome_label">Tome %1$d</string>
+    <string name="album_form_unnumbered_label">Hors-série</string>
+    <string name="album_form_title_label">Titre (optionnel)</string>
+    <string name="album_form_owned_label">Je possède ce tome</string>
+    <string name="album_form_read_status_label">Statut de lecture</string>
+    <string name="album_form_read_status_unread">Non lu</string>
+    <string name="album_form_read_status_read">Lu</string>
+    <string name="album_form_read_status_lent">Prêté</string>
+    <string name="album_form_edition_label">Édition (optionnel)</string>
+    <string name="album_form_ean_label">Code-barres appris : %1$s</string>
+    <string name="album_form_delete_button">Supprimer ce tome</string>
+    <string name="album_form_delete_confirm_title">Supprimer ce tome ?</string>
+    <string name="album_form_delete_confirm_message">Cette action est définitive.</string>
+    <string name="album_form_duplicate_error">Ce numéro de tome existe déjà dans cette série.</string>
+
+    <!-- Formulaire série (§6.8) -->
+    <string name="series_form_title_add">Ajouter une série</string>
+    <string name="series_form_title_edit">Modifier la série</string>
+    <string name="series_form_title_label">Titre de la série</string>
+    <string name="series_form_status_label">Statut</string>
+    <string name="series_form_tracked_label">Suivre les nouveautés de cette série</string>
+    <string name="series_form_known_tome_count_label">Nombre de tomes connu (optionnel)</string>
+    <string name="series_form_notes_label">Notes (optionnel)</string>
+    <string name="series_form_delete_button">Supprimer cette série</string>
+    <string name="series_form_delete_confirm_title">Supprimer cette série ?</string>
+    <string name="series_form_delete_confirm_message">Tous les tomes de cette série seront supprimés. Cette action est définitive.</string>
+    <string name="series_form_title_required_error">Le titre est obligatoire.</string>
+
+    <!-- Scanner (§6.3) -->
+    <string name="scanner_instruction">Vise le code-barres avec la caméra</string>
+    <string name="scanner_manual_entry_button">Saisir à la main</string>
+    <string name="scanner_permission_message">BDShelf a besoin de la caméra pour scanner un code-barres.</string>
+    <string name="scanner_permission_settings_button">Ouvrir les réglages</string>
+
+    <!-- Verdict de scan (§6.4) -->
+    <string name="verdict_owned_title">Tu l\'as déjà</string>
+    <string name="verdict_missing_title">Il te manque !</string>
+    <string name="verdict_missing_button">Je viens de l\'acheter</string>
+    <string name="verdict_back_home_button">Retour à l\'accueil</string>
+    <string name="verdict_album_subtitle">%1$s — Tome %2$d</string>
+    <string name="verdict_album_subtitle_unnumbered">%1$s — Hors-série</string>
+    <string name="verdict_unknown_title">Nouveau code-barres</string>
+    <string name="verdict_unknown_subtitle">Associe ce code-barres à un tome existant, ou crée un nouvel album.</string>
+    <string name="verdict_unknown_search_label">Rechercher une série</string>
+    <string name="verdict_unknown_empty">Aucune série ne correspond.</string>
+    <string name="verdict_unknown_change_series_cd">Changer de série</string>
+    <string name="verdict_unknown_create_button">Créer un nouvel album</string>
+    <string name="verdict_unknown_linked_message">Code-barres associé à ce tome !</string>
+
+    <!-- À paraître (§6.7) -->
+    <string name="releases_title">À paraître</string>
+    <string name="releases_refresh_button">Mettre à jour les nouveautés</string>
+    <string name="releases_refresh_error">Mise à jour impossible. Les informations affichées datent de la dernière connexion.</string>
+    <string name="releases_empty">Aucune nouveauté pour le moment.</string>
+    <string name="releases_section_upcoming">À venir</string>
+    <string name="releases_section_released">Déjà paru</string>
+    <string name="releases_item_subtitle">Tome %1$d — %2$s</string>
+    <string name="releases_item_owned_badge">Tu l\'as</string>
+    <string name="releases_item_missing_badge">Il te manque</string>
+
+    <!-- Notifications de sorties (§7) -->
+    <string name="notif_channel_name">Nouveautés</string>
+    <string name="notif_channel_description">Alertes pour les nouvelles sorties des séries suivies.</string>
+    <string name="notif_new_release_title">Nouveau tome disponible</string>
+    <string name="notif_new_release_body">Nouveau tome dans %1$s : T%2$d</string>
+    <string name="notif_new_releases_title">Nouvelles sorties</string>
+    <plurals name="notif_new_releases_body">
+        <item quantity="one">%d nouveau tome à découvrir dans tes séries suivies</item>
+        <item quantity="other">%d nouveaux tomes à découvrir dans tes séries suivies</item>
+    </plurals>
+
+    <!-- Réglages & À propos (§6.9) -->
+    <string name="settings_title">Réglages</string>
+    <string name="settings_owner_name_label">Ton prénom</string>
+    <string name="settings_releases_section_title">Nouveautés</string>
+    <string name="settings_refresh_button">Mettre à jour les nouveautés maintenant</string>
+    <string name="settings_refresh_error">Mise à jour impossible. Vérifie ta connexion.</string>
+    <string name="settings_notifications_label">Recevoir une notification pour les nouveautés</string>
+    <string name="settings_backup_section_title">Sauvegarde</string>
+    <string name="settings_export_json_button">Exporter ma collection (JSON)</string>
+    <string name="settings_export_csv_button">Exporter ma collection (CSV)</string>
+    <string name="settings_import_button">Importer une sauvegarde</string>
+    <string name="settings_export_chooser_title">Exporter la collection</string>
+    <string name="settings_import_success">Collection importée avec succès.</string>
+    <string name="settings_import_error">Import impossible. Vérifie le fichier sélectionné.</string>
+    <string name="settings_advanced_section_title">Avancé</string>
+    <string name="settings_releases_url_label">URL du fichier des sorties</string>
+    <string name="settings_about_section_title">À propos</string>
+    <string name="settings_about_version">Version %1$s</string>
+    <string name="settings_about_dedication">Développé avec soin par Tristan, pour %1$s.</string>
+</resources>

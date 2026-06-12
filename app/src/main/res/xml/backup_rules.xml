@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Sauvegarde Auto (Android 12 et moins) : on inclut la base de données
+   (la collection) et les préférences (prénom, réglages).
+   Le cache des sorties (releases_cache.json) n'est pas sauvegardé :
+   il sera simplement re-téléchargé.
+-->
+<full-backup-content>
+    <include domain="database" path="." />
+    <include domain="sharedpref" path="." />
+    <exclude domain="file" path="releases_cache.json" />
+</full-backup-content>

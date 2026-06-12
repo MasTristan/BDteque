@@ -23,43 +23,71 @@
 ## CURRENT PHASE ← **METTRE À JOUR ICI À CHAQUE FIN DE PHASE**
 
 ```
-ACTIF → Phase 0 : Socle
+TERMINÉ → Phase 5 : Finition (toutes phases implémentées, voir notes de compilation ci-dessous)
 ```
 
 | Phase | Description | Statut |
 |---|---|---|
-| 0 | Socle — gradle, thème, polices, nav squelette | **IN PROGRESS** |
-| 1 | Données — Room, seed import | PENDING |
-| 2 | Cœur consultation — séries, étagère, tomes (MVP livrable) | PENDING |
-| 3 | Scan — CameraX + ML Kit + Verdict | PENDING |
-| 4 | Sorties — fetch releases.json, cache, écran À paraître | PENDING |
-| 5 | Finition — WorkManager, notifications, export/import, a11y, animations | PENDING |
+| 0 | Socle — gradle, thème, polices, nav squelette | **DONE** |
+| 1 | Données — Room, seed import | **DONE** |
+| 2 | Cœur consultation — séries, étagère, tomes (MVP livrable) | **DONE** |
+| 3 | Scan — CameraX + ML Kit + Verdict | **DONE** |
+| 4 | Sorties — fetch releases.json, cache, écran À paraître | **DONE** |
+| 5 | Finition — WorkManager, notifications, export/import, a11y, animations | **DONE** |
+
+> **Note** : l'environnement de build de cette session n'a pas accès au SDK Android
+> (`dl.google.com` bloqué), donc `./gradlew assembleDebug` n'a pas pu être exécuté
+> pour vérifier la compilation complète. Le code a été relu manuellement
+> (imports, signatures, requêtes DAO) ; un import manquant
+> (`kotlinx.serialization.encodeToString`) a été trouvé et corrigé. À vérifier
+> avec un vrai build dès que possible.
+>
+> **Hors scope** : l'enrichissement optionnel via Google Books (§6.4, "dégradation
+> silencieuse si hors-ligne ou sans résultat") n'a pas été implémenté — le verdict
+> "Inconnu" fonctionne sans cet enrichissement.
 
 ### Checklist Phase 0
-- [ ] `build.gradle.kts` (app + projet) avec toutes les dépendances §STACK
-- [ ] `BdShelfTheme` — tous les jetons couleur + typographie
-- [ ] Polices `fraunces_*.ttf` + `atkinson_hyperlegible_*.ttf` dans `res/font/`
-- [ ] `NavGraph.kt` — toutes les routes déclarées, écrans = `Box { Text("TODO: NomEcran") }`
-- [ ] `MainActivity.kt` — single activity, `BdShelfTheme`, `NavHost`
-- [ ] Compile et lance sans crash
+- [x] `build.gradle.kts` (app + projet) avec toutes les dépendances §STACK
+- [x] `BdShelfTheme` — tous les jetons couleur + typographie
+- [x] Polices `fraunces_*.ttf` + `atkinson_hyperlegible_*.ttf` dans `res/font/`
+- [x] `NavGraph.kt` — toutes les routes déclarées
+- [x] `MainActivity.kt` — single activity, `BdShelfTheme`, `NavHost`
+- [ ] Compile et lance sans crash (non vérifiable dans cet environnement, voir note ci-dessus)
 
 ### Checklist Phase 1
-- [ ] `Series`, `Album`, enums `SeriesStatus`, `ReadStatus` (Room entities exactes §SCHEMA)
-- [ ] `SeriesDao`, `AlbumDao` (CRUD + queries §DAO_QUERIES)
-- [ ] `AppDatabase` (version 1, exportSchema true)
-- [ ] `SeedImporter` — lit `assets/seed-collection.json`, règles §SEED_RULES
-- [ ] `CollectionRepository` (suspend funs + Flows)
-- [ ] Prefs DataStore : clé `owner_name` (String), `seed_imported` (Boolean)
-- [ ] Premier lancement : écran Onboarding → saisie prénom → import seed → Home
-- [ ] Vérifiable : écran SeriesList affiche les séries depuis Room
+- [x] `Series`, `Album`, enums `SeriesStatus`, `ReadStatus` (Room entities exactes §SCHEMA)
+- [x] `SeriesDao`, `AlbumDao` (CRUD + queries §DAO_QUERIES)
+- [x] `AppDatabase` (version 1, exportSchema true)
+- [x] `SeedImporter` — lit `assets/seed-collection.json`, règles §SEED_RULES
+- [x] `CollectionRepository` (suspend funs + Flows)
+- [x] Prefs DataStore : clé `owner_name` (String), `seed_imported` (Boolean)
+- [x] Premier lancement : écran Onboarding → saisie prénom → import seed → Home
+- [x] Vérifiable : écran SeriesList affiche les séries depuis Room
 
 ### Checklist Phase 2
-- [ ] `SeriesListScreen` — liste alphabétique + recherche insensible accents
-- [ ] `SeriesDetailScreen` — étagère `SpineTile` horizontale + en-tête stats
-- [ ] `SpineTile` composable — états owned/missing/read/lent (§SPINE)
-- [ ] `AlbumFormScreen` — ajout/édition album, validation doublon tomeNumber
-- [ ] Toggle owned → animation tampon (§ANIMATION)
-- [ ] APK debug installable et fonctionnel sans réseau
+- [x] `SeriesListScreen` — liste alphabétique + recherche insensible accents
+- [x] `SeriesDetailScreen` — étagère `SpineTile` horizontale + en-tête stats
+- [x] `SpineTile` composable — états owned/missing/read/lent (§SPINE)
+- [x] `AlbumFormScreen` — ajout/édition album, validation doublon tomeNumber
+- [x] Toggle owned → animation tampon (§ANIMATION)
+- [ ] APK debug installable et fonctionnel sans réseau (non vérifiable dans cet environnement)
+
+### Checklist Phase 3
+- [x] `ScannerScreen` — CameraX + ML Kit, gestion permission caméra
+- [x] `VerdictScreen` — 3 états (possédé / manquant / inconnu), liaison EAN→album
+- [x] Création d'album depuis un verdict inconnu, EAN pré-rempli
+
+### Checklist Phase 4
+- [x] `ReleasesApi` + `ReleasesRepository` — cache JSON dans `filesDir`, jamais dans Room
+- [x] `ReleasesScreen` — sections « À venir » / « Déjà paru », badges possédé/manquant
+- [x] Bouton « Mettre à jour les nouveautés », fonctionne hors-ligne depuis le cache
+
+### Checklist Phase 5
+- [x] `ReleasesSyncWorker` — WorkManager périodique (1×/jour, réseau + batterie), notifications locales (§7)
+- [x] `SettingsScreen` — prénom, notifications (+ permission POST_NOTIFICATIONS), URL avancée
+- [x] Export JSON (sauvegarde) + CSV (lisible), import JSON via sélecteur de fichiers
+- [x] À propos / dédicace
+- [x] Animations tampon respectant `LocalReduceMotion`
 
 ---
 
