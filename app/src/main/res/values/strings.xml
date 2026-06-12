@@ -122,4 +122,15 @@
     <string name="releases_item_subtitle">Tome %1$d — %2$s</string>
     <string name="releases_item_owned_badge">Tu l\'as</string>
     <string name="releases_item_missing_badge">Il te manque</string>
+
+    <!-- Notifications de sorties (§7) -->
+    <string name="notif_channel_name">Nouveautés</string>
+    <string name="notif_channel_description">Alertes pour les nouvelles sorties des séries suivies.</string>
+    <string name="notif_new_release_title">Nouveau tome disponible</string>
+    <string name="notif_new_release_body">Nouveau tome dans %1$s : T%2$d</string>
+    <string name="notif_new_releases_title">Nouvelles sorties</string>
+    <plurals name="notif_new_releases_body">
+        <item quantity="one">%d nouveau tome à découvrir dans tes séries suivies</item>
+        <item quantity="other">%d nouveaux tomes à découvrir dans tes séries suivies</item>
+    </plurals>
 </resources>

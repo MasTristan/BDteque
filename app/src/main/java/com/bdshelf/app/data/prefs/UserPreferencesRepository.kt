@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,6 +19,7 @@ class UserPreferencesRepository(private val context: Context) {
         val SEED_IMPORTED = booleanPreferencesKey("seed_imported")
         val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
         val RELEASES_URL_OVERRIDE = stringPreferencesKey("releases_url_override")
+        val NOTIFIED_RELEASE_KEYS = stringSetPreferencesKey("notified_release_keys")
     }
 
     val ownerName: Flow<String> = context.dataStore.data.map { it[Keys.OWNER_NAME] ?: "" }
@@ -27,6 +29,9 @@ class UserPreferencesRepository(private val context: Context) {
     val notificationsEnabled: Flow<Boolean> = context.dataStore.data.map { it[Keys.NOTIFICATIONS_ENABLED] ?: true }
 
     val releasesUrlOverride: Flow<String?> = context.dataStore.data.map { it[Keys.RELEASES_URL_OVERRIDE] }
+
+    /** Sorties déjà notifiées (clé "seriesId-tomeNumber"), pour ne jamais notifier deux fois (§7). */
+    val notifiedReleaseKeys: Flow<Set<String>> = context.dataStore.data.map { it[Keys.NOTIFIED_RELEASE_KEYS] ?: emptySet() }
 
     suspend fun setOwnerName(name: String) {
         context.dataStore.edit { it[Keys.OWNER_NAME] = name }
@@ -43,6 +48,13 @@ class UserPreferencesRepository(private val context: Context) {
     suspend fun setReleasesUrlOverride(url: String?) {
         context.dataStore.edit {
             if (url.isNullOrBlank()) it.remove(Keys.RELEASES_URL_OVERRIDE) else it[Keys.RELEASES_URL_OVERRIDE] = url
+        }
+    }
+
+    suspend fun addNotifiedReleaseKeys(keys: Set<String>) {
+        context.dataStore.edit {
+            val current = it[Keys.NOTIFIED_RELEASE_KEYS] ?: emptySet()
+            it[Keys.NOTIFIED_RELEASE_KEYS] = current + keys
         }
     }
 }
