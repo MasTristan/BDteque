@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Thème système minimal : tout le design (couleurs, typographie) vit dans
+   Compose (ui/theme/Theme.kt). Ce thème ne sert qu'à fixer la fenêtre
+   avant le premier composable et la barre système.
+-->
+<resources>
+    <style name="Theme.BDShelf" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+</resources>
