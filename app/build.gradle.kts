@@ -92,7 +92,6 @@ dependencies {
     implementation(libs.androidx.camera.view)
 
     implementation(libs.mlkit.barcode.scanning)
-    implementation(libs.guava.listenablefuture)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

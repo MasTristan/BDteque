@@ -13,7 +13,6 @@ workRuntimeKtx = "2.10.0"
 kotlinxSerializationJson = "1.7.3"
 cameraX = "1.4.1"
 mlkitBarcodeScanning = "17.3.0"
-guavaListenableFuture = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,7 +44,6 @@ androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycl
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraX" }
 
 mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcodeScanning" }
-guava-listenablefuture = { group = "com.google.guava", name = "listenablefuture", version.ref = "guavaListenableFuture" }
 
 androidx-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
