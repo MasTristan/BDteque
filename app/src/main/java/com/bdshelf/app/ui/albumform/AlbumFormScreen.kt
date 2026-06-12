@@ -54,6 +54,7 @@ fun AlbumFormScreen(
     seriesId: String,
     albumId: String?,
     prefilledTomeNumber: Int?,
+    prefilledEan: String? = null,
     onBack: () -> Unit,
     onSaved: () -> Unit,
     onDeleted: () -> Unit,
@@ -62,7 +63,7 @@ fun AlbumFormScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(seriesId, albumId) { viewModel.load(seriesId, albumId, prefilledTomeNumber) }
+    LaunchedEffect(seriesId, albumId) { viewModel.load(seriesId, albumId, prefilledTomeNumber, prefilledEan) }
     LaunchedEffect(uiState.saved) { if (uiState.saved) onSaved() }
     LaunchedEffect(uiState.deleted) { if (uiState.deleted) onDeleted() }
 

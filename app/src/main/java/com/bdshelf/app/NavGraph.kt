@@ -14,9 +14,11 @@ import androidx.navigation.navArgument
 import com.bdshelf.app.ui.albumform.AlbumFormScreen
 import com.bdshelf.app.ui.home.HomeScreen
 import com.bdshelf.app.ui.onboarding.OnboardingScreen
+import com.bdshelf.app.ui.scanner.ScannerScreen
 import com.bdshelf.app.ui.series.SeriesListScreen
 import com.bdshelf.app.ui.seriesdetail.SeriesDetailScreen
 import com.bdshelf.app.ui.seriesform.SeriesFormScreen
+import com.bdshelf.app.ui.verdict.VerdictScreen
 
 /** Graphe de navigation (§NAVIGATION ROUTES). Profondeur maximale : 2 niveaux. */
 @Composable
@@ -45,14 +47,29 @@ fun BdShelfNavGraph(
         }
 
         composable(Routes.SCANNER) {
-            Box(modifier = Modifier.fillMaxSize()) { Text("TODO: Scanner") }
+            ScannerScreen(
+                onBarcodeScanned = { ean ->
+                    navController.navigate(Routes.verdict(ean)) {
+                        popUpTo(Routes.SCANNER) { inclusive = true }
+                    }
+                },
+                onManualEntry = { navController.navigate(Routes.SERIES_LIST) },
+                onBack = { navController.popBackStack() },
+            )
         }
 
         composable(
             route = Routes.VERDICT,
             arguments = listOf(navArgument("ean") { type = NavType.StringType }),
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) { Text("TODO: Verdict") }
+        ) { backStackEntry ->
+            val ean = backStackEntry.arguments?.getString("ean") ?: return@composable
+            VerdictScreen(
+                ean = ean,
+                onBackToHome = { navController.popBackStack(Routes.HOME, inclusive = false) },
+                onCreateAlbum = { seriesId, scannedEan ->
+                    navController.navigate(Routes.albumForm(seriesId, ean = scannedEan))
+                },
+            )
         }
 
         composable(Routes.SERIES_LIST) {
@@ -92,15 +109,22 @@ fun BdShelfNavGraph(
                     nullable = true
                     defaultValue = null
                 },
+                navArgument(Routes.EAN_ARG) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
             ),
         ) { backStackEntry ->
             val seriesId = backStackEntry.arguments?.getString("seriesId") ?: return@composable
             val albumId = backStackEntry.arguments?.getString(Routes.ALBUM_ID_ARG)
             val tomeNumber = backStackEntry.arguments?.getString(Routes.TOME_NUMBER_ARG)?.toIntOrNull()
+            val ean = backStackEntry.arguments?.getString(Routes.EAN_ARG)
             AlbumFormScreen(
                 seriesId = seriesId,
                 albumId = albumId,
                 prefilledTomeNumber = tomeNumber,
+                prefilledEan = ean,
                 onBack = { navController.popBackStack() },
                 onSaved = { navController.popBackStack() },
                 onDeleted = { navController.popBackStack() },

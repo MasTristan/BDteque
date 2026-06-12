@@ -78,6 +78,7 @@ class CollectionRepository(
         owned: Boolean,
         readStatus: ReadStatus,
         edition: String?,
+        ean: String? = null,
     ): Album? {
         if (tomeNumber != null && albumDao.bySeriesAndTome(seriesId, tomeNumber) != null) {
             return null
@@ -95,7 +96,7 @@ class CollectionRepository(
             owned = owned,
             readStatus = readStatus,
             edition = edition,
-            ean = null,
+            ean = ean,
             dateAdded = System.currentTimeMillis(),
         )
         albumDao.insert(album)

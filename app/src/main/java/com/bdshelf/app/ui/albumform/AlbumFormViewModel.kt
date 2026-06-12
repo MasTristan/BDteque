@@ -44,7 +44,7 @@ class AlbumFormViewModel(application: Application) : AndroidViewModel(applicatio
     private var albumId: String? = null
     private var loaded = false
 
-    fun load(seriesId: String, albumId: String?, prefilledTomeNumber: Int?) {
+    fun load(seriesId: String, albumId: String?, prefilledTomeNumber: Int?, prefilledEan: String? = null) {
         if (loaded) return
         loaded = true
         this.albumId = albumId
@@ -85,6 +85,7 @@ class AlbumFormViewModel(application: Application) : AndroidViewModel(applicatio
                         tomeNumber = tomeNumber,
                         tomeNumberText = tomeNumber.toString(),
                         isUnnumbered = false,
+                        ean = prefilledEan,
                     )
                 }
             }
@@ -137,6 +138,7 @@ class AlbumFormViewModel(application: Application) : AndroidViewModel(applicatio
                     owned = state.owned,
                     readStatus = state.readStatus,
                     edition = state.edition.trim().ifBlank { null },
+                    ean = state.ean,
                 )
                 if (created == null) {
                     _uiState.update { it.copy(duplicateError = true) }
