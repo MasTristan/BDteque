@@ -111,4 +111,15 @@
     <string name="verdict_unknown_change_series_cd">Changer de série</string>
     <string name="verdict_unknown_create_button">Créer un nouvel album</string>
     <string name="verdict_unknown_linked_message">Code-barres associé à ce tome !</string>
+
+    <!-- À paraître (§6.7) -->
+    <string name="releases_title">À paraître</string>
+    <string name="releases_refresh_button">Mettre à jour les nouveautés</string>
+    <string name="releases_refresh_error">Mise à jour impossible. Les informations affichées datent de la dernière connexion.</string>
+    <string name="releases_empty">Aucune nouveauté pour le moment.</string>
+    <string name="releases_section_upcoming">À venir</string>
+    <string name="releases_section_released">Déjà paru</string>
+    <string name="releases_item_subtitle">Tome %1$d — %2$s</string>
+    <string name="releases_item_owned_badge">Tu l\'as</string>
+    <string name="releases_item_missing_badge">Il te manque</string>
 </resources>

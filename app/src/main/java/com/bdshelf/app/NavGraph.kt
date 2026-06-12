@@ -14,6 +14,7 @@ import androidx.navigation.navArgument
 import com.bdshelf.app.ui.albumform.AlbumFormScreen
 import com.bdshelf.app.ui.home.HomeScreen
 import com.bdshelf.app.ui.onboarding.OnboardingScreen
+import com.bdshelf.app.ui.releases.ReleasesScreen
 import com.bdshelf.app.ui.scanner.ScannerScreen
 import com.bdshelf.app.ui.series.SeriesListScreen
 import com.bdshelf.app.ui.seriesdetail.SeriesDetailScreen
@@ -151,7 +152,7 @@ fun BdShelfNavGraph(
         }
 
         composable(Routes.RELEASES) {
-            Box(modifier = Modifier.fillMaxSize()) { Text("TODO: Releases") }
+            ReleasesScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Routes.SETTINGS) {
