@@ -108,4 +108,12 @@ class CollectionRepository(
         val existing = albumDao.bySeriesAndTome(seriesId, tomeNumber) ?: return false
         return existing.id != excludingAlbumId
     }
+
+    /** Identifiants des séries suivies, pour le croisement avec les sorties (§4.3). */
+    suspend fun trackedSeriesIds(): Set<String> =
+        seriesDao.allSeriesList().filter { it.isTracked }.map { it.id }.toSet()
+
+    /** Couples (série, tome) déjà possédés, pour le croisement avec les sorties (§4.3). */
+    suspend fun ownedTomeRefs(): Set<Pair<String, Int>> =
+        albumDao.ownedTomeRefs().map { it.seriesId to it.tomeNumber }.toSet()
 }

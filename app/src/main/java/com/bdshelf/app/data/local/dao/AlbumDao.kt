@@ -51,6 +51,12 @@ interface AlbumDao {
     @Query("SELECT * FROM albums")
     suspend fun allAlbumsList(): List<Album>
 
+    @Query("SELECT seriesId, tomeNumber FROM albums WHERE owned = 1 AND tomeNumber IS NOT NULL")
+    suspend fun ownedTomeRefs(): List<OwnedTomeRef>
+
     @Query("DELETE FROM albums")
     suspend fun deleteAll()
 }
+
+/** Référence légère (série, tome) pour le croisement avec les sorties (§4.3). */
+data class OwnedTomeRef(val seriesId: String, val tomeNumber: Int)

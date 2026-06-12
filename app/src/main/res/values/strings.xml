@@ -18,4 +18,74 @@
     <string name="onboarding_name_label">Ton prénom</string>
     <string name="onboarding_submit_button">C\'est parti</string>
     <string name="onboarding_importing">Préparation de ta bibliothèque…</string>
+
+    <!-- Commun -->
+    <string name="common_back_cd">Retour</string>
+    <string name="common_cancel">Annuler</string>
+    <string name="common_delete">Supprimer</string>
+    <string name="common_save">Enregistrer</string>
+
+    <!-- Accueil (§6.2) -->
+    <string name="home_wordmark">La Bédéthèque de %1$s</string>
+    <string name="home_scan_button">Scanner un code-barres</string>
+    <string name="home_settings_cd">Réglages</string>
+    <string name="home_collection_title">Ma collection</string>
+    <string name="home_collection_stats">%1$d séries · %2$d albums · %3$d trous</string>
+    <string name="home_releases_title">À paraître</string>
+    <string name="home_releases_count_zero">Aucune nouveauté pour l\'instant</string>
+    <plurals name="home_releases_count">
+        <item quantity="one">%d nouveauté à découvrir</item>
+        <item quantity="other">%d nouveautés à découvrir</item>
+    </plurals>
+
+    <!-- Statuts de série (partagés liste / détail / formulaire) -->
+    <string name="series_status_ongoing">En cours</string>
+    <string name="series_status_finished">Terminée</string>
+    <string name="series_status_unknown">Statut inconnu</string>
+
+    <!-- Liste des séries (§6.5) -->
+    <string name="series_list_title">Mes séries</string>
+    <string name="series_list_search_label">Rechercher une série</string>
+    <string name="series_list_search_clear_cd">Effacer la recherche</string>
+    <string name="series_list_add_cd">Ajouter une série</string>
+    <string name="series_list_counts">%1$d / %2$d</string>
+    <string name="series_list_gap_cd">, il manque des tomes</string>
+    <string name="series_list_empty">Aucune série ne correspond à ta recherche.</string>
+
+    <!-- Détail série / étagère (§6.6) -->
+    <string name="series_detail_owned_of_total">%1$d possédés sur %2$d</string>
+    <string name="series_detail_edit_series_cd">Modifier la série</string>
+    <string name="series_detail_add_tome_button">Ajouter un tome</string>
+    <string name="series_detail_empty_shelf">Aucun tome enregistré pour cette série.</string>
+
+    <!-- Fiche tome (§6.6, §6.8) -->
+    <string name="album_form_title_add">Ajouter un tome</string>
+    <string name="album_form_title_edit">Modifier le tome</string>
+    <string name="album_form_tome_number_label">Numéro de tome</string>
+    <string name="album_form_unnumbered_checkbox">Hors-série (sans numéro)</string>
+    <string name="album_form_title_label">Titre (optionnel)</string>
+    <string name="album_form_owned_label">Je possède ce tome</string>
+    <string name="album_form_read_status_label">Statut de lecture</string>
+    <string name="album_form_read_status_unread">Non lu</string>
+    <string name="album_form_read_status_read">Lu</string>
+    <string name="album_form_read_status_lent">Prêté</string>
+    <string name="album_form_edition_label">Édition (optionnel)</string>
+    <string name="album_form_ean_label">Code-barres appris : %1$s</string>
+    <string name="album_form_delete_button">Supprimer ce tome</string>
+    <string name="album_form_delete_confirm_title">Supprimer ce tome ?</string>
+    <string name="album_form_delete_confirm_message">Cette action est définitive.</string>
+    <string name="album_form_duplicate_error">Ce numéro de tome existe déjà dans cette série.</string>
+
+    <!-- Formulaire série (§6.8) -->
+    <string name="series_form_title_add">Ajouter une série</string>
+    <string name="series_form_title_edit">Modifier la série</string>
+    <string name="series_form_title_label">Titre de la série</string>
+    <string name="series_form_status_label">Statut</string>
+    <string name="series_form_tracked_label">Suivre les nouveautés de cette série</string>
+    <string name="series_form_known_tome_count_label">Nombre de tomes connu (optionnel)</string>
+    <string name="series_form_notes_label">Notes (optionnel)</string>
+    <string name="series_form_delete_button">Supprimer cette série</string>
+    <string name="series_form_delete_confirm_title">Supprimer cette série ?</string>
+    <string name="series_form_delete_confirm_message">Tous les tomes de cette série seront supprimés. Cette action est définitive.</string>
+    <string name="series_form_title_required_error">Le titre est obligatoire.</string>
 </resources>
