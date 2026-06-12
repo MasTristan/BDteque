@@ -133,4 +133,24 @@
         <item quantity="one">%d nouveau tome à découvrir dans tes séries suivies</item>
         <item quantity="other">%d nouveaux tomes à découvrir dans tes séries suivies</item>
     </plurals>
+
+    <!-- Réglages & À propos (§6.9) -->
+    <string name="settings_title">Réglages</string>
+    <string name="settings_owner_name_label">Ton prénom</string>
+    <string name="settings_releases_section_title">Nouveautés</string>
+    <string name="settings_refresh_button">Mettre à jour les nouveautés maintenant</string>
+    <string name="settings_refresh_error">Mise à jour impossible. Vérifie ta connexion.</string>
+    <string name="settings_notifications_label">Recevoir une notification pour les nouveautés</string>
+    <string name="settings_backup_section_title">Sauvegarde</string>
+    <string name="settings_export_json_button">Exporter ma collection (JSON)</string>
+    <string name="settings_export_csv_button">Exporter ma collection (CSV)</string>
+    <string name="settings_import_button">Importer une sauvegarde</string>
+    <string name="settings_export_chooser_title">Exporter la collection</string>
+    <string name="settings_import_success">Collection importée avec succès.</string>
+    <string name="settings_import_error">Import impossible. Vérifie le fichier sélectionné.</string>
+    <string name="settings_advanced_section_title">Avancé</string>
+    <string name="settings_releases_url_label">URL du fichier des sorties</string>
+    <string name="settings_about_section_title">À propos</string>
+    <string name="settings_about_version">Version %1$s</string>
+    <string name="settings_about_dedication">Développé avec soin par Tristan, pour %1$s.</string>
 </resources>

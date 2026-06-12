@@ -1,10 +1,6 @@
 package com.bdshelf.app
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -19,6 +15,7 @@ import com.bdshelf.app.ui.scanner.ScannerScreen
 import com.bdshelf.app.ui.series.SeriesListScreen
 import com.bdshelf.app.ui.seriesdetail.SeriesDetailScreen
 import com.bdshelf.app.ui.seriesform.SeriesFormScreen
+import com.bdshelf.app.ui.settings.SettingsScreen
 import com.bdshelf.app.ui.verdict.VerdictScreen
 
 /** Graphe de navigation (§NAVIGATION ROUTES). Profondeur maximale : 2 niveaux. */
@@ -156,7 +153,7 @@ fun BdShelfNavGraph(
         }
 
         composable(Routes.SETTINGS) {
-            Box(modifier = Modifier.fillMaxSize()) { Text("TODO: Settings") }
+            SettingsScreen(onBack = { navController.popBackStack() })
         }
     }
 }
