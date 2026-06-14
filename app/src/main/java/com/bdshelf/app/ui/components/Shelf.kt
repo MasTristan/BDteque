@@ -69,6 +69,7 @@ fun Shelf(
                     height = tileHeight,
                     highlighted = item.album.id == highlightedAlbumId,
                     onClick = { onAlbumClick(item.album) },
+                    onLongClick = { onAlbumClick(item.album) }.takeIf { !item.album.owned },
                 )
 
                 is ShelfItem.Gap -> SpineTile(
