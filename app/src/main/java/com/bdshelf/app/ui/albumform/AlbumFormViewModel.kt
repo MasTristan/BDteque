@@ -88,6 +88,13 @@ class AlbumFormViewModel(application: Application) : AndroidViewModel(applicatio
                         ean = prefilledEan,
                     )
                 }
+
+                if (prefilledEan != null) {
+                    val suggestedTitle = app.googleBooksApi.lookupTitleByIsbn(prefilledEan)
+                    if (!suggestedTitle.isNullOrBlank()) {
+                        _uiState.update { current -> if (current.title.isBlank()) current.copy(title = suggestedTitle) else current }
+                    }
+                }
             }
         }
     }

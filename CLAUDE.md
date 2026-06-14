@@ -42,9 +42,14 @@ TERMINÉ → Phase 5 : Finition (toutes phases implémentées, voir notes de com
 > (`kotlinx.serialization.encodeToString`) a été trouvé et corrigé. À vérifier
 > avec un vrai build dès que possible.
 >
-> **Hors scope** : l'enrichissement optionnel via Google Books (§6.4, "dégradation
-> silencieuse si hors-ligne ou sans résultat") n'a pas été implémenté — le verdict
-> "Inconnu" fonctionne sans cet enrichissement.
+> **Post-Phase 5 (CI + retours de test sur device)** : build CI GitHub Actions
+> opérationnel (`.github/workflows/build-debug-apk.yml`). Corrections suite aux
+> tests sur device : (1) tap long sur une tranche manquante de l'étagère ouvre
+> désormais la fiche tome (§6.6, `Shelf.kt`) ; (2) l'enrichissement Google Books
+> (§6.4, "pré-remplir titre... dégradation silencieuse si hors-ligne ou sans
+> résultat") est implémenté dans `GoogleBooksApi` et utilisé par
+> `AlbumFormViewModel` pour pré-remplir le titre d'un nouvel album créé depuis
+> un verdict "Inconnu".
 
 ### Checklist Phase 0
 - [x] `build.gradle.kts` (app + projet) avec toutes les dépendances §STACK
