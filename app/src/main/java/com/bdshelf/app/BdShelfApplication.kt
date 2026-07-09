@@ -42,7 +42,7 @@ class BdShelfApplication : Application() {
         super.onCreate()
 
         database = Room.databaseBuilder(this, AppDatabase::class.java, AppDatabase.DATABASE_NAME).build()
-        collectionRepository = CollectionRepository(database.seriesDao(), database.albumDao())
+        collectionRepository = CollectionRepository(database)
         releasesRepository = ReleasesRepository(this, ReleasesApi())
         userPreferencesRepository = UserPreferencesRepository(this)
         seedImporter = SeedImporter(this, database.seriesDao(), database.albumDao())

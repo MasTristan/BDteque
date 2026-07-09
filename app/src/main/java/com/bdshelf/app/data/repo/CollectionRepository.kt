@@ -1,5 +1,7 @@
 package com.bdshelf.app.data.repo
 
+import androidx.room.withTransaction
+import com.bdshelf.app.data.local.AppDatabase
 import com.bdshelf.app.data.local.dao.AlbumDao
 import com.bdshelf.app.data.local.dao.SeriesDao
 import com.bdshelf.app.data.local.dao.SeriesWithCounts
@@ -12,8 +14,9 @@ import kotlinx.coroutines.flow.combine
 
 /** Source de vérité unique pour la collection (Moitié A, §3 SPEC). */
 class CollectionRepository(
-    private val seriesDao: SeriesDao,
-    private val albumDao: AlbumDao,
+    private val database: AppDatabase,
+    private val seriesDao: SeriesDao = database.seriesDao(),
+    private val albumDao: AlbumDao = database.albumDao(),
 ) {
     fun allSeries(): Flow<List<Series>> = seriesDao.allSeries()
 
@@ -62,12 +65,21 @@ class CollectionRepository(
     suspend fun exportSnapshot(): CollectionSnapshot =
         CollectionSnapshot(series = seriesDao.allSeriesList(), albums = albumDao.allAlbumsList())
 
-    /** Remplace intégralement la collection (import depuis un fichier de sauvegarde). */
+    /**
+     * Remplace intégralement la collection (import depuis un fichier de sauvegarde).
+     *
+     * Effacement et réinsertion dans une seule transaction : en cas d'erreur
+     * (contrainte violée, coupure), la collection existante est intégralement
+     * restaurée par le rollback. Le snapshot doit avoir été validé au préalable
+     * ([com.bdshelf.app.domain.validate]).
+     */
     suspend fun importSnapshot(snapshot: CollectionSnapshot) {
-        albumDao.deleteAll()
-        seriesDao.deleteAll()
-        seriesDao.insertAll(snapshot.series)
-        albumDao.insertAll(snapshot.albums)
+        database.withTransaction {
+            albumDao.deleteAll()
+            seriesDao.deleteAll()
+            seriesDao.insertAll(snapshot.series)
+            albumDao.insertAll(snapshot.albums)
+        }
     }
 
     /** Crée un nouvel album manuellement (§6.8). Retourne `null` si le numéro existe déjà. */

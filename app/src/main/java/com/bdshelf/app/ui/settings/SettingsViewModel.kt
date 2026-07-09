@@ -8,8 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.bdshelf.app.BdShelfApplication
 import com.bdshelf.app.BuildConfig
 import com.bdshelf.app.data.repo.CollectionSnapshot
+import com.bdshelf.app.domain.SnapshotValidation
 import com.bdshelf.app.domain.toCsv
+import com.bdshelf.app.domain.validate
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,9 +46,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    private val json = Json { prettyPrint = true }
+    private val json = Json {
+        prettyPrint = true
+        ignoreUnknownKeys = true
+    }
 
     private var loaded = false
+    private var ownerNameJob: Job? = null
 
     fun load() {
         if (loaded) return
@@ -66,7 +74,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun onOwnerNameChange(value: String) {
         _uiState.update { it.copy(ownerName = value) }
-        viewModelScope.launch { app.userPreferencesRepository.setOwnerName(value) }
+        // Debounce : une seule écriture DataStore après la fin de la saisie,
+        // plutôt qu'une écriture par frappe.
+        ownerNameJob?.cancel()
+        ownerNameJob = viewModelScope.launch {
+            delay(OWNER_NAME_DEBOUNCE_MS)
+            app.userPreferencesRepository.setOwnerName(value)
+        }
     }
 
     /** [enabled] reflète la permission `POST_NOTIFICATIONS` accordée ou non (§6.9). */
@@ -122,6 +136,11 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                         ?: error("Fichier introuvable")
                 }
                 val snapshot = json.decodeFromString<CollectionSnapshot>(text)
+                val validation = snapshot.validate()
+                if (validation is SnapshotValidation.Invalid) {
+                    error(validation.reason)
+                }
+                // La collection n'est effacée que si le fichier est valide et complet.
                 app.collectionRepository.importSnapshot(snapshot)
             }
             _uiState.update { it.copy(importSuccess = result.isSuccess, importError = result.isFailure) }
@@ -137,5 +156,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         val file = File(dir, fileName)
         file.writeText(content)
         FileProvider.getUriForFile(app, "${app.packageName}.fileprovider", file)
+    }
+
+    private companion object {
+        const val OWNER_NAME_DEBOUNCE_MS = 400L
     }
 }
