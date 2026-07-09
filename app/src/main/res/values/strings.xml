@@ -112,6 +112,7 @@
     <string name="verdict_unknown_change_series_cd">Changer de série</string>
     <string name="verdict_unknown_create_button">Créer un nouvel album</string>
     <string name="verdict_unknown_linked_message">Code-barres associé à ce tome !</string>
+    <string name="verdict_unknown_identified_label">Livre identifié</string>
     <string name="verdict_unknown_suggestion">On pense qu\'il s\'agit de %1$s, tome %2$d. C\'est ça ?</string>
     <string name="verdict_unknown_suggestion_unnumbered">On pense qu\'il s\'agit de %1$s. C\'est ça ?</string>
     <string name="verdict_unknown_suggestion_accept">Oui, c\'est ça</string>

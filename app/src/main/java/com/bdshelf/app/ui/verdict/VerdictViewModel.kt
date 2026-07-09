@@ -32,6 +32,8 @@ data class VerdictUiState(
     val selectedSeries: Series? = null,
     val selectedSeriesAlbums: List<Album> = emptyList(),
     val linkedAlbumId: String? = null,
+    val identifiedTitle: String? = null,
+    val identifiedAuthors: String? = null,
     val suggestedSeriesId: String? = null,
     val suggestedSeriesTitle: String? = null,
     val suggestedNewSeriesName: String? = null,
@@ -87,20 +89,32 @@ class VerdictViewModel(application: Application) : AndroidViewModel(application)
     }
 
     /**
-     * Tente de deviner série + tome via Google Books, en tâche de fond, sans
-     * bloquer l'affichage de l'état "Inconnu" (§6.4, suggestion de scan).
-     * Si aucune série connue ne correspond, propose la création d'une
-     * nouvelle série à partir du titre Google Books (fiabilité moindre,
-     * toujours à confirmer/corriger avant création, §6.4).
-     * Dégradation silencieuse dans tous les cas : aucune suggestion si
-     * hors-ligne ou sans résultat.
+     * Identifie le livre scanné (BnF puis Open Library) en tâche de fond, sans
+     * bloquer l'affichage de l'état "Inconnu" (§6.4). Affiche le titre et
+     * l'auteur trouvés, puis :
+     * - si une série connue correspond (nom de collection BnF ou titre),
+     *   la propose avec son tome ;
+     * - sinon propose de créer une nouvelle série à partir du nom de collection
+     *   (ou, à défaut, deviné depuis le titre).
+     *
+     * Le numéro de tome vient en priorité de la donnée structurée BnF
+     * (collection 225$v), sinon d'une heuristique sur le titre. Dégradation
+     * silencieuse : aucune suggestion si hors-ligne ou ISBN inconnu.
      */
     private fun loadSuggestion(ean: String) {
         viewModelScope.launch {
-            val volume = app.googleBooksApi.lookupVolume(ean) ?: return@launch
+            val book = app.isbnLookupService.lookup(ean) ?: return@launch
+            _uiState.update {
+                it.copy(identifiedTitle = book.title, identifiedAuthors = book.authorsLabel())
+            }
+
             val candidates = allSeries.map { it.id to it.title }
-            val tomeNumber = guessTomeNumber(volume.subtitle.orEmpty()) ?: guessTomeNumber(volume.title)
-            val seriesId = guessSeries(volume.title, candidates)
+            val tomeNumber = book.tomeNumber
+                ?: book.seriesName?.let(::guessTomeNumber)
+                ?: guessTomeNumber(book.title)
+            val seriesId = book.seriesName?.let { guessSeries(it, candidates) }
+                ?: guessSeries(book.title, candidates)
+
             if (seriesId != null) {
                 val seriesTitle = allSeries.first { it.id == seriesId }.title
                 _uiState.update {
@@ -111,7 +125,7 @@ class VerdictViewModel(application: Application) : AndroidViewModel(application)
                     )
                 }
             } else {
-                val newSeriesName = guessSeriesName(volume.title) ?: return@launch
+                val newSeriesName = book.seriesName ?: guessSeriesName(book.title) ?: return@launch
                 _uiState.update {
                     it.copy(suggestedNewSeriesName = newSeriesName, suggestedTomeNumber = tomeNumber)
                 }

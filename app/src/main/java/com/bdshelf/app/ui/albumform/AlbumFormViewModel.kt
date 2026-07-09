@@ -90,7 +90,7 @@ class AlbumFormViewModel(application: Application) : AndroidViewModel(applicatio
                 }
 
                 if (prefilledEan != null) {
-                    val suggestedTitle = app.googleBooksApi.lookupTitleByIsbn(prefilledEan)
+                    val suggestedTitle = app.isbnLookupService.lookup(prefilledEan)?.title
                     if (!suggestedTitle.isNullOrBlank()) {
                         _uiState.update { current -> if (current.title.isBlank()) current.copy(title = suggestedTitle) else current }
                     }

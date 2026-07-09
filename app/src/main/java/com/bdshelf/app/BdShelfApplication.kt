@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.bdshelf.app.data.local.AppDatabase
 import com.bdshelf.app.data.prefs.UserPreferencesRepository
-import com.bdshelf.app.data.remote.GoogleBooksApi
+import com.bdshelf.app.data.remote.IsbnLookupService
 import com.bdshelf.app.data.remote.ReleasesApi
 import com.bdshelf.app.data.repo.CollectionRepository
 import com.bdshelf.app.data.repo.ReleasesRepository
@@ -35,7 +35,7 @@ class BdShelfApplication : Application() {
     lateinit var seedImporter: SeedImporter
         private set
 
-    lateinit var googleBooksApi: GoogleBooksApi
+    lateinit var isbnLookupService: IsbnLookupService
         private set
 
     override fun onCreate() {
@@ -46,7 +46,7 @@ class BdShelfApplication : Application() {
         releasesRepository = ReleasesRepository(this, ReleasesApi())
         userPreferencesRepository = UserPreferencesRepository(this)
         seedImporter = SeedImporter(this, database.seriesDao(), database.albumDao())
-        googleBooksApi = GoogleBooksApi()
+        isbnLookupService = IsbnLookupService()
 
         ReleasesSyncWorker.schedulePeriodic(this)
     }

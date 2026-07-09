@@ -213,6 +213,14 @@ private fun UnknownVerdict(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
+            if (uiState.identifiedTitle != null) {
+                Spacer(modifier = Modifier.height(16.dp))
+                IdentifiedBookCard(
+                    title = uiState.identifiedTitle,
+                    authors = uiState.identifiedAuthors,
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             val showSuggestion = uiState.suggestedSeriesId != null &&
@@ -356,7 +364,40 @@ private fun UnknownVerdict(
     }
 }
 
-/** Suggestion série/tome devinée via Google Books, à confirmer explicitement (§6.4). */
+/** Livre identifié à partir de l'ISBN scanné (titre + auteur), pour confirmation visuelle (§6.4). */
+@Composable
+private fun IdentifiedBookCard(title: String, authors: String?) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium),
+        color = SurfaceColor,
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(R.string.verdict_unknown_identified_label),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            if (!authors.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = authors,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+/** Suggestion série/tome, à confirmer explicitement (§6.4). */
 @Composable
 private fun SuggestionCard(
     seriesTitle: String,
