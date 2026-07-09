@@ -103,8 +103,8 @@
     <string name="verdict_missing_title">Il te manque !</string>
     <string name="verdict_missing_button">Je viens de l\'acheter</string>
     <string name="verdict_back_home_button">Retour à l\'accueil</string>
-    <string name="verdict_album_subtitle">%1$s — Tome %2$d</string>
-    <string name="verdict_album_subtitle_unnumbered">%1$s — Hors-série</string>
+    <string name="verdict_album_subtitle">%1$s · Tome %2$d</string>
+    <string name="verdict_album_subtitle_unnumbered">%1$s · Hors-série</string>
     <string name="verdict_unknown_title">Nouveau code-barres</string>
     <string name="verdict_unknown_subtitle">Associe ce code-barres à un tome existant, ou crée un nouvel album.</string>
     <string name="verdict_unknown_search_label">Rechercher une série</string>
@@ -120,7 +120,7 @@
     <string name="releases_empty">Aucune nouveauté pour le moment.</string>
     <string name="releases_section_upcoming">À venir</string>
     <string name="releases_section_released">Déjà paru</string>
-    <string name="releases_item_subtitle">Tome %1$d — %2$s</string>
+    <string name="releases_item_subtitle">Tome %1$d · %2$s</string>
     <string name="releases_item_owned_badge">Tu l\'as</string>
     <string name="releases_item_missing_badge">Il te manque</string>
 

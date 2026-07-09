@@ -2,7 +2,6 @@ package com.bdshelf.app.domain
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import kotlin.math.abs
 
 /** Palette de ~12 teintes chaudes désaturées pour les tranches de série. */
 val SpinePalette = listOf(
@@ -20,9 +19,9 @@ val SpinePalette = listOf(
     Color(0xFF6B5B8B), // violet gris
 )
 
-/** Couleur de tranche assignée de façon déterministe (hash de l'id) — stable entre lancements. */
+/** Couleur de tranche assignée de façon déterministe (hash de l'id), stable entre lancements. */
 fun seriesSpineColor(seriesId: String): Color =
-    SpinePalette[abs(seriesId.hashCode()) % SpinePalette.size]
+    SpinePalette[seriesId.hashCode().mod(SpinePalette.size)]
 
 /** Conversion pour stockage dans `Series.color` (ARGB packé en Long). */
 fun Color.toArgbLong(): Long = this.toArgb().toLong() and 0xFFFFFFFFL

@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.ReadStatus
 import com.bdshelf.app.domain.GapDetector
-import kotlin.math.abs
 
 private sealed interface ShelfItem {
     val key: String
@@ -51,7 +50,7 @@ fun Shelf(
     modifier: Modifier = Modifier,
 ) {
     // Légère variation de hauteur par série pour l'effet "rayonnage".
-    val tileHeight = remember(seriesId) { 160.dp + (abs(seriesId.hashCode()) % 21).dp }
+    val tileHeight = remember(seriesId) { 160.dp + seriesId.hashCode().mod(21).dp }
     val items = remember(albums) { buildShelfItems(albums) }
 
     LazyRow(

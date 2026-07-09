@@ -46,7 +46,7 @@ import com.bdshelf.app.ui.components.Shelf
 import com.bdshelf.app.ui.theme.OwnedGreen
 import com.bdshelf.app.ui.theme.Surface as SurfaceColor
 
-/** Verdict de scan (§6.4) : trois états plein écran — possédé, manquant, inconnu. */
+/** Verdict de scan (§6.4) : trois états plein écran : possédé, manquant, inconnu. */
 @Composable
 fun VerdictScreen(
     ean: String,

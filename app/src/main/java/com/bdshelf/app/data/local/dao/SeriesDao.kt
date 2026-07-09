@@ -15,6 +15,12 @@ interface SeriesDao {
     @Query("SELECT * FROM series ORDER BY title ASC")
     fun allSeries(): Flow<List<Series>>
 
+    /**
+     * Non utilisé : la recherche de l'app est insensible aux accents et se fait
+     * en mémoire (voir [com.bdshelf.app.domain.normalizedForSearch]). Ce LIKE
+     * SQL est sensible aux accents et n'échappe pas les jokers, il est conservé
+     * uniquement à titre de référence. Ne pas l'appeler tel quel.
+     */
     @Query("SELECT * FROM series WHERE title LIKE '%' || :q || '%'")
     fun search(q: String): Flow<List<Series>>
 

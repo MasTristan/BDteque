@@ -5,7 +5,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 /**
- * Palette claire BDShelf — mapping des jetons §5.1 vers le ColorScheme Material 3.
+ * Palette claire BDShelf : mapping des jetons §5.1 vers le ColorScheme Material 3.
  *
  * - background -> Paper
  * - surface    -> Surface

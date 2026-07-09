@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import com.bdshelf.app.R
 
 /**
- * Fraunces (variable) — display / titres d'écran / numéros de tome.
+ * Fraunces (variable) : display / titres d'écran / numéros de tome.
  * opsz fixé à 72 (registre "display"), SOFT 50 pour le rendu chaleureux
  * recherché par la maquette, WONK désactivé pour rester lisible.
  */
@@ -65,7 +65,7 @@ val FrauncesFamily = FontFamily(
     ),
 )
 
-/** Atkinson Hyperlegible — corps de texte, listes, titres de série. */
+/** Atkinson Hyperlegible : corps de texte, listes, titres de série. */
 val AtkinsonHyperlegibleFamily = FontFamily(
     Font(R.font.atkinson_hyperlegible_regular, FontWeight.Normal, FontStyle.Normal),
     Font(R.font.atkinson_hyperlegible_bold, FontWeight.Bold, FontStyle.Normal),
