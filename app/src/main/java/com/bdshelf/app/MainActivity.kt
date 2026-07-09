@@ -24,6 +24,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val app = application as BdShelfApplication
         val openReleases = intent?.getBooleanExtra(EXTRA_OPEN_RELEASES, false) ?: false
+        // Consommé une fois : évite de re-naviguer vers « À paraître » à chaque
+        // recréation d'activité (rotation, retour depuis l'arrière-plan).
+        intent?.removeExtra(EXTRA_OPEN_RELEASES)
 
         setContent {
             BdShelfTheme {

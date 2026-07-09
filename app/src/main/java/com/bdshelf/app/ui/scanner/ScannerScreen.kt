@@ -40,6 +40,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -75,11 +78,24 @@ fun ScannerScreen(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED,
         )
     }
-    var permissionDenied by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         hasCameraPermission = granted
-        permissionDenied = !granted
+    }
+
+    // Réévalue la permission au retour sur l'écran : sans cela, accorder la
+    // permission depuis les réglages système laisserait la caméra bloquée.
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                hasCameraPermission = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.CAMERA,
+                ) == PackageManager.PERMISSION_GRANTED
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     LaunchedEffect(Unit) {
@@ -196,10 +212,17 @@ private fun CameraPreview(
     onBarcodeDetected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val currentOnDetected by rememberUpdatedState(onBarcodeDetected)
+    val analyzer = remember { BarcodeAnalyzer { currentOnDetected(it) } }
     val cameraProviderHolder = remember { arrayOfNulls<ProcessCameraProvider>(1) }
+    val disposed = remember { booleanArrayOf(false) }
 
     DisposableEffect(Unit) {
-        onDispose { cameraProviderHolder[0]?.unbindAll() }
+        onDispose {
+            disposed[0] = true
+            cameraProviderHolder[0]?.unbindAll()
+            analyzer.close() // libère le détecteur natif ML Kit
+        }
     }
 
     AndroidView(
@@ -209,6 +232,8 @@ private fun CameraPreview(
             val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
             cameraProviderFuture.addListener(
                 {
+                    // L'écran peut avoir été quitté avant que le provider soit prêt.
+                    if (disposed[0]) return@addListener
                     val cameraProvider = cameraProviderFuture.get()
                     cameraProviderHolder[0] = cameraProvider
 
@@ -218,7 +243,7 @@ private fun CameraPreview(
                     val analysis = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build()
-                        .also { it.setAnalyzer(ContextCompat.getMainExecutor(ctx), BarcodeAnalyzer(onBarcodeDetected)) }
+                        .also { it.setAnalyzer(ContextCompat.getMainExecutor(ctx), analyzer) }
 
                     runCatching {
                         cameraProvider.unbindAll()
@@ -258,4 +283,7 @@ private class BarcodeAnalyzer(private val onDetected: (String) -> Unit) : ImageA
             .addOnSuccessListener { barcodes -> barcodes.firstOrNull()?.rawValue?.let(onDetected) }
             .addOnCompleteListener { imageProxy.close() }
     }
+
+    /** Ferme le détecteur natif ML Kit pour éviter une fuite mémoire. */
+    fun close() = scanner.close()
 }
