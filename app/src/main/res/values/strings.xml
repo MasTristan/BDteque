@@ -116,6 +116,8 @@
     <string name="verdict_unknown_suggestion_unnumbered">On pense qu\'il s\'agit de %1$s. C\'est ça ?</string>
     <string name="verdict_unknown_suggestion_accept">Oui, c\'est ça</string>
     <string name="verdict_unknown_suggestion_dismiss">Non</string>
+    <string name="verdict_unknown_new_series_suggestion">Cette série n\'est pas encore dans ta collection. On pense qu\'il s\'agit de %1$s. Créer cette série ?</string>
+    <string name="verdict_unknown_new_series_suggestion_accept">Oui, créer cette série</string>
 
     <!-- À paraître (§6.7) -->
     <string name="releases_title">À paraître</string>

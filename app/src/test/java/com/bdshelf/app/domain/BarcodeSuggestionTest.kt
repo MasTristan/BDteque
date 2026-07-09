@@ -64,4 +64,29 @@ class BarcodeSuggestionTest {
     fun `returns null when candidate list is empty`() {
         assertNull(guessSeries("Thorgal - Tome 12", emptyList()))
     }
+
+    @Test
+    fun `guesses series name by cutting at the dash separator`() {
+        assertEquals("Tintin", guessSeriesName("Tintin - Le Lotus bleu"))
+    }
+
+    @Test
+    fun `guesses series name by cutting at the comma-tome separator`() {
+        assertEquals("Astérix", guessSeriesName("Astérix, tome 1 : Astérix le Gaulois"))
+    }
+
+    @Test
+    fun `guesses series name by cutting at the colon separator`() {
+        assertEquals("Lucky Luke", guessSeriesName("Lucky Luke : La Ballade des Dalton"))
+    }
+
+    @Test
+    fun `falls back to the full title when no separator is found`() {
+        assertEquals("Le Lotus bleu", guessSeriesName("Le Lotus bleu"))
+    }
+
+    @Test
+    fun `returns null on blank title`() {
+        assertNull(guessSeriesName("   "))
+    }
 }

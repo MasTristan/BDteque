@@ -8,6 +8,7 @@ import com.bdshelf.app.data.local.dao.SeriesWithCounts
 import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.Series
 import com.bdshelf.app.domain.guessSeries
+import com.bdshelf.app.domain.guessSeriesName
 import com.bdshelf.app.domain.guessTomeNumber
 import com.bdshelf.app.domain.normalizedForSearch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +34,7 @@ data class VerdictUiState(
     val linkedAlbumId: String? = null,
     val suggestedSeriesId: String? = null,
     val suggestedSeriesTitle: String? = null,
+    val suggestedNewSeriesName: String? = null,
     val suggestedTomeNumber: Int? = null,
     val suggestionDismissed: Boolean = false,
 )
@@ -87,22 +89,32 @@ class VerdictViewModel(application: Application) : AndroidViewModel(application)
     /**
      * Tente de deviner série + tome via Google Books, en tâche de fond, sans
      * bloquer l'affichage de l'état "Inconnu" (§6.4, suggestion de scan).
-     * Dégradation silencieuse : aucune suggestion si hors-ligne, sans résultat,
-     * ou si aucune série connue ne correspond au titre trouvé.
+     * Si aucune série connue ne correspond, propose la création d'une
+     * nouvelle série à partir du titre Google Books (fiabilité moindre,
+     * toujours à confirmer/corriger avant création, §6.4).
+     * Dégradation silencieuse dans tous les cas : aucune suggestion si
+     * hors-ligne ou sans résultat.
      */
     private fun loadSuggestion(ean: String) {
         viewModelScope.launch {
             val volume = app.googleBooksApi.lookupVolume(ean) ?: return@launch
             val candidates = allSeries.map { it.id to it.title }
-            val seriesId = guessSeries(volume.title, candidates) ?: return@launch
-            val seriesTitle = allSeries.first { it.id == seriesId }.title
             val tomeNumber = guessTomeNumber(volume.subtitle.orEmpty()) ?: guessTomeNumber(volume.title)
-            _uiState.update {
-                it.copy(
-                    suggestedSeriesId = seriesId,
-                    suggestedSeriesTitle = seriesTitle,
-                    suggestedTomeNumber = tomeNumber,
-                )
+            val seriesId = guessSeries(volume.title, candidates)
+            if (seriesId != null) {
+                val seriesTitle = allSeries.first { it.id == seriesId }.title
+                _uiState.update {
+                    it.copy(
+                        suggestedSeriesId = seriesId,
+                        suggestedSeriesTitle = seriesTitle,
+                        suggestedTomeNumber = tomeNumber,
+                    )
+                }
+            } else {
+                val newSeriesName = guessSeriesName(volume.title) ?: return@launch
+                _uiState.update {
+                    it.copy(suggestedNewSeriesName = newSeriesName, suggestedTomeNumber = tomeNumber)
+                }
             }
         }
     }

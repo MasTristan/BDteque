@@ -27,6 +27,7 @@ data class SeriesFormUiState(
     val titleError: Boolean = false,
     val saved: Boolean = false,
     val deleted: Boolean = false,
+    val createdSeriesId: String? = null,
 )
 
 /** Ajout/édition manuelle d'une série (§6.8, PLUS). */
@@ -39,12 +40,13 @@ class SeriesFormViewModel(application: Application) : AndroidViewModel(applicati
 
     private var loaded = false
 
-    fun load(seriesId: String?) {
+    /** [prefilledTitle] vient d'une suggestion de nouvelle série au scan (§6.4), ignoré en édition. */
+    fun load(seriesId: String?, prefilledTitle: String? = null) {
         if (loaded) return
         loaded = true
 
         if (seriesId == null) {
-            _uiState.update { it.copy(isLoading = false, isNew = true) }
+            _uiState.update { it.copy(isLoading = false, isNew = true, title = prefilledTitle.orEmpty()) }
             return
         }
 
@@ -111,6 +113,8 @@ class SeriesFormViewModel(application: Application) : AndroidViewModel(applicati
                     notes = notes,
                 )
                 app.collectionRepository.upsertSeries(series)
+                _uiState.update { it.copy(saved = true, createdSeriesId = id) }
+                return@launch
             } else {
                 val existing = app.collectionRepository.seriesById(state.seriesId!!) ?: return@launch
                 val updated = existing.copy(

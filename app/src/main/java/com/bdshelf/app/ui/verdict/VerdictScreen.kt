@@ -52,6 +52,7 @@ fun VerdictScreen(
     ean: String,
     onBackToHome: () -> Unit,
     onCreateAlbum: (seriesId: String, ean: String, tomeNumber: Int?) -> Unit,
+    onCreateNewSeries: (suggestedTitle: String, ean: String, tomeNumber: Int?) -> Unit,
     viewModel: VerdictViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -66,7 +67,7 @@ fun VerdictScreen(
     when (uiState.outcome) {
         VerdictOutcome.OWNED -> OwnedVerdict(uiState, onBackToHome)
         VerdictOutcome.MISSING -> MissingVerdict(uiState, viewModel, onBackToHome)
-        VerdictOutcome.UNKNOWN -> UnknownVerdict(uiState, viewModel, onBackToHome, onCreateAlbum)
+        VerdictOutcome.UNKNOWN -> UnknownVerdict(uiState, viewModel, onBackToHome, onCreateAlbum, onCreateNewSeries)
     }
 }
 
@@ -196,6 +197,7 @@ private fun UnknownVerdict(
     viewModel: VerdictViewModel,
     onBackToHome: () -> Unit,
     onCreateAlbum: (String, String, Int?) -> Unit,
+    onCreateNewSeries: (String, String, Int?) -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
@@ -217,11 +219,24 @@ private fun UnknownVerdict(
                 !uiState.suggestionDismissed &&
                 uiState.selectedSeries == null &&
                 uiState.linkedAlbumId == null
+            val showNewSeriesSuggestion = !showSuggestion &&
+                uiState.suggestedNewSeriesName != null &&
+                !uiState.suggestionDismissed &&
+                uiState.selectedSeries == null &&
+                uiState.linkedAlbumId == null
             if (showSuggestion) {
                 SuggestionCard(
                     seriesTitle = uiState.suggestedSeriesTitle.orEmpty(),
                     tomeNumber = uiState.suggestedTomeNumber,
                     onAccept = viewModel::onAcceptSuggestion,
+                    onDismiss = viewModel::onDismissSuggestion,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            } else if (showNewSeriesSuggestion) {
+                val newSeriesName = uiState.suggestedNewSeriesName.orEmpty()
+                NewSeriesSuggestionCard(
+                    seriesName = newSeriesName,
+                    onAccept = { onCreateNewSeries(newSeriesName, uiState.ean, uiState.suggestedTomeNumber) },
                     onDismiss = viewModel::onDismissSuggestion,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -375,6 +390,59 @@ private fun SuggestionCard(
                 ) {
                     Text(
                         text = stringResource(R.string.verdict_unknown_suggestion_accept),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+                OutlinedButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 56.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.verdict_unknown_suggestion_dismiss),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Suggestion de création d'une série entièrement nouvelle, quand aucune série
+ * de la collection ne correspond au titre Google Books (§6.4). Fiabilité
+ * moindre que [SuggestionCard] : le nom est un titre à corriger si besoin,
+ * jamais une série créée silencieusement.
+ */
+@Composable
+private fun NewSeriesSuggestionCard(
+    seriesName: String,
+    onAccept: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(R.string.verdict_unknown_new_series_suggestion, seriesName),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(
+                    onClick = onAccept,
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 56.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.verdict_unknown_new_series_suggestion_accept),
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }

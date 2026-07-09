@@ -67,6 +67,9 @@ fun BdShelfNavGraph(
                 onCreateAlbum = { seriesId, scannedEan, tomeNumber ->
                     navController.navigate(Routes.albumForm(seriesId, ean = scannedEan, tomeNumber = tomeNumber))
                 },
+                onCreateNewSeries = { suggestedTitle, scannedEan, tomeNumber ->
+                    navController.navigate(Routes.seriesForm(title = suggestedTitle, ean = scannedEan, tomeNumber = tomeNumber))
+                },
             )
         }
 
@@ -137,13 +140,43 @@ fun BdShelfNavGraph(
                     nullable = true
                     defaultValue = null
                 },
+                navArgument(Routes.TITLE_ARG) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument(Routes.TOME_NUMBER_ARG) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument(Routes.EAN_ARG) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
             ),
         ) { backStackEntry ->
             val seriesId = backStackEntry.arguments?.getString("seriesId")
+            val prefilledTitle = backStackEntry.arguments?.getString(Routes.TITLE_ARG)
+            val tomeNumber = backStackEntry.arguments?.getString(Routes.TOME_NUMBER_ARG)?.toIntOrNull()
+            val ean = backStackEntry.arguments?.getString(Routes.EAN_ARG)
             SeriesFormScreen(
                 seriesId = seriesId,
+                prefilledTitle = prefilledTitle,
                 onBack = { navController.popBackStack() },
-                onSaved = { navController.popBackStack() },
+                onSaved = { createdSeriesId ->
+                    // Série créée depuis une suggestion de scan (§6.4) : enchaîne directement
+                    // sur la fiche du tome plutôt que de revenir en arrière, en retirant le
+                    // formulaire série (déjà enregistré) de la pile.
+                    if (createdSeriesId != null && (tomeNumber != null || ean != null)) {
+                        navController.navigate(Routes.albumForm(createdSeriesId, tomeNumber = tomeNumber, ean = ean)) {
+                            popUpTo(Routes.SERIES_FORM) { inclusive = true }
+                        }
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
                 onDeleted = { navController.popBackStack(Routes.SERIES_LIST, inclusive = false) },
             )
         }

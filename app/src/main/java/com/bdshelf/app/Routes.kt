@@ -1,5 +1,7 @@
 package com.bdshelf.app
 
+import android.net.Uri
+
 /** Routes de navigation (§NAVIGATION ROUTES). Profondeur maximale : 2 niveaux. */
 object Routes {
     const val ONBOARDING = "onboarding"
@@ -9,13 +11,14 @@ object Routes {
     const val SERIES_LIST = "series_list"
     const val SERIES_DETAIL = "series_detail/{seriesId}"
     const val ALBUM_FORM = "album_form/{seriesId}?albumId={albumId}&tomeNumber={tomeNumber}&ean={ean}"
-    const val SERIES_FORM = "series_form?seriesId={seriesId}"
+    const val SERIES_FORM = "series_form?seriesId={seriesId}&title={title}&tomeNumber={tomeNumber}&ean={ean}"
     const val RELEASES = "releases"
     const val SETTINGS = "settings"
 
     const val ALBUM_ID_ARG = "albumId"
     const val TOME_NUMBER_ARG = "tomeNumber"
     const val EAN_ARG = "ean"
+    const val TITLE_ARG = "title"
 
     fun verdict(ean: String) = "verdict/$ean"
     fun seriesDetail(seriesId: String) = "series_detail/$seriesId"
@@ -33,6 +36,18 @@ object Routes {
         return "album_form/$seriesId" + if (params.isNotEmpty()) "?" + params.joinToString("&") else ""
     }
 
-    fun seriesForm(seriesId: String? = null) =
-        "series_form" + if (seriesId != null) "?seriesId=$seriesId" else ""
+    /**
+     * [title] préremplit le titre lors de la création d'une série depuis une suggestion de scan (§6.4).
+     * [tomeNumber] et [ean], portés jusqu'à la création, enchaînent vers la fiche du tome une fois
+     * la série enregistrée ([com.bdshelf.app.NavGraph]), au lieu de revenir simplement en arrière.
+     */
+    fun seriesForm(seriesId: String? = null, title: String? = null, tomeNumber: Int? = null, ean: String? = null): String {
+        val params = buildList {
+            if (seriesId != null) add("seriesId=$seriesId")
+            if (title != null) add("title=${Uri.encode(title)}")
+            if (tomeNumber != null) add("tomeNumber=$tomeNumber")
+            if (ean != null) add("ean=$ean")
+        }
+        return "series_form" + if (params.isNotEmpty()) "?" + params.joinToString("&") else ""
+    }
 }

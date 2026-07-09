@@ -50,15 +50,16 @@ import com.bdshelf.app.data.local.entities.SeriesStatus
 fun SeriesFormScreen(
     seriesId: String?,
     onBack: () -> Unit,
-    onSaved: () -> Unit,
+    onSaved: (createdSeriesId: String?) -> Unit,
     onDeleted: () -> Unit,
+    prefilledTitle: String? = null,
     viewModel: SeriesFormViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(seriesId) { viewModel.load(seriesId) }
-    LaunchedEffect(uiState.saved) { if (uiState.saved) onSaved() }
+    LaunchedEffect(seriesId) { viewModel.load(seriesId, prefilledTitle) }
+    LaunchedEffect(uiState.saved) { if (uiState.saved) onSaved(uiState.createdSeriesId) }
     LaunchedEffect(uiState.deleted) { if (uiState.deleted) onDeleted() }
 
     Surface(color = MaterialTheme.colorScheme.background) {

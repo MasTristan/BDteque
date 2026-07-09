@@ -34,3 +34,24 @@ fun guessSeries(googleTitle: String, candidates: List<Pair<String, String>>): St
         .maxByOrNull { (_, title) -> title.length }
         ?.first
 }
+
+private val SERIES_NAME_SEPARATORS = listOf(" - ", " : ", ": ", ", tome", ", Tome")
+
+/**
+ * Extrait un nom de série probable d'un titre Google Books, quand aucune
+ * série connue de la collection ne correspond (§6.4, suggestion de nouvelle
+ * série). Coupe au premier séparateur habituel des fiches BD ("Série - Tome
+ * N : Titre", "Série, tome N : Titre"). Best-effort par nature : sans
+ * séparateur reconnu, renvoie le titre complet tel quel (dernier recours,
+ * fiabilité moindre mais l'utilisateur peut toujours corriger avant de créer
+ * la série).
+ */
+fun guessSeriesName(title: String): String? {
+    val trimmed = title.trim()
+    if (trimmed.isEmpty()) return null
+    val cutIndex = SERIES_NAME_SEPARATORS
+        .mapNotNull { separator -> trimmed.indexOf(separator, ignoreCase = true).takeIf { it > 0 } }
+        .minOrNull()
+    val name = if (cutIndex != null) trimmed.substring(0, cutIndex) else trimmed
+    return name.trim().ifBlank { null }
+}
