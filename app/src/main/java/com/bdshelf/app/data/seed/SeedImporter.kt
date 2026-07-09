@@ -9,6 +9,8 @@ import com.bdshelf.app.data.local.entities.Series
 import com.bdshelf.app.data.local.entities.SeriesStatus
 import com.bdshelf.app.domain.seriesSpineColor
 import com.bdshelf.app.domain.toArgbLong
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 private const val SEED_ASSET_NAME = "seed-collection.json"
@@ -17,8 +19,9 @@ private const val SEED_ASSET_NAME = "seed-collection.json"
  * Import du fichier d'amorçage `assets/seed-collection.json`.
  *
  * Exécuté une seule fois (guard : `seed_imported` dans les préférences).
- * Idempotent si relancé : tous les inserts sont des upserts (REPLACE),
- * donc relancer l'import régénère exactement le même état.
+ * Défense supplémentaire contre les restaurations de sauvegarde : si des séries
+ * existent déjà en base, l'import est ignoré pour ne jamais écraser une
+ * collection restaurée dont le drapeau `seed_imported` aurait été réinitialisé.
  */
 class SeedImporter(
     private val context: Context,
@@ -28,8 +31,13 @@ class SeedImporter(
     private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun import() {
-        val text = context.assets.open(SEED_ASSET_NAME).bufferedReader().use { it.readText() }
-        val document = json.decodeFromString<SeedDocument>(text)
+        // Idempotence forte : ne jamais réécrire par-dessus une collection existante.
+        if (seriesDao.seriesCount() > 0) return
+
+        val document = withContext(Dispatchers.IO) {
+            val text = context.assets.open(SEED_ASSET_NAME).bufferedReader().use { it.readText() }
+            json.decodeFromString<SeedDocument>(text)
+        }
         val now = System.currentTimeMillis()
 
         for (seedSeries in document.series) {

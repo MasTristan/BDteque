@@ -11,13 +11,14 @@
     <string name="spine_cd_lent_suffix">, prêté</string>
     <string name="spine_cd_add_tome_action">Ajouter ce tome</string>
     <string name="spine_cd_highlighted_suffix">, tome recherché</string>
-    <string name="spine_unnumbered_marker">—</string>
+    <string name="spine_unnumbered_marker">HS</string>
 
     <!-- Onboarding -->
     <string name="onboarding_subtitle">Avant de commencer, comment t\'appelles-tu ?</string>
     <string name="onboarding_name_label">Ton prénom</string>
     <string name="onboarding_submit_button">C\'est parti</string>
     <string name="onboarding_importing">Préparation de ta bibliothèque…</string>
+    <string name="onboarding_import_error">La préparation a échoué. Vérifie l\'application et réessaie.</string>
 
     <!-- Commun -->
     <string name="common_back_cd">Retour</string>

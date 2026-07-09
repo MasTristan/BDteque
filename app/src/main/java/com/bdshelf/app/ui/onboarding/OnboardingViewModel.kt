@@ -14,6 +14,7 @@ data class OnboardingUiState(
     val name: String = "",
     val isImporting: Boolean = false,
     val importComplete: Boolean = false,
+    val importError: Boolean = false,
 )
 
 /** Premier lancement (§6.1) : saisie du prénom puis import silencieux du seed. */
@@ -33,11 +34,25 @@ class OnboardingViewModel(application: Application) : AndroidViewModel(applicati
         if (name.isBlank() || _uiState.value.isImporting) return
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isImporting = true) }
-            app.userPreferencesRepository.setOwnerName(name)
-            app.seedImporter.import()
-            app.userPreferencesRepository.setSeedImported(true)
-            _uiState.update { it.copy(isImporting = false, importComplete = true) }
+            _uiState.update { it.copy(isImporting = true, importError = false) }
+            val result = runCatching {
+                app.userPreferencesRepository.setOwnerName(name)
+                app.seedImporter.import()
+                app.userPreferencesRepository.setSeedImported(true)
+            }
+            _uiState.update {
+                it.copy(
+                    isImporting = false,
+                    importComplete = result.isSuccess,
+                    importError = result.isFailure,
+                )
+            }
         }
+    }
+
+    /** Permet de relancer l'import après un échec (asset absent, JSON corrompu). */
+    fun onRetry() {
+        _uiState.update { it.copy(importError = false) }
+        onSubmit()
     }
 }

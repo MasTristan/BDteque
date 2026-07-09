@@ -87,6 +87,14 @@ fun OnboardingScreen(
                     )
                 }
             }
+            if (uiState.importError) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.onboarding_import_error),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
         }
     }
 }
