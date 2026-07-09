@@ -94,7 +94,16 @@
 
     <!-- Scanner (§6.3) -->
     <string name="scanner_instruction">Vise le code-barres avec la caméra</string>
-    <string name="scanner_manual_entry_button">Saisir à la main</string>
+    <string name="scanner_manual_entry_button">Parcourir la collection</string>
+    <string name="scanner_type_isbn_button">Saisir l\'ISBN</string>
+    <string name="scanner_isbn_dialog_title">Saisir l\'ISBN</string>
+    <string name="scanner_isbn_dialog_label">ISBN ou code-barres</string>
+    <string name="scanner_isbn_dialog_hint">Les 13 chiffres sous le code-barres (ou un ISBN à 10 chiffres)</string>
+    <string name="scanner_isbn_dialog_error">Code invalide, vérifie les chiffres</string>
+    <string name="scanner_isbn_dialog_confirm">Valider</string>
+    <string name="scanner_isbn_dialog_cancel">Annuler</string>
+    <string name="scanner_torch_on_cd">Activer la lampe torche</string>
+    <string name="scanner_torch_off_cd">Désactiver la lampe torche</string>
     <string name="scanner_permission_message">BDShelf a besoin de la caméra pour scanner un code-barres.</string>
     <string name="scanner_permission_settings_button">Ouvrir les réglages</string>
 

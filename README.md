@@ -40,7 +40,8 @@ système, libellés en langage clair.
 | Base de données | Room |
 | Préférences | DataStore |
 | Tâches de fond | WorkManager |
-| Scan de code-barres | CameraX + ML Kit (modèle embarqué, hors ligne) |
+| Scan de code-barres | CameraX + ML Kit (modèle embarqué, hors ligne), lecture confirmée multi-images + somme de contrôle EAN |
+| Identification ISBN | Catalogue BnF (SRU/UNIMARC) + Open Library en repli, cache local Room |
 | Sérialisation | kotlinx.serialization |
 | Injection | manuelle (pas de Hilt) |
 

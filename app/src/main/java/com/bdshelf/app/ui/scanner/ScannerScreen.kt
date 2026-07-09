@@ -5,13 +5,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.border
@@ -25,15 +29,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.FlashOff
+import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -44,9 +55,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -56,12 +70,18 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bdshelf.app.R
+import com.bdshelf.app.domain.canonicalEan
+import com.bdshelf.app.domain.normalizeEanInput
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 
-/** Scanner plein écran (§6.3) : preview CameraX + détection ML Kit, repli saisie manuelle. */
+/**
+ * Scanner plein écran (§6.3) : preview CameraX + détection ML Kit (confirmée
+ * multi-images par [ScannerViewModel]), lampe torche pour les rayonnages
+ * sombres, replis saisie d'ISBN au clavier et parcours manuel de la collection.
+ */
 @Composable
 fun ScannerScreen(
     onBarcodeScanned: (String) -> Unit,
@@ -72,6 +92,7 @@ fun ScannerScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val haptics = LocalHapticFeedback.current
 
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -103,7 +124,24 @@ fun ScannerScreen(
     }
 
     LaunchedEffect(uiState.scannedEan) {
-        uiState.scannedEan?.let(onBarcodeScanned)
+        uiState.scannedEan?.let { ean ->
+            haptics.performHapticFeedback(HapticFeedbackType.LongPress) // confirme la lecture sans regarder l'écran
+            onBarcodeScanned(ean)
+        }
+    }
+
+    var camera by remember { mutableStateOf<Camera?>(null) }
+    var torchOn by remember { mutableStateOf(false) }
+    var showIsbnDialog by remember { mutableStateOf(false) }
+
+    if (showIsbnDialog) {
+        ManualIsbnDialog(
+            onConfirm = { code ->
+                showIsbnDialog = false
+                viewModel.onManualEan(code)
+            },
+            onDismiss = { showIsbnDialog = false },
+        )
     }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -135,6 +173,12 @@ fun ScannerScreen(
                     CameraPreview(
                         lifecycleOwner = lifecycleOwner,
                         onBarcodeDetected = viewModel::onBarcodeDetected,
+                        onCameraReady = {
+                            camera = it
+                            // Réapplique l'état de la lampe après un re-bind
+                            // (retour de l'écran des réglages, par exemple).
+                            it.cameraControl.enableTorch(torchOn)
+                        },
                         modifier = Modifier.fillMaxSize(),
                     )
 
@@ -157,6 +201,26 @@ fun ScannerScreen(
                             .align(Alignment.TopCenter)
                             .padding(top = 24.dp, start = 24.dp, end = 24.dp),
                     )
+
+                    if (camera?.cameraInfo?.hasFlashUnit() == true) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                torchOn = !torchOn
+                                camera?.cameraControl?.enableTorch(torchOn)
+                            },
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(24.dp)
+                                .defaultMinSize(minWidth = 56.dp, minHeight = 56.dp),
+                        ) {
+                            Icon(
+                                imageVector = if (torchOn) Icons.Filled.FlashOff else Icons.Filled.FlashOn,
+                                contentDescription = stringResource(
+                                    if (torchOn) R.string.scanner_torch_off_cd else R.string.scanner_torch_on_cd,
+                                ),
+                            )
+                        }
+                    }
                 } else {
                     Column(
                         modifier = Modifier
@@ -190,29 +254,98 @@ fun ScannerScreen(
                 }
             }
 
-            OutlinedButton(
-                onClick = onManualEntry,
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp)
-                    .defaultMinSize(minHeight = 56.dp),
+                    .padding(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.scanner_manual_entry_button),
-                    style = MaterialTheme.typography.labelLarge,
-                )
+                OutlinedButton(
+                    onClick = { showIsbnDialog = true },
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 56.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.scanner_type_isbn_button),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+                OutlinedButton(
+                    onClick = onManualEntry,
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 56.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.scanner_manual_entry_button),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
             }
         }
     }
+}
+
+/**
+ * Saisie manuelle d'un code (§6.3, repli quand le code-barres est abîmé ou que
+ * la caméra ne l'accroche pas) : EAN-13, EAN-8 ou ISBN-10, tirets et espaces
+ * tolérés. Validation par somme de contrôle avant d'autoriser la confirmation.
+ */
+@Composable
+private fun ManualIsbnDialog(
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var input by remember { mutableStateOf("") }
+    val isValid = canonicalEan(input) != null
+    // N'affiche l'erreur qu'à partir d'une saisie complète : avant 13 chiffres,
+    // l'utilisateur est probablement encore en train de taper.
+    val showError = !isValid && normalizeEanInput(input).length >= 13
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.scanner_isbn_dialog_title)) },
+        text = {
+            OutlinedTextField(
+                value = input,
+                onValueChange = { input = it },
+                label = { Text(stringResource(R.string.scanner_isbn_dialog_label)) },
+                supportingText = {
+                    Text(
+                        stringResource(
+                            if (showError) R.string.scanner_isbn_dialog_error else R.string.scanner_isbn_dialog_hint,
+                        ),
+                    )
+                },
+                isError = showError,
+                singleLine = true,
+                // Ascii et pas Number : la clé d'un ISBN-10 peut être la lettre X.
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(input) }, enabled = isValid) {
+                Text(stringResource(R.string.scanner_isbn_dialog_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.scanner_isbn_dialog_cancel))
+            }
+        },
+    )
 }
 
 @Composable
 private fun CameraPreview(
     lifecycleOwner: LifecycleOwner,
     onBarcodeDetected: (String) -> Unit,
+    onCameraReady: (Camera) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val currentOnDetected by rememberUpdatedState(onBarcodeDetected)
+    val currentOnCameraReady by rememberUpdatedState(onCameraReady)
     val analyzer = remember { BarcodeAnalyzer { currentOnDetected(it) } }
     val cameraProviderHolder = remember { arrayOfNulls<ProcessCameraProvider>(1) }
     val disposed = remember { booleanArrayOf(false) }
@@ -242,6 +375,18 @@ private fun CameraPreview(
                     }
                     val analysis = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        // 1280x720 plutôt que les 640x480 par défaut : les barres
+                        // fines d'un EAN-13 serré demandent plus de définition.
+                        .setResolutionSelector(
+                            ResolutionSelector.Builder()
+                                .setResolutionStrategy(
+                                    ResolutionStrategy(
+                                        Size(1280, 720),
+                                        ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER,
+                                    ),
+                                )
+                                .build(),
+                        )
                         .build()
                         .also { it.setAnalyzer(ContextCompat.getMainExecutor(ctx), analyzer) }
 
@@ -253,7 +398,7 @@ private fun CameraPreview(
                             preview,
                             analysis,
                         )
-                    }
+                    }.onSuccess { currentOnCameraReady(it) }
                 },
                 ContextCompat.getMainExecutor(ctx),
             )

@@ -14,14 +14,16 @@ import java.net.URLEncoder
  * qui expose la série et le numéro de tome de façon structurée
  * ([parseBnfUnimarc]). Dégradation silencieuse : `null` si rien trouvé.
  */
-class BnfCatalogApi {
+class BnfCatalogApi : IsbnSource {
 
-    suspend fun lookup(isbn: String): IsbnBook? = withContext(Dispatchers.IO) {
+    override suspend fun lookup(isbn: String): IsbnBook? = withContext(Dispatchers.IO) {
         // %20 plutôt que le "+" produit par URLEncoder : la requête CQL est un
         // composant d'URL, certains serveurs SRU ne décodent pas "+" en espace.
         val query = URLEncoder.encode("bib.isbn adj \"$isbn\"", "UTF-8").replace("+", "%20")
+        // Plusieurs notices possibles pour un même ISBN (rééditions, tirages) :
+        // on en demande quelques-unes et le parseur retient la plus complète.
         val url = "https://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve" +
-            "&query=$query&recordSchema=unimarcxchange&maximumRecords=1"
+            "&query=$query&recordSchema=unimarcxchange&maximumRecords=5"
         val xml = httpGetText(url) ?: return@withContext null
         parseBnfUnimarc(xml)
     }

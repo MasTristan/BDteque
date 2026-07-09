@@ -12,11 +12,11 @@ import kotlinx.serialization.json.Json
  * renvoie rien (éditions étrangères notamment). Ne fournit ni série ni tome
  * de façon fiable : seulement titre et auteurs. Dégradation silencieuse.
  */
-class OpenLibraryApi {
+class OpenLibraryApi : IsbnSource {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    suspend fun lookup(isbn: String): IsbnBook? = withContext(Dispatchers.IO) {
+    override suspend fun lookup(isbn: String): IsbnBook? = withContext(Dispatchers.IO) {
         val url = "https://openlibrary.org/api/books?bibkeys=ISBN:$isbn&format=json&jscmd=data"
         val body = httpGetText(url) ?: return@withContext null
         runCatching {
