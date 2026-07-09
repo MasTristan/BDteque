@@ -64,8 +64,8 @@ fun BdShelfNavGraph(
             VerdictScreen(
                 ean = ean,
                 onBackToHome = { navController.popBackStack(Routes.HOME, inclusive = false) },
-                onCreateAlbum = { seriesId, scannedEan ->
-                    navController.navigate(Routes.albumForm(seriesId, ean = scannedEan))
+                onCreateAlbum = { seriesId, scannedEan, tomeNumber ->
+                    navController.navigate(Routes.albumForm(seriesId, ean = scannedEan, tomeNumber = tomeNumber))
                 },
             )
         }

@@ -51,7 +51,7 @@ import com.bdshelf.app.ui.theme.Surface as SurfaceColor
 fun VerdictScreen(
     ean: String,
     onBackToHome: () -> Unit,
-    onCreateAlbum: (seriesId: String, ean: String) -> Unit,
+    onCreateAlbum: (seriesId: String, ean: String, tomeNumber: Int?) -> Unit,
     viewModel: VerdictViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -195,7 +195,7 @@ private fun UnknownVerdict(
     uiState: VerdictUiState,
     viewModel: VerdictViewModel,
     onBackToHome: () -> Unit,
-    onCreateAlbum: (String, String) -> Unit,
+    onCreateAlbum: (String, String, Int?) -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
@@ -212,6 +212,20 @@ private fun UnknownVerdict(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            val showSuggestion = uiState.suggestedSeriesId != null &&
+                !uiState.suggestionDismissed &&
+                uiState.selectedSeries == null &&
+                uiState.linkedAlbumId == null
+            if (showSuggestion) {
+                SuggestionCard(
+                    seriesTitle = uiState.suggestedSeriesTitle.orEmpty(),
+                    tomeNumber = uiState.suggestedTomeNumber,
+                    onAccept = viewModel::onAcceptSuggestion,
+                    onDismiss = viewModel::onDismissSuggestion,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             if (uiState.linkedAlbumId != null) {
                 Box(
@@ -291,7 +305,11 @@ private fun UnknownVerdict(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
-                        onClick = { onCreateAlbum(selectedSeries.id, uiState.ean) },
+                        onClick = {
+                            val prefilledTomeNumber = uiState.suggestedTomeNumber
+                                .takeIf { selectedSeries.id == uiState.suggestedSeriesId }
+                            onCreateAlbum(selectedSeries.id, uiState.ean, prefilledTomeNumber)
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .defaultMinSize(minHeight = 56.dp),
@@ -318,6 +336,59 @@ private fun UnknownVerdict(
                     text = stringResource(R.string.verdict_back_home_button),
                     style = MaterialTheme.typography.labelLarge,
                 )
+            }
+        }
+    }
+}
+
+/** Suggestion série/tome devinée via Google Books, à confirmer explicitement (§6.4). */
+@Composable
+private fun SuggestionCard(
+    seriesTitle: String,
+    tomeNumber: Int?,
+    onAccept: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = if (tomeNumber != null) {
+                    stringResource(R.string.verdict_unknown_suggestion, seriesTitle, tomeNumber)
+                } else {
+                    stringResource(R.string.verdict_unknown_suggestion_unnumbered, seriesTitle)
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(
+                    onClick = onAccept,
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 56.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.verdict_unknown_suggestion_accept),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+                OutlinedButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 56.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.verdict_unknown_suggestion_dismiss),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
             }
         }
     }

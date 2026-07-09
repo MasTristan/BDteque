@@ -7,6 +7,8 @@ import com.bdshelf.app.BdShelfApplication
 import com.bdshelf.app.data.local.dao.SeriesWithCounts
 import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.Series
+import com.bdshelf.app.domain.guessSeries
+import com.bdshelf.app.domain.guessTomeNumber
 import com.bdshelf.app.domain.normalizedForSearch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +31,10 @@ data class VerdictUiState(
     val selectedSeries: Series? = null,
     val selectedSeriesAlbums: List<Album> = emptyList(),
     val linkedAlbumId: String? = null,
+    val suggestedSeriesId: String? = null,
+    val suggestedSeriesTitle: String? = null,
+    val suggestedTomeNumber: Int? = null,
+    val suggestionDismissed: Boolean = false,
 )
 
 /** Verdict de scan (§6.4) : trois états selon la correspondance entre l'EAN scanné et la collection. */
@@ -73,8 +79,43 @@ class VerdictViewModel(application: Application) : AndroidViewModel(application)
                 _uiState.update {
                     it.copy(isLoading = false, outcome = VerdictOutcome.UNKNOWN, seriesResults = allSeries)
                 }
+                loadSuggestion(ean)
             }
         }
+    }
+
+    /**
+     * Tente de deviner série + tome via Google Books, en tâche de fond, sans
+     * bloquer l'affichage de l'état "Inconnu" (§6.4, suggestion de scan).
+     * Dégradation silencieuse : aucune suggestion si hors-ligne, sans résultat,
+     * ou si aucune série connue ne correspond au titre trouvé.
+     */
+    private fun loadSuggestion(ean: String) {
+        viewModelScope.launch {
+            val volume = app.googleBooksApi.lookupVolume(ean) ?: return@launch
+            val candidates = allSeries.map { it.id to it.title }
+            val seriesId = guessSeries(volume.title, candidates) ?: return@launch
+            val seriesTitle = allSeries.first { it.id == seriesId }.title
+            val tomeNumber = guessTomeNumber(volume.subtitle.orEmpty()) ?: guessTomeNumber(volume.title)
+            _uiState.update {
+                it.copy(
+                    suggestedSeriesId = seriesId,
+                    suggestedSeriesTitle = seriesTitle,
+                    suggestedTomeNumber = tomeNumber,
+                )
+            }
+        }
+    }
+
+    /** Accepte la suggestion : présélectionne la série, comme un choix manuel dans la liste. */
+    fun onAcceptSuggestion() {
+        val seriesId = _uiState.value.suggestedSeriesId ?: return
+        onSeriesSelected(seriesId)
+    }
+
+    /** Rejette la suggestion : revient à la recherche manuelle habituelle. */
+    fun onDismissSuggestion() {
+        _uiState.update { it.copy(suggestionDismissed = true) }
     }
 
     /** État Manquant : « Je viens de l'acheter » -> bascule possédé (anime le tampon sur l'étagère). */
