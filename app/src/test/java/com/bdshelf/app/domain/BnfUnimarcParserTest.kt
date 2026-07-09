@@ -41,6 +41,76 @@ class BnfUnimarcParserTest {
         assertEquals("thorgal", guessSeries(book.seriesName!!, candidates))
     }
 
+    /** Enrobe des notices UNIMARC dans une réponse SRU minimale. */
+    private fun sru(vararg records: String): String =
+        """<?xml version="1.0" encoding="UTF-8"?>
+        <srw:searchRetrieveResponse xmlns:srw="http://www.loc.gov/zing/srw/">
+          <srw:records>${records.joinToString("") { "<srw:recordData>$it</srw:recordData>" }}</srw:records>
+        </srw:searchRetrieveResponse>"""
+
+    private fun record(vararg datafields: String): String =
+        """<mxc:record xmlns:mxc="info:lc/xmlns/marcxchange-v2" format="UNIMARC" type="Bibliographic">
+          ${datafields.joinToString("")}
+        </mxc:record>"""
+
+    private fun datafield(tag: String, vararg subfields: Pair<String, String>): String =
+        """<mxc:datafield tag="$tag" ind1=" " ind2=" ">
+          ${subfields.joinToString("") { (code, value) -> """<mxc:subfield code="$code">$value</mxc:subfield>""" }}
+        </mxc:datafield>"""
+
+    @Test
+    fun `falls back to zone 461 when 225 is absent`() {
+        val xml = sru(
+            record(
+                datafield("200", "a" to "Aniel"),
+                datafield("461", "t" to "Thorgal", "v" to "36"),
+            ),
+        )
+        val book = parseBnfUnimarc(xml)!!
+        assertEquals("Aniel", book.title)
+        assertEquals("Thorgal", book.seriesName)
+        assertEquals(36, book.tomeNumber)
+    }
+
+    @Test
+    fun `picks the most complete record among several`() {
+        val xml = sru(
+            record(datafield("200", "a" to "Aniel")), // réédition sans collection
+            record(
+                datafield("200", "a" to "Aniel"),
+                datafield("225", "a" to "Thorgal", "v" to "36"),
+            ),
+        )
+        val book = parseBnfUnimarc(xml)!!
+        assertEquals("Thorgal", book.seriesName)
+        assertEquals(36, book.tomeNumber)
+    }
+
+    @Test
+    fun `reads multi-volume records with part title and part number`() {
+        // Notice "Série. N, Titre" : 200$a=série, 200$h=tome, 200$i=titre de partie.
+        val xml = sru(
+            record(datafield("200", "a" to "Thorgal", "h" to "36", "i" to "Aniel")),
+        )
+        val book = parseBnfUnimarc(xml)!!
+        assertEquals("Aniel", book.title)
+        assertEquals("Thorgal", book.seriesName)
+        assertEquals(36, book.tomeNumber)
+    }
+
+    @Test
+    fun `strips trailing ISBD punctuation from title and series`() {
+        val xml = sru(
+            record(
+                datafield("200", "a" to "Aniel :"),
+                datafield("225", "a" to "Thorgal /", "v" to "36"),
+            ),
+        )
+        val book = parseBnfUnimarc(xml)!!
+        assertEquals("Aniel", book.title)
+        assertEquals("Thorgal", book.seriesName)
+    }
+
     @Test
     fun `returns null on malformed xml`() {
         assertNull(parseBnfUnimarc("<not><valid"))

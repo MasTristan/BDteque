@@ -41,12 +41,14 @@ class BdShelfApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        database = Room.databaseBuilder(this, AppDatabase::class.java, AppDatabase.DATABASE_NAME).build()
+        database = Room.databaseBuilder(this, AppDatabase::class.java, AppDatabase.DATABASE_NAME)
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
         collectionRepository = CollectionRepository(database)
         releasesRepository = ReleasesRepository(this, ReleasesApi())
         userPreferencesRepository = UserPreferencesRepository(this)
         seedImporter = SeedImporter(this, database.seriesDao(), database.albumDao())
-        isbnLookupService = IsbnLookupService()
+        isbnLookupService = IsbnLookupService(cache = database.isbnLookupCacheDao())
 
         ReleasesSyncWorker.schedulePeriodic(this)
     }
