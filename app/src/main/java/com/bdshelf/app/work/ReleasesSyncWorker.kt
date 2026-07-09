@@ -25,6 +25,7 @@ import com.bdshelf.app.R
 import com.bdshelf.app.data.remote.ReleaseItem
 import com.bdshelf.app.domain.ReleaseWithOwnership
 import com.bdshelf.app.domain.crossReferenceReleases
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 
@@ -46,23 +47,30 @@ class ReleasesSyncWorker(
 
         if (!prefs.notificationsEnabled.first()) return Result.success()
 
-        val url = prefs.releasesUrlOverride.first()?.takeIf { it.isNotBlank() } ?: BuildConfig.RELEASES_URL
-        app.releasesRepository.refresh(url)
+        return try {
+            val url = prefs.releasesUrlOverride.first()?.takeIf { it.isNotBlank() } ?: BuildConfig.RELEASES_URL
+            // Échec réseau : réessayer plus tard plutôt que de traiter un cache périmé.
+            if (app.releasesRepository.refresh(url).isFailure) return Result.retry()
 
-        val document = app.releasesRepository.loadCached()
-        val tracked = app.collectionRepository.trackedSeriesIds()
-        val owned = app.collectionRepository.ownedTomeRefs()
-        val crossed = crossReferenceReleases(document.releases, tracked, owned)
+            val document = app.releasesRepository.loadCached()
+            val tracked = app.collectionRepository.trackedSeriesIds()
+            val owned = app.collectionRepository.ownedTomeRefs()
+            val crossed = crossReferenceReleases(document.releases, tracked, owned)
 
-        val alreadyNotified = prefs.notifiedReleaseKeys.first()
-        val newOnes = crossed.filter { !it.owned && releaseKey(it.release) !in alreadyNotified }
+            val alreadyNotified = prefs.notifiedReleaseKeys.first()
+            val newOnes = crossed.filter { !it.owned && releaseKey(it.release) !in alreadyNotified }
 
-        if (newOnes.isNotEmpty()) {
-            sendNotification(newOnes)
-            prefs.addNotifiedReleaseKeys(newOnes.map { releaseKey(it.release) }.toSet())
+            if (newOnes.isNotEmpty()) {
+                sendNotification(newOnes)
+                prefs.addNotifiedReleaseKeys(newOnes.map { releaseKey(it.release) }.toSet())
+            }
+
+            Result.success()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.retry()
         }
-
-        return Result.success()
     }
 
     private fun sendNotification(newOnes: List<ReleaseWithOwnership>) {

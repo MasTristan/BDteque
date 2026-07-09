@@ -10,6 +10,7 @@ import com.bdshelf.app.domain.crossReferenceReleases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -44,7 +45,9 @@ class ReleasesViewModel(application: Application) : AndroidViewModel(application
     fun onRefresh() {
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true, refreshError = false) }
-            val result = app.releasesRepository.refresh(BuildConfig.RELEASES_URL)
+            val url = app.userPreferencesRepository.releasesUrlOverride.first()?.takeIf { it.isNotBlank() }
+                ?: BuildConfig.RELEASES_URL
+            val result = app.releasesRepository.refresh(url)
             refreshFromCache()
             _uiState.update { it.copy(isRefreshing = false, refreshError = result.isFailure) }
         }

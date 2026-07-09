@@ -31,8 +31,16 @@ class ReleasesRepository(
         val cached = runCatching {
             cacheFile.takeIf { it.exists() }?.readText()?.let { json.decodeFromString<ReleasesDocument>(it) }
         }.getOrNull()
-        cached ?: loadDefault()
+        (cached ?: loadDefault()).deduped()
     }
+
+    /**
+     * Dédoublonne les sorties par (série, tome). Un JSON distant contenant deux
+     * fois le même tome produirait sinon des clés dupliquées dans la liste
+     * (crash `LazyColumn`). La première occurrence est conservée.
+     */
+    private fun ReleasesDocument.deduped(): ReleasesDocument =
+        copy(releases = releases.distinctBy { it.seriesId to it.tomeNumber })
 
     private fun loadDefault(): ReleasesDocument {
         val text = context.assets.open(DEFAULT_ASSET_NAME).bufferedReader().use { it.readText() }
