@@ -11,8 +11,10 @@ import com.bdshelf.app.ui.albumform.AlbumFormScreen
 import com.bdshelf.app.ui.home.HomeScreen
 import com.bdshelf.app.ui.onboarding.OnboardingScreen
 import com.bdshelf.app.ui.releases.ReleasesScreen
+import com.bdshelf.app.ui.scanner.InventoryScreen
 import com.bdshelf.app.ui.scanner.ScannerScreen
 import com.bdshelf.app.ui.series.SeriesListScreen
+import com.bdshelf.app.ui.shopping.ShoppingScreen
 import com.bdshelf.app.ui.seriesdetail.SeriesDetailScreen
 import com.bdshelf.app.ui.seriesform.SeriesFormScreen
 import com.bdshelf.app.ui.settings.SettingsScreen
@@ -40,6 +42,7 @@ fun BdShelfNavGraph(
                 onScanClick = { navController.navigate(Routes.SCANNER) },
                 onCollectionClick = { navController.navigate(Routes.SERIES_LIST) },
                 onReleasesClick = { navController.navigate(Routes.RELEASES) },
+                onShoppingClick = { navController.navigate(Routes.SHOPPING) },
                 onSettingsClick = { navController.navigate(Routes.SETTINGS) },
             )
         }
@@ -52,6 +55,20 @@ fun BdShelfNavGraph(
                     }
                 },
                 onManualEntry = { navController.navigate(Routes.SERIES_LIST) },
+                onInventoryMode = {
+                    navController.navigate(Routes.INVENTORY) {
+                        popUpTo(Routes.SCANNER) { inclusive = true }
+                    }
+                },
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(Routes.INVENTORY) {
+            InventoryScreen(
+                // Verdict complet pour un scan sans suggestion : l'inventaire
+                // reste dans la pile, le retour ramène à la rafale.
+                onOpenVerdict = { ean -> navController.navigate(Routes.verdict(ean)) },
                 onBack = { navController.popBackStack() },
             )
         }
@@ -183,6 +200,10 @@ fun BdShelfNavGraph(
 
         composable(Routes.RELEASES) {
             ReleasesScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Routes.SHOPPING) {
+            ShoppingScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Routes.SETTINGS) {

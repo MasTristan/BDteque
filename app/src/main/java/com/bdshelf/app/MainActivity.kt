@@ -3,6 +3,7 @@ package com.bdshelf.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -11,8 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.bdshelf.app.data.prefs.ThemeMode
 import com.bdshelf.app.ui.theme.BdShelfTheme
 import com.bdshelf.app.ui.theme.LocalReduceMotion
 import com.bdshelf.app.ui.theme.rememberReduceMotion
@@ -29,7 +32,19 @@ class MainActivity : ComponentActivity() {
         intent?.removeExtra(EXTRA_OPEN_RELEASES)
 
         setContent {
-            BdShelfTheme {
+            val themeMode by app.userPreferencesRepository.themeMode
+                .collectAsStateWithLifecycle(initialValue = ThemeMode.SYSTEM)
+            val darkTheme = when (themeMode) {
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK -> true
+            }
+            // Icônes de la barre d'état accordées au thème effectif : le XML
+            // (values/values-night) ne couvre que le mode "Système".
+            LaunchedEffect(darkTheme) {
+                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !darkTheme
+            }
+            BdShelfTheme(darkTheme = darkTheme) {
                 val reduceMotion = rememberReduceMotion()
                 CompositionLocalProvider(LocalReduceMotion provides reduceMotion) {
                     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {

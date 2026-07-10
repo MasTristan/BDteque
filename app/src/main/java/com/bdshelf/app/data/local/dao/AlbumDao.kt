@@ -51,6 +51,10 @@ interface AlbumDao {
     @Query("SELECT * FROM albums")
     suspend fun allAlbumsList(): List<Album>
 
+    /** Tous les albums, observés : recherche/filtres (§6.5) et liste d'achats (§6.10). */
+    @Query("SELECT * FROM albums")
+    fun allAlbumsFlow(): Flow<List<Album>>
+
     @Query("SELECT seriesId, tomeNumber FROM albums WHERE owned = 1 AND tomeNumber IS NOT NULL")
     suspend fun ownedTomeRefs(): List<OwnedTomeRef>
 

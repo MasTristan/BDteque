@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.bdshelf.app.BdShelfApplication
 import com.bdshelf.app.BuildConfig
+import com.bdshelf.app.data.prefs.ThemeMode
 import com.bdshelf.app.data.repo.CollectionSnapshot
 import com.bdshelf.app.domain.SnapshotValidation
 import com.bdshelf.app.domain.toCsv
@@ -29,6 +30,8 @@ data class SettingsUiState(
     val isLoading: Boolean = true,
     val ownerName: String = "",
     val notificationsEnabled: Boolean = false,
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val downloadCovers: Boolean = false,
     val isRefreshing: Boolean = false,
     val refreshError: Boolean = false,
     val releasesUrlOverride: String = "",
@@ -36,6 +39,8 @@ data class SettingsUiState(
     val exportMimeType: String = "",
     val importSuccess: Boolean = false,
     val importError: Boolean = false,
+    val lastBackupAt: Long? = null,
+    val isBackingUp: Boolean = false,
 )
 
 /** Réglages & À propos (§6.9). */
@@ -61,14 +66,41 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             val ownerName = app.userPreferencesRepository.ownerName.first()
             val notificationsEnabled = app.userPreferencesRepository.notificationsEnabled.first()
             val releasesUrlOverride = app.userPreferencesRepository.releasesUrlOverride.first() ?: ""
+            val themeMode = app.userPreferencesRepository.themeMode.first()
+            val downloadCovers = app.userPreferencesRepository.downloadCovers.first()
+            val lastBackupAt = app.backupManager.lastBackupAt()
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     ownerName = ownerName,
                     notificationsEnabled = notificationsEnabled,
+                    themeMode = themeMode,
+                    downloadCovers = downloadCovers,
                     releasesUrlOverride = releasesUrlOverride,
+                    lastBackupAt = lastBackupAt,
                 )
             }
+        }
+    }
+
+    /** Réglage Apparence : appliqué immédiatement, MainActivity observe la préférence. */
+    fun onThemeModeChange(mode: ThemeMode) {
+        _uiState.update { it.copy(themeMode = mode) }
+        viewModelScope.launch { app.userPreferencesRepository.setThemeMode(mode) }
+    }
+
+    /** Téléchargement des couvertures (§6.4) : opt-in, voir [com.bdshelf.app.data.covers.CoverRepository]. */
+    fun onDownloadCoversToggle(enabled: Boolean) {
+        _uiState.update { it.copy(downloadCovers = enabled) }
+        viewModelScope.launch { app.userPreferencesRepository.setDownloadCovers(enabled) }
+    }
+
+    /** Bouton « Sauvegarder maintenant » : sauvegarde locale immédiate (§6.9). */
+    fun onBackupNow() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isBackingUp = true) }
+            app.backupManager.backupNow()
+            _uiState.update { it.copy(isBackingUp = false, lastBackupAt = app.backupManager.lastBackupAt()) }
         }
     }
 
@@ -140,6 +172,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 if (validation is SnapshotValidation.Invalid) {
                     error(validation.reason)
                 }
+                // Point de restauration : la collection actuelle est sauvegardée
+                // avant d'être remplacée, pour pouvoir revenir en arrière si le
+                // fichier importé n'était pas le bon (§6.9).
+                app.backupManager.backupNow()
                 // La collection n'est effacée que si le fichier est valide et complet.
                 app.collectionRepository.importSnapshot(snapshot)
             }

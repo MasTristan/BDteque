@@ -39,6 +39,7 @@ fun HomeScreen(
     onScanClick: () -> Unit,
     onCollectionClick: () -> Unit,
     onReleasesClick: () -> Unit,
+    onShoppingClick: () -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: HomeViewModel = viewModel(),
 ) {
@@ -101,6 +102,18 @@ fun HomeScreen(
                     pluralStringResource(R.plurals.home_releases_count, uiState.upcomingCount, uiState.upcomingCount)
                 },
                 onClick = onReleasesClick,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            HomeSummaryCard(
+                title = stringResource(R.string.home_shopping_title),
+                value = if (uiState.shoppingCount == 0) {
+                    stringResource(R.string.home_shopping_count_zero)
+                } else {
+                    pluralStringResource(R.plurals.home_shopping_count, uiState.shoppingCount, uiState.shoppingCount)
+                },
+                onClick = onShoppingClick,
             )
         }
     }

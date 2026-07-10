@@ -12,23 +12,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,11 +47,14 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.rememberScrollState
 import com.bdshelf.app.R
 import com.bdshelf.app.data.local.dao.SeriesWithCounts
+import com.bdshelf.app.domain.SeriesFilter
+import com.bdshelf.app.domain.SeriesSort
 import com.bdshelf.app.domain.toSpineColor
 
-/** Liste alphabétique des séries + recherche (§6.5). */
+/** Liste des séries : recherche (séries et albums), filtres rapides, tris (§6.5). */
 @Composable
 fun SeriesListScreen(
     onBack: () -> Unit,
@@ -115,6 +127,41 @@ fun SeriesListScreen(
                     .defaultMinSize(minHeight = 56.dp),
             )
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Chips défilants : trois filtres + gros textes système peuvent
+                // dépasser la largeur d'un petit écran.
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .horizontalScroll(rememberScrollState()),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    FilterChip(
+                        selected = uiState.filter == SeriesFilter.ALL,
+                        onClick = { viewModel.onFilterChange(SeriesFilter.ALL) },
+                        label = { Text(stringResource(R.string.series_list_filter_all)) },
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    FilterChip(
+                        selected = uiState.filter == SeriesFilter.INCOMPLETE,
+                        onClick = { viewModel.onFilterChange(SeriesFilter.INCOMPLETE) },
+                        label = { Text(stringResource(R.string.series_list_filter_incomplete)) },
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    FilterChip(
+                        selected = uiState.filter == SeriesFilter.UNREAD,
+                        onClick = { viewModel.onFilterChange(SeriesFilter.UNREAD) },
+                        label = { Text(stringResource(R.string.series_list_filter_unread)) },
+                    )
+                }
+                SortMenuButton(sort = uiState.sort, onSortChange = viewModel::onSortChange)
+            }
+
             if (uiState.series.isEmpty() && uiState.query.isNotBlank()) {
                 Box(
                     modifier = Modifier
@@ -137,6 +184,59 @@ fun SeriesListScreen(
             }
         }
     }
+}
+
+/** Menu de tri (§6.5) : titre, complétion, ajout récent. */
+@Composable
+private fun SortMenuButton(sort: SeriesSort, onSortChange: (SeriesSort) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        IconButton(
+            onClick = { expanded = true },
+            modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 56.dp),
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Sort,
+                contentDescription = stringResource(R.string.series_list_sort_cd),
+            )
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            SortMenuItem(
+                label = stringResource(R.string.series_list_sort_title),
+                selected = sort == SeriesSort.TITLE,
+                onClick = {
+                    expanded = false
+                    onSortChange(SeriesSort.TITLE)
+                },
+            )
+            SortMenuItem(
+                label = stringResource(R.string.series_list_sort_completion),
+                selected = sort == SeriesSort.COMPLETION,
+                onClick = {
+                    expanded = false
+                    onSortChange(SeriesSort.COMPLETION)
+                },
+            )
+            SortMenuItem(
+                label = stringResource(R.string.series_list_sort_recent),
+                selected = sort == SeriesSort.RECENT,
+                onClick = {
+                    expanded = false
+                    onSortChange(SeriesSort.RECENT)
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun SortMenuItem(label: String, selected: Boolean, onClick: () -> Unit) {
+    DropdownMenuItem(
+        text = { Text(label, style = MaterialTheme.typography.bodyLarge) },
+        leadingIcon = { RadioButton(selected = selected, onClick = null) },
+        onClick = onClick,
+    )
 }
 
 @Composable

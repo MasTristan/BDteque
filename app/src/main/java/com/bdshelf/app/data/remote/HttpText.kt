@@ -4,8 +4,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * GET simple retournant le corps texte, ou `null` en cas d'échec. Aucune
- * exception propagée : les sources ISBN dégradent silencieusement (§6.4).
+ * GET simple, sans exception propagée : les sources réseau de l'app (ISBN,
+ * couvertures) dégradent silencieusement (§6.4).
  *
  * Les échecs transitoires (coupure réseau, timeout, HTTP 5xx/429) sont
  * retentés une fois après une courte pause : un scan en magasin se joue
@@ -13,7 +13,11 @@ import java.net.URL
  * doit pas faire passer un album pour inconnu. Les autres codes HTTP (404,
  * 400…) sont définitifs et rendent `null` immédiatement.
  */
-internal fun httpGetText(url: String, timeoutMs: Int = 8_000, attempts: Int = 2): String? {
+internal fun httpGetText(url: String, timeoutMs: Int = 8_000, attempts: Int = 2): String? =
+    httpGetBytes(url, timeoutMs, attempts)?.toString(Charsets.UTF_8)
+
+/** Variante binaire (couvertures d'albums, §6.4). Retourne `null` en cas d'échec. */
+internal fun httpGetBytes(url: String, timeoutMs: Int = 8_000, attempts: Int = 2): ByteArray? {
     for (attempt in 1..attempts) {
         when (val result = httpGetOnce(url, timeoutMs)) {
             is HttpResult.Success -> return result.body
@@ -25,7 +29,7 @@ internal fun httpGetText(url: String, timeoutMs: Int = 8_000, attempts: Int = 2)
 }
 
 private sealed interface HttpResult {
-    data class Success(val body: String) : HttpResult
+    data class Success(val body: ByteArray) : HttpResult
     data object Transient : HttpResult
     data object Fatal : HttpResult
 }
@@ -42,7 +46,7 @@ private fun httpGetOnce(url: String, timeoutMs: Int): HttpResult {
         connection.setRequestProperty("User-Agent", "BDShelf/1.0 (https://github.com/MasTristan/BDteque)")
         connection.connect()
         when (connection.responseCode) {
-            HttpURLConnection.HTTP_OK -> HttpResult.Success(connection.inputStream.bufferedReader().use { it.readText() })
+            HttpURLConnection.HTTP_OK -> HttpResult.Success(connection.inputStream.use { it.readBytes() })
             429, in 500..599 -> HttpResult.Transient
             else -> HttpResult.Fatal
         }
