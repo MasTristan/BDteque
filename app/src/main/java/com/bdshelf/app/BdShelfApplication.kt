@@ -2,6 +2,8 @@ package com.bdshelf.app
 
 import android.app.Application
 import androidx.room.Room
+import com.bdshelf.app.data.backup.BackupManager
+import com.bdshelf.app.data.covers.CoverRepository
 import com.bdshelf.app.data.local.AppDatabase
 import com.bdshelf.app.data.prefs.UserPreferencesRepository
 import com.bdshelf.app.data.remote.IsbnLookupService
@@ -9,6 +11,7 @@ import com.bdshelf.app.data.remote.ReleasesApi
 import com.bdshelf.app.data.repo.CollectionRepository
 import com.bdshelf.app.data.repo.ReleasesRepository
 import com.bdshelf.app.data.seed.SeedImporter
+import com.bdshelf.app.work.BackupWorker
 import com.bdshelf.app.work.ReleasesSyncWorker
 
 /**
@@ -38,6 +41,12 @@ class BdShelfApplication : Application() {
     lateinit var isbnLookupService: IsbnLookupService
         private set
 
+    lateinit var coverRepository: CoverRepository
+        private set
+
+    lateinit var backupManager: BackupManager
+        private set
+
     override fun onCreate() {
         super.onCreate()
 
@@ -49,7 +58,10 @@ class BdShelfApplication : Application() {
         userPreferencesRepository = UserPreferencesRepository(this)
         seedImporter = SeedImporter(this, database.seriesDao(), database.albumDao())
         isbnLookupService = IsbnLookupService(cache = database.isbnLookupCacheDao())
+        coverRepository = CoverRepository(this, userPreferencesRepository)
+        backupManager = BackupManager(this, collectionRepository)
 
         ReleasesSyncWorker.schedulePeriodic(this)
+        BackupWorker.schedulePeriodic(this)
     }
 }

@@ -11,6 +11,13 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore by preferencesDataStore(name = "bdshelf_prefs")
 
+/** Apparence de l'application : suit le système, ou forcée claire/sombre (§6.9). */
+enum class ThemeMode {
+    SYSTEM,
+    LIGHT,
+    DARK,
+}
+
 /** Préférences utilisateur : prénom du destinataire, état de l'import seed, réglages avancés. */
 class UserPreferencesRepository(private val context: Context) {
 
@@ -20,6 +27,8 @@ class UserPreferencesRepository(private val context: Context) {
         val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
         val RELEASES_URL_OVERRIDE = stringPreferencesKey("releases_url_override")
         val NOTIFIED_RELEASE_KEYS = stringSetPreferencesKey("notified_release_keys")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
+        val DOWNLOAD_COVERS = booleanPreferencesKey("download_covers")
     }
 
     val ownerName: Flow<String> = context.dataStore.data.map { it[Keys.OWNER_NAME] ?: "" }
@@ -56,5 +65,27 @@ class UserPreferencesRepository(private val context: Context) {
             val current = it[Keys.NOTIFIED_RELEASE_KEYS] ?: emptySet()
             it[Keys.NOTIFIED_RELEASE_KEYS] = current + keys
         }
+    }
+
+    /** Valeur inconnue (préférence jamais écrite, ou future valeur retirée) = SYSTEM. */
+    val themeMode: Flow<ThemeMode> = context.dataStore.data.map { prefs ->
+        prefs[Keys.THEME_MODE]?.let { stored -> ThemeMode.entries.firstOrNull { it.name == stored } }
+            ?: ThemeMode.SYSTEM
+    }
+
+    suspend fun setThemeMode(mode: ThemeMode) {
+        context.dataStore.edit { it[Keys.THEME_MODE] = mode.name }
+    }
+
+    /**
+     * Téléchargement des couvertures d'albums (§6.4). Désactivé par défaut :
+     * l'app reste 100 % hors ligne tant que l'utilisateur n'a pas choisi le
+     * contraire — et une fois téléchargée, une couverture est servie depuis le
+     * stockage local, jamais depuis le réseau.
+     */
+    val downloadCovers: Flow<Boolean> = context.dataStore.data.map { it[Keys.DOWNLOAD_COVERS] ?: false }
+
+    suspend fun setDownloadCovers(value: Boolean) {
+        context.dataStore.edit { it[Keys.DOWNLOAD_COVERS] = value }
     }
 }

@@ -42,9 +42,11 @@ import com.bdshelf.app.R
 import com.bdshelf.app.data.local.dao.SeriesWithCounts
 import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.domain.toSpineColor
+import com.bdshelf.app.ui.components.CoverImage
 import com.bdshelf.app.ui.components.Shelf
 import com.bdshelf.app.ui.theme.OwnedGreen
 import com.bdshelf.app.ui.theme.Surface as SurfaceColor
+import java.io.File
 
 /** Verdict de scan (§6.4) : trois états plein écran : possédé, manquant, inconnu. */
 @Composable
@@ -84,12 +86,19 @@ private fun OwnedVerdict(uiState: VerdictUiState, onBackToHome: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Icon(
-                imageVector = Icons.Filled.CheckCircle,
-                contentDescription = null,
-                tint = SurfaceColor,
-                modifier = Modifier.size(96.dp),
-            )
+            if (uiState.coverFile != null) {
+                CoverImage(
+                    coverFile = uiState.coverFile,
+                    modifier = Modifier.size(width = 96.dp, height = 128.dp),
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.CheckCircle,
+                    contentDescription = null,
+                    tint = SurfaceColor,
+                    modifier = Modifier.size(96.dp),
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = stringResource(R.string.verdict_owned_title),
@@ -134,6 +143,13 @@ private fun MissingVerdict(uiState: VerdictUiState, viewModel: VerdictViewModel,
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                if (uiState.coverFile != null) {
+                    CoverImage(
+                        coverFile = uiState.coverFile,
+                        modifier = Modifier.size(width = 72.dp, height = 96.dp),
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
                 Text(
                     text = stringResource(R.string.verdict_missing_title),
                     style = MaterialTheme.typography.titleLarge,
@@ -218,6 +234,7 @@ private fun UnknownVerdict(
                 IdentifiedBookCard(
                     title = uiState.identifiedTitle,
                     authors = uiState.identifiedAuthors,
+                    coverFile = uiState.coverFile,
                 )
             }
 
@@ -364,34 +381,46 @@ private fun UnknownVerdict(
     }
 }
 
-/** Livre identifié à partir de l'ISBN scanné (titre + auteur), pour confirmation visuelle (§6.4). */
+/** Livre identifié à partir de l'ISBN scanné (couverture + titre + auteur), pour confirmation visuelle (§6.4). */
 @Composable
-private fun IdentifiedBookCard(title: String, authors: String?) {
+private fun IdentifiedBookCard(title: String, authors: String?, coverFile: File?) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium),
-        color = SurfaceColor,
+        color = MaterialTheme.colorScheme.surface,
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = stringResource(R.string.verdict_unknown_identified_label),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            if (!authors.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(2.dp))
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (coverFile != null) {
+                CoverImage(
+                    coverFile = coverFile,
+                    modifier = Modifier.size(width = 48.dp, height = 64.dp),
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = authors,
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(R.string.verdict_unknown_identified_label),
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                if (!authors.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = authors,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }

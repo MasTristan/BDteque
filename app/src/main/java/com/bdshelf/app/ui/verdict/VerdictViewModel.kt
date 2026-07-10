@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 
 enum class VerdictOutcome { OWNED, MISSING, UNKNOWN }
 
@@ -39,6 +40,7 @@ data class VerdictUiState(
     val suggestedNewSeriesName: String? = null,
     val suggestedTomeNumber: Int? = null,
     val suggestionDismissed: Boolean = false,
+    val coverFile: File? = null,
 )
 
 /** Verdict de scan (§6.4) : trois états selon la correspondance entre l'EAN scanné et la collection. */
@@ -85,6 +87,19 @@ class VerdictViewModel(application: Application) : AndroidViewModel(application)
                 }
                 loadSuggestion(ean)
             }
+            loadCover(ean)
+        }
+    }
+
+    /**
+     * Couverture de l'album scanné (§6.4), en tâche de fond : confirmation
+     * visuelle que le bon livre a été identifié. Fichier local d'abord,
+     * téléchargement une fois si le réglage Couvertures est activé.
+     */
+    private fun loadCover(ean: String) {
+        viewModelScope.launch {
+            val file = app.coverRepository.ensureCover(ean) ?: return@launch
+            _uiState.update { it.copy(coverFile = file) }
         }
     }
 

@@ -38,6 +38,12 @@
         <item quantity="one">%d nouveauté à découvrir</item>
         <item quantity="other">%d nouveautés à découvrir</item>
     </plurals>
+    <string name="home_shopping_title">À acheter</string>
+    <string name="home_shopping_count_zero">Rien à acheter, tout est là !</string>
+    <plurals name="home_shopping_count">
+        <item quantity="one">%d album à trouver</item>
+        <item quantity="other">%d albums à trouver</item>
+    </plurals>
 
     <!-- Statuts de série (partagés liste / détail / formulaire) -->
     <string name="series_status_ongoing">En cours</string>
@@ -170,4 +176,53 @@
     <string name="settings_about_section_title">À propos</string>
     <string name="settings_about_version">Version %1$s</string>
     <string name="settings_about_dedication">Développé avec soin par Tristan, pour %1$s.</string>
+
+    <!-- Apparence (§6.9) -->
+    <string name="settings_appearance_section_title">Apparence</string>
+    <string name="settings_theme_system">Comme le téléphone</string>
+    <string name="settings_theme_light">Clair</string>
+    <string name="settings_theme_dark">Sombre</string>
+
+    <!-- Couvertures (§6.4) -->
+    <string name="settings_covers_section_title">Couvertures</string>
+    <string name="settings_covers_label">Télécharger la couverture des albums scannés</string>
+    <string name="settings_covers_hint">Une fois téléchargée, une couverture reste sur le téléphone : rien n\'est chargé depuis Internet en parcourant la collection.</string>
+
+    <!-- Sauvegarde automatique (§6.9) -->
+    <string name="settings_backup_last">Dernière sauvegarde automatique : %1$s</string>
+    <string name="settings_backup_never">Aucune sauvegarde automatique pour l\'instant.</string>
+    <string name="settings_backup_now_button">Sauvegarder maintenant</string>
+
+    <!-- Filtres et tris de la liste des séries (§6.5) -->
+    <string name="series_list_filter_all">Toutes</string>
+    <string name="series_list_filter_incomplete">À compléter</string>
+    <string name="series_list_filter_unread">À lire</string>
+    <string name="series_list_sort_cd">Trier la liste</string>
+    <string name="series_list_sort_title">Par titre</string>
+    <string name="series_list_sort_completion">Par complétion</string>
+    <string name="series_list_sort_recent">Par ajout récent</string>
+
+    <!-- Mode inventaire (§6.11) -->
+    <string name="scanner_inventory_button">Mode inventaire</string>
+    <string name="inventory_title">Inventaire</string>
+    <string name="inventory_counter">%1$d scannés · %2$d ajoutés</string>
+    <string name="inventory_empty_hint">Scanne tes albums l\'un après l\'autre : chaque livre s\'affiche ici avec son verdict.</string>
+    <string name="inventory_status_identifying">Identification…</string>
+    <string name="inventory_status_owned">Déjà possédé</string>
+    <string name="inventory_status_missing">Manquant dans ta collection</string>
+    <string name="inventory_status_suggested">Nouveau tome reconnu</string>
+    <string name="inventory_status_unknown">Non reconnu</string>
+    <string name="inventory_status_added">Ajouté à la collection</string>
+    <string name="inventory_action_owned">Je l\'ai !</string>
+    <string name="inventory_action_add">Ajouter</string>
+    <string name="inventory_action_open">Ouvrir</string>
+
+    <!-- À acheter (§6.10) -->
+    <string name="shopping_title">À acheter</string>
+    <string name="shopping_empty">Rien à acheter : aucun tome manquant, aucune sortie en retard.</string>
+    <string name="shopping_share_cd">Partager la liste</string>
+    <string name="shopping_share_header">Ma liste d\'achats BD :</string>
+    <string name="shopping_share_chooser_title">Partager la liste d\'achats</string>
+    <string name="shopping_item_tome">Tome %1$d</string>
+    <string name="shopping_item_bought_button">Je l\'ai !</string>
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Variante nuit du thème système : fenêtre sombre avant le premier composable
+   (mode Apparence = Système). Quand le thème est forcé clair/sombre dans les
+   réglages, MainActivity ajuste ensuite les icônes de la barre d'état.
+-->
+<resources>
+    <style name="Theme.BDShelf" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">#17140F</item>
+    </style>
+</resources>

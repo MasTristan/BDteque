@@ -28,11 +28,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bdshelf.app.R
 import com.bdshelf.app.data.local.entities.ReadStatus
-import com.bdshelf.app.ui.theme.Accent
-import com.bdshelf.app.ui.theme.Ghost
 import com.bdshelf.app.ui.theme.Ink
-import com.bdshelf.app.ui.theme.InkSoft
-import com.bdshelf.app.ui.theme.Paper
 import com.bdshelf.app.ui.theme.Surface
 
 private val TileWidth = 52.dp
@@ -42,8 +38,12 @@ private val CornerRadiusDp = 6.dp
  * Une tranche de livre (§5.4).
  *
  * - Possédé : fond `seriesColor`, numéro Fraunces en clair.
- * - Manquant : fond Paper, bordure pointillée Ghost, numéro estompé.
+ * - Manquant : fond papier (thème), bordure pointillée fantôme, numéro estompé.
  * - Marqueur bas : point plein = lu, anneau = prêté, rien = non lu.
+ *
+ * Les couleurs de tranche restant saturées dans les deux thèmes, le numéro et
+ * le marqueur d'un tome possédé gardent leurs encres fixes ([Surface], [Ink]) ;
+ * le reste suit le ColorScheme pour s'adapter au mode sombre.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,9 +61,11 @@ fun SpineTile(
     val anim = rememberStampAnimation(owned)
     val progress = anim.ownedProgress.value
 
-    val backgroundColor = lerp(Paper, seriesColor, progress)
-    val numberColor = lerp(InkSoft.copy(alpha = 0.4f), Surface, progress)
+    val backgroundColor = lerp(MaterialTheme.colorScheme.background, seriesColor, progress)
+    val numberColor = lerp(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f), Surface, progress)
     val borderAlpha = 1f - progress
+    val ghostColor = MaterialTheme.colorScheme.outline
+    val highlightColor = MaterialTheme.colorScheme.primary
 
     val description = spineContentDescription(tomeNumber, owned, readStatus, highlighted)
 
@@ -76,9 +78,9 @@ fun SpineTile(
             }
             .clip(RoundedCornerShape(CornerRadiusDp))
             .background(backgroundColor)
-            .dashedGhostBorder(alpha = borderAlpha, cornerRadius = CornerRadiusDp)
+            .dashedGhostBorder(color = ghostColor, alpha = borderAlpha, cornerRadius = CornerRadiusDp)
             .then(
-                if (highlighted) Modifier.highlightBorder(cornerRadius = CornerRadiusDp) else Modifier,
+                if (highlighted) Modifier.highlightBorder(color = highlightColor, cornerRadius = CornerRadiusDp) else Modifier,
             )
             .combinedClickable(
                 onClick = onClick,
@@ -126,11 +128,11 @@ private fun ReadStatusMarker(readStatus: ReadStatus, tint: Color, modifier: Modi
     )
 }
 
-private fun Modifier.dashedGhostBorder(alpha: Float, cornerRadius: Dp): Modifier =
+private fun Modifier.dashedGhostBorder(color: Color, alpha: Float, cornerRadius: Dp): Modifier =
     if (alpha <= 0f) this else drawWithContent {
         drawContent()
         drawRoundRect(
-            color = Ghost.copy(alpha = alpha),
+            color = color.copy(alpha = alpha),
             style = Stroke(
                 width = 1.5.dp.toPx(),
                 pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 6f), 0f),
@@ -139,10 +141,10 @@ private fun Modifier.dashedGhostBorder(alpha: Float, cornerRadius: Dp): Modifier
         )
     }
 
-private fun Modifier.highlightBorder(cornerRadius: Dp): Modifier = drawWithContent {
+private fun Modifier.highlightBorder(color: Color, cornerRadius: Dp): Modifier = drawWithContent {
     drawContent()
     drawRoundRect(
-        color = Accent,
+        color = color,
         style = Stroke(width = 3.dp.toPx()),
         cornerRadius = CornerRadius(cornerRadius.toPx()),
     )

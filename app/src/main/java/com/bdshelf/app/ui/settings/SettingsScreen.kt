@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -40,8 +42,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.text.format.DateUtils
 import com.bdshelf.app.BuildConfig
 import com.bdshelf.app.R
+import com.bdshelf.app.data.prefs.ThemeMode
 import kotlinx.coroutines.delay
 
 /** Réglages & À propos (§6.9) : prénom, nouveautés, sauvegarde, avancé, dédicace. */
@@ -125,6 +129,55 @@ fun SettingsScreen(
 
                     SectionDivider()
 
+                    SectionHeader(stringResource(R.string.settings_appearance_section_title))
+
+                    ThemeModeOption(
+                        label = stringResource(R.string.settings_theme_system),
+                        selected = uiState.themeMode == ThemeMode.SYSTEM,
+                        onClick = { viewModel.onThemeModeChange(ThemeMode.SYSTEM) },
+                    )
+                    ThemeModeOption(
+                        label = stringResource(R.string.settings_theme_light),
+                        selected = uiState.themeMode == ThemeMode.LIGHT,
+                        onClick = { viewModel.onThemeModeChange(ThemeMode.LIGHT) },
+                    )
+                    ThemeModeOption(
+                        label = stringResource(R.string.settings_theme_dark),
+                        selected = uiState.themeMode == ThemeMode.DARK,
+                        onClick = { viewModel.onThemeModeChange(ThemeMode.DARK) },
+                    )
+
+                    SectionDivider()
+
+                    SectionHeader(stringResource(R.string.settings_covers_section_title))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 56.dp)
+                            .toggleable(
+                                value = uiState.downloadCovers,
+                                onValueChange = viewModel::onDownloadCoversToggle,
+                                role = Role.Switch,
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.settings_covers_label),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Switch(checked = uiState.downloadCovers, onCheckedChange = null)
+                    }
+                    Text(
+                        text = stringResource(R.string.settings_covers_hint),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    SectionDivider()
+
                     SectionHeader(stringResource(R.string.settings_releases_section_title))
 
                     OutlinedButton(
@@ -183,6 +236,41 @@ fun SettingsScreen(
                     SectionDivider()
 
                     SectionHeader(stringResource(R.string.settings_backup_section_title))
+
+                    val lastBackupAt = uiState.lastBackupAt
+                    Text(
+                        text = if (lastBackupAt != null) {
+                            stringResource(
+                                R.string.settings_backup_last,
+                                DateUtils.getRelativeTimeSpanString(lastBackupAt).toString(),
+                            )
+                        } else {
+                            stringResource(R.string.settings_backup_never)
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedButton(
+                        onClick = viewModel::onBackupNow,
+                        enabled = !uiState.isBackingUp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 56.dp),
+                    ) {
+                        if (uiState.isBackingUp) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        } else {
+                            Text(
+                                text = stringResource(R.string.settings_backup_now_button),
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedButton(
                         onClick = viewModel::onExportJson,
@@ -273,6 +361,25 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ThemeModeOption(label: String, selected: Boolean, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 56.dp)
+            .selectable(selected = selected, onClick = onClick, role = Role.RadioButton),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(start = 8.dp),
+        )
     }
 }
 

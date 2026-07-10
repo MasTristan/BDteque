@@ -32,6 +32,8 @@ class CollectionRepository(
 
     fun albumsForSeries(seriesId: String): Flow<List<Album>> = albumDao.forSeries(seriesId)
 
+    fun allAlbums(): Flow<List<Album>> = albumDao.allAlbumsFlow()
+
     suspend fun albumById(id: String): Album? = albumDao.byId(id)
 
     suspend fun albumByEan(ean: String): Album? = albumDao.byEan(ean)
