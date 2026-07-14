@@ -162,7 +162,10 @@ fun SeriesListScreen(
                 SortMenuButton(sort = uiState.sort, onSortChange = viewModel::onSortChange)
             }
 
-            if (uiState.series.isEmpty() && uiState.query.isNotBlank()) {
+            if (uiState.series.isEmpty()) {
+                // Distinguer « rien ne correspond » (recherche/filtre) de « collection
+                // vide » (premier lancement) : le second cas guide vers le bouton +.
+                val noFilterActive = uiState.query.isBlank() && uiState.filter == SeriesFilter.ALL
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -170,7 +173,9 @@ fun SeriesListScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = stringResource(R.string.series_list_empty),
+                        text = stringResource(
+                            if (noFilterActive) R.string.series_list_empty_no_series else R.string.series_list_empty,
+                        ),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

@@ -1,5 +1,11 @@
 package com.bdshelf.app
 
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -7,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.bdshelf.app.ui.theme.LocalReduceMotion
 import com.bdshelf.app.ui.albumform.AlbumFormScreen
 import com.bdshelf.app.ui.home.HomeScreen
 import com.bdshelf.app.ui.onboarding.OnboardingScreen
@@ -26,7 +33,32 @@ fun BdShelfNavGraph(
     startDestination: String,
     navController: NavHostController = rememberNavController(),
 ) {
-    NavHost(navController = navController, startDestination = startDestination) {
+    // Transitions douces (glissement + fondu) ; réglage système « Réduire les
+    // animations » respecté : bascule instantanée, comme partout dans l'app.
+    val reduceMotion = LocalReduceMotion.current
+    val enter = if (reduceMotion) {
+        fadeIn(animationSpec = snap())
+    } else {
+        slideInHorizontally(animationSpec = tween(TRANSITION_MS), initialOffsetX = { it / 4 }) +
+            fadeIn(animationSpec = tween(TRANSITION_MS))
+    }
+    val exit = if (reduceMotion) fadeOut(animationSpec = snap()) else fadeOut(animationSpec = tween(TRANSITION_MS))
+    val popEnter = if (reduceMotion) fadeIn(animationSpec = snap()) else fadeIn(animationSpec = tween(TRANSITION_MS))
+    val popExit = if (reduceMotion) {
+        fadeOut(animationSpec = snap())
+    } else {
+        slideOutHorizontally(animationSpec = tween(TRANSITION_MS), targetOffsetX = { it / 4 }) +
+            fadeOut(animationSpec = tween(TRANSITION_MS))
+    }
+
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        enterTransition = { enter },
+        exitTransition = { exit },
+        popEnterTransition = { popEnter },
+        popExitTransition = { popExit },
+    ) {
         composable(Routes.ONBOARDING) {
             OnboardingScreen(
                 onImportComplete = {
@@ -211,3 +243,5 @@ fun BdShelfNavGraph(
         }
     }
 }
+
+private const val TRANSITION_MS = 250

@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bdshelf.app.R
 import com.bdshelf.app.data.local.entities.ReadStatus
+import com.bdshelf.app.ui.components.CoverImage
 import com.bdshelf.app.ui.components.SpineTile
 
 /** Fiche tome (§6.6, §6.8) : ajout ou édition, toggle possédé avec animation tampon. */
@@ -98,9 +99,12 @@ fun AlbumFormScreen(
 
             if (!uiState.isLoading) {
                 Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    Box(
+                    // Tranche + couverture (si téléchargée, §6.4) côte à côte : la
+                    // tranche reste la représentation canonique de l'étagère.
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center,
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         SpineTile(
                             tomeNumber = uiState.tomeNumber,
@@ -110,6 +114,15 @@ fun AlbumFormScreen(
                             height = 180.dp,
                             onClick = {},
                         )
+                        if (uiState.coverFile != null) {
+                            Spacer(modifier = Modifier.width(16.dp))
+                            CoverImage(
+                                coverFile = uiState.coverFile,
+                                modifier = Modifier
+                                    .width(135.dp)
+                                    .height(180.dp),
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))

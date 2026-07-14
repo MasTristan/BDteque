@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FlashOff
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -155,7 +157,9 @@ internal fun ManualIsbnDialog(
                 isError = showError,
                 singleLine = true,
                 // Ascii et pas Number : la clé d'un ISBN-10 peut être la lettre X.
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Done),
+                // « Terminé » au clavier = Valider, sans chercher le bouton.
+                keyboardActions = KeyboardActions(onDone = { if (isValid) onConfirm(input) }),
             )
         },
         confirmButton = {

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.bdshelf.app.BdShelfApplication
+import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.ReadStatus
 import com.bdshelf.app.domain.BarcodeConfirmer
 import com.bdshelf.app.domain.canonicalEan
@@ -34,7 +35,13 @@ data class InventoryScan(
     val albumId: String? = null, // renseigné pour OWNED/MISSING
     val identifiedTitle: String? = null,
     val actionTaken: Boolean = false, // "je l'ai" / "ajouter" déjà effectué
-)
+    // Annulation d'une action : instantané de l'album avant modification, ou
+    // identifiant de l'album créé. Un scan en rafale se prête aux faux gestes.
+    val undoAlbum: Album? = null,
+    val createdAlbumId: String? = null,
+) {
+    val canUndo: Boolean get() = actionTaken && (undoAlbum != null || createdAlbumId != null)
+}
 
 data class InventoryUiState(
     val scans: List<InventoryScan> = emptyList(), // plus récent en tête
@@ -139,7 +146,8 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             val album = app.collectionRepository.albumById(albumId) ?: return@launch
             app.collectionRepository.setOwned(album, true)
-            updateScan(scan.ean) { it.copy(actionTaken = true) }
+            // `album` est l'état d'avant : c'est l'instantané de restauration.
+            updateScan(scan.ean) { it.copy(actionTaken = true, undoAlbum = album) }
         }
     }
 
@@ -156,8 +164,10 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             if (existing != null) {
                 app.collectionRepository.linkEan(existing, scan.ean)
                 app.collectionRepository.setOwned(existing.copy(ean = scan.ean), true)
+                // Restaurer `existing` annule aussi l'écrasement de son EAN par linkEan.
+                updateScan(scan.ean) { it.copy(actionTaken = true, undoAlbum = existing) }
             } else {
-                app.collectionRepository.addAlbum(
+                val created = app.collectionRepository.addAlbum(
                     seriesId = seriesId,
                     tomeNumber = tomeNumber,
                     title = scan.identifiedTitle,
@@ -166,8 +176,23 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
                     edition = null,
                     ean = scan.ean,
                 )
+                updateScan(scan.ean) { it.copy(actionTaken = true, createdAlbumId = created?.id) }
             }
-            updateScan(scan.ean) { it.copy(actionTaken = true) }
+        }
+    }
+
+    /** Annule la dernière action de ce scan : restaure l'instantané, ou supprime l'album créé. */
+    fun onUndo(scan: InventoryScan) {
+        viewModelScope.launch {
+            val createdAlbumId = scan.createdAlbumId
+            val undoAlbum = scan.undoAlbum
+            when {
+                createdAlbumId != null ->
+                    app.collectionRepository.albumById(createdAlbumId)?.let { app.collectionRepository.deleteAlbum(it) }
+                undoAlbum != null -> app.collectionRepository.updateAlbum(undoAlbum)
+                else -> return@launch
+            }
+            updateScan(scan.ean) { it.copy(actionTaken = false, undoAlbum = null, createdAlbumId = null) }
         }
     }
 

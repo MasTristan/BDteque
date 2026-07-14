@@ -34,7 +34,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bdshelf.app.R
 import com.bdshelf.app.domain.ReleaseWithOwnership
-import com.bdshelf.app.ui.theme.OwnedGreen
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -191,7 +190,7 @@ private fun ReleaseRow(item: ReleaseWithOwnership) {
 @Composable
 private fun OwnershipBadge(owned: Boolean) {
     val (label, color) = if (owned) {
-        stringResource(R.string.releases_item_owned_badge) to OwnedGreen
+        stringResource(R.string.releases_item_owned_badge) to MaterialTheme.colorScheme.secondary
     } else {
         stringResource(R.string.releases_item_missing_badge) to MaterialTheme.colorScheme.primary
     }

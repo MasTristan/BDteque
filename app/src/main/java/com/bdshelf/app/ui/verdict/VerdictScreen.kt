@@ -44,8 +44,6 @@ import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.domain.toSpineColor
 import com.bdshelf.app.ui.components.CoverImage
 import com.bdshelf.app.ui.components.Shelf
-import com.bdshelf.app.ui.theme.OwnedGreen
-import com.bdshelf.app.ui.theme.Surface as SurfaceColor
 import java.io.File
 
 /** Verdict de scan (§6.4) : trois états plein écran : possédé, manquant, inconnu. */
@@ -78,7 +76,7 @@ private fun OwnedVerdict(uiState: VerdictUiState, onBackToHome: () -> Unit) {
     val series = uiState.series
     val album = uiState.album
 
-    Surface(modifier = Modifier.fillMaxSize(), color = OwnedGreen) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.secondary) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,7 +93,7 @@ private fun OwnedVerdict(uiState: VerdictUiState, onBackToHome: () -> Unit) {
                 Icon(
                     imageVector = Icons.Filled.CheckCircle,
                     contentDescription = null,
-                    tint = SurfaceColor,
+                    tint = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier.size(96.dp),
                 )
             }
@@ -103,20 +101,23 @@ private fun OwnedVerdict(uiState: VerdictUiState, onBackToHome: () -> Unit) {
             Text(
                 text = stringResource(R.string.verdict_owned_title),
                 style = MaterialTheme.typography.titleLarge,
-                color = SurfaceColor,
+                color = MaterialTheme.colorScheme.onSecondary,
             )
             if (series != null) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = albumSubtitle(series.title, album?.tomeNumber),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = SurfaceColor,
+                    color = MaterialTheme.colorScheme.onSecondary,
                 )
             }
             Spacer(modifier = Modifier.height(48.dp))
             Button(
                 onClick = onBackToHome,
-                colors = ButtonDefaults.buttonColors(containerColor = SurfaceColor, contentColor = OwnedGreen),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.onSecondary,
+                    contentColor = MaterialTheme.colorScheme.secondary,
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 56.dp),

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 
 data class AlbumFormUiState(
     val isLoading: Boolean = true,
@@ -28,6 +29,7 @@ data class AlbumFormUiState(
     val readStatus: ReadStatus = ReadStatus.UNREAD,
     val edition: String = "",
     val ean: String? = null,
+    val coverFile: File? = null,
     val duplicateError: Boolean = false,
     val saved: Boolean = false,
     val deleted: Boolean = false,
@@ -96,6 +98,15 @@ class AlbumFormViewModel(application: Application) : AndroidViewModel(applicatio
                     }
                 }
             }
+            loadCover()
+        }
+    }
+
+    /** Couverture locale de l'album (§6.4), en tâche de fond ; téléchargée si le réglage est activé. */
+    private fun loadCover() {
+        viewModelScope.launch {
+            val file = app.coverRepository.ensureCover(_uiState.value.ean) ?: return@launch
+            _uiState.update { it.copy(coverFile = file) }
         }
     }
 

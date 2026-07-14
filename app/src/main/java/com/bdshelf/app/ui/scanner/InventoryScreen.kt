@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +41,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -132,8 +134,18 @@ fun InventoryScreen(
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
+                    val scannedLabel = pluralStringResource(
+                        R.plurals.inventory_counter_scanned,
+                        uiState.scannedCount,
+                        uiState.scannedCount,
+                    )
+                    val addedLabel = pluralStringResource(
+                        R.plurals.inventory_counter_added,
+                        uiState.addedCount,
+                        uiState.addedCount,
+                    )
                     Text(
-                        text = stringResource(R.string.inventory_counter, uiState.scannedCount, uiState.addedCount),
+                        text = "$scannedLabel · $addedLabel",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -180,6 +192,7 @@ fun InventoryScreen(
                             onMarkOwned = { viewModel.onMarkOwned(scan) },
                             onAddSuggested = { viewModel.onAddSuggested(scan) },
                             onOpenVerdict = { onOpenVerdict(scan.ean) },
+                            onUndo = { viewModel.onUndo(scan) },
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -208,6 +221,7 @@ private fun InventoryScanCard(
     onMarkOwned: () -> Unit,
     onAddSuggested: () -> Unit,
     onOpenVerdict: () -> Unit,
+    onUndo: () -> Unit,
 ) {
     Surface(
         modifier = Modifier
@@ -234,6 +248,12 @@ private fun InventoryScanCard(
                         else -> MaterialTheme.colorScheme.onSurfaceVariant
                     },
                 )
+            }
+            if (scan.canUndo) {
+                Spacer(modifier = Modifier.width(12.dp))
+                TextButton(onClick = onUndo, modifier = Modifier.defaultMinSize(minHeight = 56.dp)) {
+                    Text(stringResource(R.string.common_undo), style = MaterialTheme.typography.labelLarge)
+                }
             }
             if (!scan.actionTaken) {
                 when (scan.status) {

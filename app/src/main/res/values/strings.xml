@@ -58,6 +58,7 @@
     <string name="series_list_counts">%1$d / %2$d</string>
     <string name="series_list_gap_cd">, il manque des tomes</string>
     <string name="series_list_empty">Aucune série ne correspond à ta recherche.</string>
+    <string name="series_list_empty_no_series">Ta collection est vide pour l\'instant. Ajoute ta première série avec le bouton +.</string>
 
     <!-- Détail série / étagère (§6.6) -->
     <string name="series_detail_owned_of_total">%1$d possédés sur %2$d</string>
@@ -205,7 +206,14 @@
     <!-- Mode inventaire (§6.11) -->
     <string name="scanner_inventory_button">Mode inventaire</string>
     <string name="inventory_title">Inventaire</string>
-    <string name="inventory_counter">%1$d scannés · %2$d ajoutés</string>
+    <plurals name="inventory_counter_scanned">
+        <item quantity="one">%d scanné</item>
+        <item quantity="other">%d scannés</item>
+    </plurals>
+    <plurals name="inventory_counter_added">
+        <item quantity="one">%d ajouté</item>
+        <item quantity="other">%d ajoutés</item>
+    </plurals>
     <string name="inventory_empty_hint">Scanne tes albums l\'un après l\'autre : chaque livre s\'affiche ici avec son verdict.</string>
     <string name="inventory_status_identifying">Identification…</string>
     <string name="inventory_status_owned">Déjà possédé</string>
@@ -225,4 +233,8 @@
     <string name="shopping_share_chooser_title">Partager la liste d\'achats</string>
     <string name="shopping_item_tome">Tome %1$d</string>
     <string name="shopping_item_bought_button">Je l\'ai !</string>
+    <string name="shopping_bought_snackbar">Marqué possédé.</string>
+
+    <!-- Communs -->
+    <string name="common_undo">Annuler</string>
 </resources>

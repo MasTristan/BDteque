@@ -20,10 +20,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,10 +53,36 @@ fun ShoppingScreen(
     viewModel: ShoppingViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val undoEvent by viewModel.undoEvent.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    Surface(color = MaterialTheme.colorScheme.background) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    // « Annuler » après chaque « Je l'ai ! » : l'item a disparu de la liste,
+    // le snackbar est le seul chemin de retour en cas de faux geste.
+    val snackbarMessage = stringResource(R.string.shopping_bought_snackbar)
+    val undoLabel = stringResource(R.string.common_undo)
+    LaunchedEffect(undoEvent) {
+        if (undoEvent == null) return@LaunchedEffect
+        val result = snackbarHostState.showSnackbar(
+            message = snackbarMessage,
+            actionLabel = undoLabel,
+            duration = SnackbarDuration.Short,
+        )
+        if (result == SnackbarResult.ActionPerformed) viewModel.onUndoLast()
+        // Consommé APRÈS l'affichage : le remettre à zéro d'abord relancerait
+        // l'effet (clé changée) et annulerait le snackbar avant son apparition.
+        viewModel.onUndoEventShown()
+    }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { contentPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
