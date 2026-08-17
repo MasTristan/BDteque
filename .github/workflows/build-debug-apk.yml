@@ -54,6 +54,21 @@ jobs:
           path: app/schemas/
           if-no-files-found: ignore
 
+      # Temporaire : le téléchargement direct de l'artefact "room-schemas"
+      # n'est pas accessible depuis l'environnement de développement de ce
+      # commit (réseau restreint). En attendant, le contenu passe par les
+      # logs, seule voie accessible dans cet environnement. À retirer une
+      # fois le premier schéma committé pour de vrai.
+      - name: Dump generated Room schemas (base64, temporary)
+        if: always()
+        run: |
+          find app/schemas -type f | while read -r f; do
+            echo "===FILE=== $f"
+            base64 -w0 "$f"
+            echo
+            echo "===END==="
+          done
+
       # Porte de qualité G5 (§E6) : un schéma Room exporté mais jamais
       # committé est aussi dangereux qu'absent — c'est exactement ce qui a
       # laissé la migration 1→2 sans preuve pendant des mois (dette D3). Le
