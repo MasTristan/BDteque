@@ -53,4 +53,52 @@ class GapDetectorTest {
     fun `next tome number is one when empty`() {
         assertEquals(1, GapDetector.nextTomeNumber(emptyList()))
     }
+
+    @Test
+    fun `gapReport without catalog matches gaps exactly`() {
+        val albums = listOf(
+            album("s", 1, owned = true),
+            album("s", 2, owned = false),
+            album("s", 4, owned = true),
+        )
+        val report = GapDetector.gapReport(albums)
+        assertEquals(GapDetector.gaps(albums), report.internal)
+        assertEquals(emptyList<Int>(), report.ahead)
+    }
+
+    @Test
+    fun `gapReport without catalog matches gaps exactly for an empty collection`() {
+        val report = GapDetector.gapReport(emptyList())
+        assertEquals(emptyList<Int>(), report.internal)
+        assertEquals(emptyList<Int>(), report.ahead)
+    }
+
+    @Test
+    fun `gapReport separates internal gaps from tomes ahead of the known maximum`() {
+        val albums = listOf(
+            album("s", 1, owned = true),
+            album("s", 2, owned = false),
+            album("s", 4, owned = true),
+        )
+        // Connu localement : 1 à 4 (trou interne : 2, 3). Le catalogue en
+        // connaît 7 : 5, 6, 7 sont un retard, pas un trou interne.
+        val report = GapDetector.gapReport(albums, catalogTomeCount = 7)
+        assertEquals(listOf(2, 3), report.internal)
+        assertEquals(listOf(5, 6, 7), report.ahead)
+    }
+
+    @Test
+    fun `gapReport ahead is empty when the catalog knows nothing new`() {
+        val albums = listOf(album("s", 1, owned = true), album("s", 2, owned = true))
+        val report = GapDetector.gapReport(albums, catalogTomeCount = 2)
+        assertEquals(emptyList<Int>(), report.internal)
+        assertEquals(emptyList<Int>(), report.ahead)
+    }
+
+    @Test
+    fun `gapReport ahead covers every catalog tome when nothing is known locally yet`() {
+        val report = GapDetector.gapReport(emptyList(), catalogTomeCount = 3)
+        assertEquals(emptyList<Int>(), report.internal)
+        assertEquals(listOf(1, 2, 3), report.ahead)
+    }
 }
