@@ -62,6 +62,12 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // bcprov-jdk18on (JAR multi-release) et jspecify embarquent
+            // toutes les deux un fragment de manifeste OSGi au même chemin ;
+            // sans intérêt pour une application Android, jamais un module
+            // OSGi. Sans cette exclusion, mergeDebugJavaResource échoue sur
+            // le doublon.
+            excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
         }
     }
 }
