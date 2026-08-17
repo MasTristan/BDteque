@@ -42,6 +42,22 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon
 
+      # Porte de qualité G5 (§E6) : un schéma Room exporté mais jamais
+      # committé est aussi dangereux qu'absent — c'est exactement ce qui a
+      # laissé la migration 1→2 sans preuve pendant des mois (dette D3). Le
+      # build échoue si la compilation a produit un schéma différent de celui
+      # du dépôt, pour qu'il soit structurellement impossible d'oublier de
+      # `git add app/schemas/`.
+      - name: Verify Room schemas are committed
+        run: |
+          if [ -n "$(git status --porcelain app/schemas)" ]; then
+            echo "::error::app/schemas/ a changé pendant la compilation mais n'a pas été committé."
+            echo "Lance ./gradlew assembleDebug en local et committe le contenu de app/schemas/."
+            git status --porcelain app/schemas
+            git diff app/schemas
+            exit 1
+          fi
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:

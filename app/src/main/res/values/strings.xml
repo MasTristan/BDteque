@@ -164,7 +164,7 @@
     <string name="settings_refresh_button">Mettre à jour les nouveautés maintenant</string>
     <string name="settings_refresh_error">Mise à jour impossible. Vérifie ta connexion.</string>
     <string name="settings_notifications_label">Recevoir une notification pour les nouveautés</string>
-    <string name="settings_backup_section_title">Sauvegarde</string>
+    <string name="settings_backup_section_title">Ma collection est-elle en sécurité ?</string>
     <string name="settings_export_json_button">Exporter ma collection (JSON)</string>
     <string name="settings_export_csv_button">Exporter ma collection (CSV)</string>
     <string name="settings_import_button">Importer une sauvegarde</string>
@@ -188,10 +188,18 @@
     <string name="settings_covers_label">Télécharger la couverture des albums scannés</string>
     <string name="settings_covers_hint">Une fois téléchargée, une couverture reste sur le téléphone : rien n\'est chargé depuis Internet en parcourant la collection.</string>
 
-    <!-- Sauvegarde automatique (§6.9) -->
+    <!-- Sauvegarde automatique (§E4 "Le Coffre") -->
     <string name="settings_backup_last">Dernière sauvegarde automatique : %1$s</string>
     <string name="settings_backup_never">Aucune sauvegarde automatique pour l\'instant.</string>
     <string name="settings_backup_now_button">Sauvegarder maintenant</string>
+    <string name="settings_backup_folder_protected_title">Sauvegardée chaque jour</string>
+    <string name="settings_backup_folder_protected_body">Dossier : %1$s. Cette sauvegarde survit à la désinstallation.</string>
+    <string name="settings_backup_folder_unprotected_title">Sauvegardée chaque jour, mais seulement dans l\'application</string>
+    <string name="settings_backup_folder_unprotected_body">Si tu désinstalles l\'application, ces sauvegardes seront perdues.</string>
+    <string name="settings_backup_folder_missing_title">Le dossier choisi n\'est plus accessible</string>
+    <string name="settings_backup_folder_missing_body">Choisis un nouveau dossier pour que la protection continue. Les sauvegardes dans l\'application, elles, continuent normalement.</string>
+    <string name="settings_backup_choose_folder_button">Choisir un dossier sûr</string>
+    <string name="settings_backup_change_folder_button">Changer de dossier</string>
 
     <!-- Filtres et tris de la liste des séries (§6.5) -->
     <string name="series_list_filter_all">Toutes</string>

@@ -51,6 +51,14 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 
+    sourceSets {
+        // Les schémas exportés par Room (ci-dessus) sont embarqués comme
+        // assets de test instrumenté : c'est là que MigrationTestHelper va
+        // les lire pour rejouer une base « telle qu'elle était » à une
+        // version donnée (§E6, porte de qualité G5).
+        getByName("androidTest").assets.srcDirs("$projectDir/schemas")
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -86,6 +94,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.documentfile)
     implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.kotlinx.serialization.json)
@@ -101,4 +110,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

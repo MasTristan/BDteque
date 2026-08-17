@@ -59,7 +59,7 @@ class BdShelfApplication : Application() {
         seedImporter = SeedImporter(this, database.seriesDao(), database.albumDao())
         isbnLookupService = IsbnLookupService(cache = database.isbnLookupCacheDao())
         coverRepository = CoverRepository(this, userPreferencesRepository)
-        backupManager = BackupManager(this, collectionRepository)
+        backupManager = BackupManager(this, collectionRepository, userPreferencesRepository)
 
         ReleasesSyncWorker.schedulePeriodic(this)
         BackupWorker.schedulePeriodic(this)

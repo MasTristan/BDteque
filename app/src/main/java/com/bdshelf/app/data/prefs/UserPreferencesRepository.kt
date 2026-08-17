@@ -29,6 +29,7 @@ class UserPreferencesRepository(private val context: Context) {
         val NOTIFIED_RELEASE_KEYS = stringSetPreferencesKey("notified_release_keys")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val DOWNLOAD_COVERS = booleanPreferencesKey("download_covers")
+        val BACKUP_FOLDER_URI = stringPreferencesKey("backup_folder_uri")
     }
 
     val ownerName: Flow<String> = context.dataStore.data.map { it[Keys.OWNER_NAME] ?: "" }
@@ -87,5 +88,21 @@ class UserPreferencesRepository(private val context: Context) {
 
     suspend fun setDownloadCovers(value: Boolean) {
         context.dataStore.edit { it[Keys.DOWNLOAD_COVERS] = value }
+    }
+
+    /**
+     * Dossier choisi par l'utilisateur pour la sauvegarde automatique (SAF,
+     * URI d'arborescence persistante — §E4 "Le Coffre").
+     *
+     * C'est ce qui permet à la sauvegarde de survivre à une désinstallation :
+     * sans ce dossier, [com.bdshelf.app.data.backup.BackupManager] n'écrit
+     * que dans l'espace privé de l'application, effacé avec elle.
+     */
+    val backupFolderUri: Flow<String?> = context.dataStore.data.map { it[Keys.BACKUP_FOLDER_URI] }
+
+    suspend fun setBackupFolderUri(uri: String?) {
+        context.dataStore.edit {
+            if (uri.isNullOrBlank()) it.remove(Keys.BACKUP_FOLDER_URI) else it[Keys.BACKUP_FOLDER_URI] = uri
+        }
     }
 }

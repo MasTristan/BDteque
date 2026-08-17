@@ -81,6 +81,10 @@ fun SettingsScreen(
         uri?.let(viewModel::onImportFile)
     }
 
+    val backupFolderLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        uri?.let(viewModel::onBackupFolderPicked)
+    }
+
     val notificationPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         viewModel.onNotificationsToggle(granted)
     }
@@ -237,6 +241,15 @@ fun SettingsScreen(
 
                     SectionHeader(stringResource(R.string.settings_backup_section_title))
 
+                    BackupFolderStatus(
+                        configured = uiState.backupFolderConfigured,
+                        accessible = uiState.backupFolderAccessible,
+                        folderName = uiState.backupFolderName,
+                        onChooseFolder = { backupFolderLauncher.launch(null) },
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     val lastBackupAt = uiState.lastBackupAt
                     Text(
                         text = if (lastBackupAt != null) {
@@ -361,6 +374,67 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+}
+
+/**
+ * État de la sauvegarde externe (§E4 "Le Coffre") : protégée, protégée mais
+ * invisible du dossier choisi, ou pas encore protégée contre la
+ * désinstallation. Le texte porte l'information, jamais la seule couleur.
+ */
+@Composable
+private fun BackupFolderStatus(
+    configured: Boolean,
+    accessible: Boolean,
+    folderName: String?,
+    onChooseFolder: () -> Unit,
+) {
+    val (titleRes, bodyText, tone) = when {
+        configured && accessible -> Triple(
+            R.string.settings_backup_folder_protected_title,
+            stringResource(R.string.settings_backup_folder_protected_body, folderName ?: ""),
+            MaterialTheme.colorScheme.secondary,
+        )
+        configured && !accessible -> Triple(
+            R.string.settings_backup_folder_missing_title,
+            stringResource(R.string.settings_backup_folder_missing_body),
+            MaterialTheme.colorScheme.error,
+        )
+        else -> Triple(
+            R.string.settings_backup_folder_unprotected_title,
+            stringResource(R.string.settings_backup_folder_unprotected_body),
+            MaterialTheme.colorScheme.error,
+        )
+    }
+
+    Text(
+        text = stringResource(titleRes),
+        style = MaterialTheme.typography.bodyLarge,
+        color = tone,
+    )
+    Spacer(modifier = Modifier.height(4.dp))
+    Text(
+        text = bodyText,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedButton(
+        onClick = onChooseFolder,
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 56.dp),
+    ) {
+        Text(
+            text = stringResource(
+                if (configured && accessible) {
+                    R.string.settings_backup_change_folder_button
+                } else {
+                    R.string.settings_backup_choose_folder_button
+                },
+            ),
+            style = MaterialTheme.typography.labelLarge,
+        )
     }
 }
 
