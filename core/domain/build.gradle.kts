@@ -16,6 +16,15 @@ kotlin {
     }
 }
 
+java {
+    // Le plugin Kotlin/JVM applique aussi le plugin Java, dont compileJava
+    // suit par défaut le JDK du toolchain (17 en CI) — sans ceci,
+    // compileJava (17) et compileKotlin (11, ci-dessus) sont incohérents.
+    // Même cible que :app (compileOptions, app/build.gradle.kts).
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bouncycastle.prov)
