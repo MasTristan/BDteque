@@ -11,10 +11,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.ReadStatus
-import com.bdshelf.app.domain.GapDetector
+import com.bdshelf.app.domain.tomeGaps
 
 /**
- * Un tome de l'étagère : possédé ou trou détecté ([GapDetector]). Partagé
+ * Un tome de l'étagère : possédé ou trou détecté ([tomeGaps]). Partagé
  * entre [Shelf] et [SeriesTomeList] (§ADR-009) — les deux vues doivent
  * montrer exactement les mêmes tomes, jamais deux logiques qui divergent.
  */
@@ -35,7 +35,7 @@ internal sealed interface ShelfItem {
 
 internal fun buildShelfItems(albums: List<Album>): List<ShelfItem> {
     val existingNumbers = albums.mapNotNull { it.tomeNumber }.toSet()
-    val gapNumbers = GapDetector.gaps(albums).filterNot { it in existingNumbers }
+    val gapNumbers = albums.tomeGaps().filterNot { it in existingNumbers }
     val items: List<ShelfItem> = albums.map { ShelfItem.Existing(it) } + gapNumbers.map { ShelfItem.Gap(it) }
     return items.sortedBy { it.sortKey }
 }

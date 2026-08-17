@@ -1,19 +1,25 @@
 package com.bdshelf.app.domain
 
-import com.bdshelf.app.data.local.entities.Album
+/**
+ * Ce qu'un calcul de trous a besoin de savoir sur un tome — rien de plus
+ * (§ADR-002) : le domaine ne connaît pas l'entité Room `Album`. Côté
+ * application, `List<Album>.tomeGaps()` fait la conversion à la frontière
+ * (voir `app/src/main/java/com/bdshelf/app/domain/GapsSupport.kt`).
+ */
+data class TomeOwnership(val tomeNumber: Int?, val owned: Boolean)
 
-/** Détection des trous de collection à partir des albums d'une série. */
+/** Détection des trous de collection à partir des tomes connus d'une série. */
 object GapDetector {
 
     /**
      * Numéros de tome manquants entre 1 et le plus grand numéro connu,
-     * possédés ou non en base (un trou "implicite" sans Album associé
-     * compte aussi comme manquant).
+     * possédés ou non en base (un trou "implicite" sans tome associé compte
+     * aussi comme manquant).
      */
-    fun gaps(albums: List<Album>): List<Int> {
-        val numbered = albums.mapNotNull { it.tomeNumber }
+    fun gaps(tomes: List<TomeOwnership>): List<Int> {
+        val numbered = tomes.mapNotNull { it.tomeNumber }
         if (numbered.isEmpty()) return emptyList()
-        val owned = albums.filter { it.owned }.mapNotNull { it.tomeNumber }.toSet()
+        val owned = tomes.filter { it.owned }.mapNotNull { it.tomeNumber }.toSet()
         val max = numbered.max()
         return (1..max).filter { it !in owned }
     }
@@ -29,9 +35,9 @@ object GapDetector {
      * `ahead` toujours vide : c'est le comportement actuel tant qu'aucune
      * série n'est rattachée à un catalogue.
      */
-    fun gapReport(albums: List<Album>, catalogTomeCount: Int? = null): GapReport {
-        val internal = gaps(albums)
-        val maxKnown = albums.mapNotNull { it.tomeNumber }.maxOrNull() ?: 0
+    fun gapReport(tomes: List<TomeOwnership>, catalogTomeCount: Int? = null): GapReport {
+        val internal = gaps(tomes)
+        val maxKnown = tomes.mapNotNull { it.tomeNumber }.maxOrNull() ?: 0
         val ahead = if (catalogTomeCount != null && catalogTomeCount > maxKnown) {
             (maxKnown + 1..catalogTomeCount).toList()
         } else {
@@ -41,8 +47,8 @@ object GapDetector {
     }
 
     /** Numéro de tome suivant, pré-rempli pour "+ Ajouter un tome". */
-    fun nextTomeNumber(albums: List<Album>): Int =
-        (albums.mapNotNull { it.tomeNumber }.maxOrNull() ?: 0) + 1
+    fun nextTomeNumber(tomes: List<TomeOwnership>): Int =
+        (tomes.mapNotNull { it.tomeNumber }.maxOrNull() ?: 0) + 1
 }
 
 /**

@@ -5,48 +5,36 @@ import org.junit.Test
 
 class GapDetectorTest {
 
+    private fun tome(number: Int?, owned: Boolean) = TomeOwnership(number, owned)
+
     @Test
     fun `no gaps when all tomes owned`() {
-        val albums = listOf(
-            album("s", 1, owned = true),
-            album("s", 2, owned = true),
-            album("s", 3, owned = true),
-        )
-        assertEquals(emptyList<Int>(), GapDetector.gaps(albums))
+        val tomes = listOf(tome(1, owned = true), tome(2, owned = true), tome(3, owned = true))
+        assertEquals(emptyList<Int>(), GapDetector.gaps(tomes))
     }
 
     @Test
     fun `internal missing tomes are gaps`() {
-        val albums = listOf(
-            album("s", 1, owned = true),
-            album("s", 2, owned = false),
-            album("s", 4, owned = true),
-        )
+        val tomes = listOf(tome(1, owned = true), tome(2, owned = false), tome(4, owned = true))
         // Trous : 2 (non possédé) et 3 (absent), bornés par le plus grand tome connu (4).
-        assertEquals(listOf(2, 3), GapDetector.gaps(albums))
+        assertEquals(listOf(2, 3), GapDetector.gaps(tomes))
     }
 
     @Test
-    fun `empty albums yield no gaps`() {
+    fun `empty tomes yield no gaps`() {
         assertEquals(emptyList<Int>(), GapDetector.gaps(emptyList()))
     }
 
     @Test
-    fun `unnumbered albums are ignored`() {
-        val albums = listOf(
-            album("s", 1, owned = true),
-            album("s", null, owned = true),
-        )
-        assertEquals(emptyList<Int>(), GapDetector.gaps(albums))
+    fun `unnumbered tomes are ignored`() {
+        val tomes = listOf(tome(1, owned = true), tome(null, owned = true))
+        assertEquals(emptyList<Int>(), GapDetector.gaps(tomes))
     }
 
     @Test
     fun `next tome number is max plus one`() {
-        val albums = listOf(
-            album("s", 1, owned = true),
-            album("s", 5, owned = false),
-        )
-        assertEquals(6, GapDetector.nextTomeNumber(albums))
+        val tomes = listOf(tome(1, owned = true), tome(5, owned = false))
+        assertEquals(6, GapDetector.nextTomeNumber(tomes))
     }
 
     @Test
@@ -56,13 +44,9 @@ class GapDetectorTest {
 
     @Test
     fun `gapReport without catalog matches gaps exactly`() {
-        val albums = listOf(
-            album("s", 1, owned = true),
-            album("s", 2, owned = false),
-            album("s", 4, owned = true),
-        )
-        val report = GapDetector.gapReport(albums)
-        assertEquals(GapDetector.gaps(albums), report.internal)
+        val tomes = listOf(tome(1, owned = true), tome(2, owned = false), tome(4, owned = true))
+        val report = GapDetector.gapReport(tomes)
+        assertEquals(GapDetector.gaps(tomes), report.internal)
         assertEquals(emptyList<Int>(), report.ahead)
     }
 
@@ -75,22 +59,18 @@ class GapDetectorTest {
 
     @Test
     fun `gapReport separates internal gaps from tomes ahead of the known maximum`() {
-        val albums = listOf(
-            album("s", 1, owned = true),
-            album("s", 2, owned = false),
-            album("s", 4, owned = true),
-        )
+        val tomes = listOf(tome(1, owned = true), tome(2, owned = false), tome(4, owned = true))
         // Connu localement : 1 à 4 (trou interne : 2, 3). Le catalogue en
         // connaît 7 : 5, 6, 7 sont un retard, pas un trou interne.
-        val report = GapDetector.gapReport(albums, catalogTomeCount = 7)
+        val report = GapDetector.gapReport(tomes, catalogTomeCount = 7)
         assertEquals(listOf(2, 3), report.internal)
         assertEquals(listOf(5, 6, 7), report.ahead)
     }
 
     @Test
     fun `gapReport ahead is empty when the catalog knows nothing new`() {
-        val albums = listOf(album("s", 1, owned = true), album("s", 2, owned = true))
-        val report = GapDetector.gapReport(albums, catalogTomeCount = 2)
+        val tomes = listOf(tome(1, owned = true), tome(2, owned = true))
+        val report = GapDetector.gapReport(tomes, catalogTomeCount = 2)
         assertEquals(emptyList<Int>(), report.internal)
         assertEquals(emptyList<Int>(), report.ahead)
     }

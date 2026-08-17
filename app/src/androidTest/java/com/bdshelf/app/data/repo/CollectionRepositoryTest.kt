@@ -9,7 +9,7 @@ import com.bdshelf.app.data.local.entities.ReadStatus
 import com.bdshelf.app.data.local.entities.Series
 import com.bdshelf.app.data.local.entities.SeriesStatus
 import com.bdshelf.app.data.seed.SeedImporter
-import com.bdshelf.app.domain.GapDetector
+import com.bdshelf.app.domain.tomeGaps
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -86,14 +86,14 @@ class CollectionRepositoryTest {
         }
 
         var albums = repository.albumsForSeries("thorgal").first()
-        assertEquals(listOf(3), GapDetector.gaps(albums))
+        assertEquals(listOf(3), albums.tomeGaps())
 
         val gap = repository.albumBySeriesAndTome("thorgal", 3)!!
         repository.setOwned(gap, true)
 
         albums = repository.albumsForSeries("thorgal").first()
         assertTrue("le tome 3 doit maintenant être possédé", albums.first { it.tomeNumber == 3 }.owned)
-        assertEquals(emptyList<Int>(), GapDetector.gaps(albums))
+        assertEquals(emptyList<Int>(), albums.tomeGaps())
     }
 
     /** P4 — la survie des données : ce qui sort par l'export doit revenir à l'identique. */
