@@ -89,6 +89,17 @@ L'écran « À paraître » lit un fichier `releases.json` distant (par défaut 
 dans ce fichier. L'URL est modifiable dans les réglages avancés de
 l'application.
 
+## Documentation
+
+La vision produit, les décisions d'architecture et les spécifications de développement
+vivent dans [`docs/`](docs/README.md) :
+
+- [VISION.md](docs/VISION.md) — état des lieux, thèse produit, piliers, paris, risques
+- [ROADMAP.md](docs/ROADMAP.md) — priorisation et séquencement
+- [DECISIONS.md](docs/DECISIONS.md) — les décisions d'architecture (ADR)
+- [specs/](docs/specs/README.md) — les spécifications de développement, épopée par épopée
+- [v1/SPEC-V1.md](docs/v1/SPEC-V1.md) — la spécification fondatrice, référence des « §6.4 » du code
+
 ## Licence
 
 MIT, voir [LICENSE](LICENSE).
