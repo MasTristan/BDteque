@@ -42,6 +42,18 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon
 
+      # Toujours exécuté, même si la porte ci-dessous échoue : c'est ce qui
+      # permet de récupérer un schéma généré par le vrai compilateur Room
+      # (identityHash inclus) au lieu d'en fabriquer un à la main — voir
+      # app/schemas/README.md.
+      - name: Upload generated Room schemas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: room-schemas
+          path: app/schemas/
+          if-no-files-found: ignore
+
       # Porte de qualité G5 (§E6) : un schéma Room exporté mais jamais
       # committé est aussi dangereux qu'absent — c'est exactement ce qui a
       # laissé la migration 1→2 sans preuve pendant des mois (dette D3). Le
@@ -52,7 +64,8 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain app/schemas)" ]; then
             echo "::error::app/schemas/ a changé pendant la compilation mais n'a pas été committé."
-            echo "Lance ./gradlew assembleDebug en local et committe le contenu de app/schemas/."
+            echo "Récupère l'artefact 'room-schemas' de ce run et committe-le, ou lance"
+            echo "./gradlew assembleDebug en local et committe le contenu de app/schemas/."
             git status --porcelain app/schemas
             git diff app/schemas
             exit 1
