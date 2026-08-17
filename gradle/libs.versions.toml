@@ -14,6 +14,7 @@ workRuntimeKtx = "2.10.0"
 kotlinxSerializationJson = "1.7.3"
 cameraX = "1.4.1"
 mlkitBarcodeScanning = "17.3.0"
+bouncycastle = "1.78.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +50,13 @@ androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycl
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraX" }
 
 mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcodeScanning" }
+
+# Vérification Ed25519 du bundle catalogue (§ADR-007) : Android ne fournit
+# Ed25519 nativement (java.security.Signature via Conscrypt) qu'à partir de
+# l'API 33, incompatible avec minSdk 26. API légère (org.bouncycastle.crypto.*),
+# sans enregistrement comme Provider JCA — évite tout conflit avec le
+# provider BC allégé qu'Android embarque déjà.
+bouncycastle-prov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
 
 androidx-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
