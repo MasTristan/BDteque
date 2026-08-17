@@ -79,6 +79,10 @@ kotlin {
 }
 
 dependencies {
+    // §ADR-002 : logique de domaine pure, sans dépendance Android — voir
+    // core/domain/build.gradle.kts.
+    implementation(project(":core:domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -111,8 +115,6 @@ dependencies {
     implementation(libs.androidx.camera.view)
 
     implementation(libs.mlkit.barcode.scanning)
-
-    implementation(libs.bouncycastle.prov)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
