@@ -18,6 +18,17 @@ enum class ThemeMode {
     DARK,
 }
 
+/**
+ * Vue de l'étagère d'une série (§ADR-009, anomalie A-02) : tranches
+ * horizontales ou liste verticale — même information, même actions, deux
+ * façons de les voir. Préférence mémorisée, pas de bascule au hasard d'un
+ * écran à l'autre.
+ */
+enum class ShelfViewMode {
+    SHELF,
+    LIST,
+}
+
 /** Préférences utilisateur : prénom du destinataire, état de l'import seed, réglages avancés. */
 class UserPreferencesRepository(private val context: Context) {
 
@@ -30,6 +41,7 @@ class UserPreferencesRepository(private val context: Context) {
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val DOWNLOAD_COVERS = booleanPreferencesKey("download_covers")
         val BACKUP_FOLDER_URI = stringPreferencesKey("backup_folder_uri")
+        val SHELF_VIEW_MODE = stringPreferencesKey("shelf_view_mode")
     }
 
     val ownerName: Flow<String> = context.dataStore.data.map { it[Keys.OWNER_NAME] ?: "" }
@@ -104,5 +116,15 @@ class UserPreferencesRepository(private val context: Context) {
         context.dataStore.edit {
             if (uri.isNullOrBlank()) it.remove(Keys.BACKUP_FOLDER_URI) else it[Keys.BACKUP_FOLDER_URI] = uri
         }
+    }
+
+    /** Valeur inconnue (préférence jamais écrite) = SHELF, le rendu historique. */
+    val shelfViewMode: Flow<ShelfViewMode> = context.dataStore.data.map { prefs ->
+        prefs[Keys.SHELF_VIEW_MODE]?.let { stored -> ShelfViewMode.entries.firstOrNull { it.name == stored } }
+            ?: ShelfViewMode.SHELF
+    }
+
+    suspend fun setShelfViewMode(mode: ShelfViewMode) {
+        context.dataStore.edit { it[Keys.SHELF_VIEW_MODE] = mode.name }
     }
 }

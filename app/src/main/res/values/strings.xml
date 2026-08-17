@@ -13,6 +13,15 @@
     <string name="spine_cd_highlighted_suffix">, tome recherché</string>
     <string name="spine_unnumbered_marker">HS</string>
 
+    <!-- Vue liste de l'étagère (§ADR-009, anomalie A-02) -->
+    <string name="tome_row_number">Tome %1$d</string>
+    <string name="tome_row_state_owned">Possédé</string>
+    <string name="tome_row_state_missing">Manquant</string>
+    <string name="tome_row_state_read">Lu</string>
+    <string name="tome_row_state_lent">Prêté</string>
+    <string name="series_detail_view_toggle_to_list_cd">Voir en liste</string>
+    <string name="series_detail_view_toggle_to_shelf_cd">Voir en étagère</string>
+
     <!-- Onboarding -->
     <string name="onboarding_subtitle">Avant de commencer, comment t\'appelles-tu ?</string>
     <string name="onboarding_name_label">Ton prénom</string>

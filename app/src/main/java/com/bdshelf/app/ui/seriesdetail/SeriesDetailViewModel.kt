@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.bdshelf.app.BdShelfApplication
 import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.Series
+import com.bdshelf.app.data.prefs.ShelfViewMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -17,6 +19,7 @@ data class SeriesDetailUiState(
     val albums: List<Album> = emptyList(),
     val ownedCount: Int = 0,
     val totalCount: Int = 0,
+    val viewMode: ShelfViewMode = ShelfViewMode.SHELF,
 )
 
 /** Détail d'une série = l'étagère de tranches + en-tête de stats (§6.6). */
@@ -48,5 +51,16 @@ class SeriesDetailViewModel(application: Application) : AndroidViewModel(applica
                 }
             }
         }
+        viewModelScope.launch {
+            val mode = app.userPreferencesRepository.shelfViewMode.first()
+            _uiState.update { it.copy(viewMode = mode) }
+        }
+    }
+
+    /** Bascule étagère / liste (§ADR-009) : préférence mémorisée, pas seulement pour cet écran. */
+    fun onToggleViewMode() {
+        val next = if (_uiState.value.viewMode == ShelfViewMode.SHELF) ShelfViewMode.LIST else ShelfViewMode.SHELF
+        _uiState.update { it.copy(viewMode = next) }
+        viewModelScope.launch { app.userPreferencesRepository.setShelfViewMode(next) }
     }
 }

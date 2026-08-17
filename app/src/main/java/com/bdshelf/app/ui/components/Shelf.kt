@@ -13,7 +13,12 @@ import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.ReadStatus
 import com.bdshelf.app.domain.GapDetector
 
-private sealed interface ShelfItem {
+/**
+ * Un tome de l'étagère : possédé ou trou détecté ([GapDetector]). Partagé
+ * entre [Shelf] et [SeriesTomeList] (§ADR-009) — les deux vues doivent
+ * montrer exactement les mêmes tomes, jamais deux logiques qui divergent.
+ */
+internal sealed interface ShelfItem {
     val key: String
     val sortKey: Int
 
@@ -28,7 +33,7 @@ private sealed interface ShelfItem {
     }
 }
 
-private fun buildShelfItems(albums: List<Album>): List<ShelfItem> {
+internal fun buildShelfItems(albums: List<Album>): List<ShelfItem> {
     val existingNumbers = albums.mapNotNull { it.tomeNumber }.toSet()
     val gapNumbers = GapDetector.gaps(albums).filterNot { it in existingNumbers }
     val items: List<ShelfItem> = albums.map { ShelfItem.Existing(it) } + gapNumbers.map { ShelfItem.Gap(it) }
