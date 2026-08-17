@@ -3,13 +3,13 @@
 > Généré automatiquement par Room à la compilation (`room { schemaDirectory(...) }`,
 > voir `app/build.gradle.kts`). **Ne pas éditer à la main.**
 
-Ce dossier est vide pour l'instant : aucune compilation complète (KSP) n'a encore été
-commise depuis que `schemaDirectory` a été configuré. Le prochain build réussi de
-`:app` (CI ou poste avec le SDK Android) écrira ici `2.json`, reflet exact du schéma
-actuel (`Series`, `Album`, `CachedIsbnLookup`) — il devra être committé. La porte de
+`com.bdshelf.app.data.local.AppDatabase/2.json` est le schéma réel généré par Room/KSP
+pour la version 2 actuelle (`Series`, `Album`, `CachedIsbnLookup`), récupéré depuis un
+run de CI (le SDK Android et le réseau nécessaires au moissonnage KSP n'étaient pas
+accessibles dans l'environnement de développement qui a écrit ce commit). La porte de
 qualité de la CI (`.github/workflows/build-debug-apk.yml`, étape *Verify Room schemas
-are committed*) échoue tant que ce n'est pas fait, pour que ça ne puisse plus être
-oublié.
+are committed*) échoue désormais si une future compilation produit un schéma différent
+de celui-ci sans qu'il soit committé, pour que ça ne puisse plus être oublié.
 
 **`1.json` n'existe pas et ne peut pas être reconstruit fidèlement après coup** — son
 `identityHash` dépend du compilateur Room tel qu'il tournait à l'époque, pas d'une
