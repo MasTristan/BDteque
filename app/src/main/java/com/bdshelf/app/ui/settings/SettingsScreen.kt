@@ -38,7 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -206,6 +209,10 @@ fun SettingsScreen(
                             text = stringResource(R.string.settings_refresh_error),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.error,
+                            // Anomalie A-06 (§E6) : ce message apparaît sans
+                            // que le focus ne s'y déplace — sans liveRegion,
+                            // un lecteur d'écran ne l'annonce jamais.
+                            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                         )
                     }
 
@@ -333,6 +340,10 @@ fun SettingsScreen(
                             ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = if (uiState.importSuccess) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error,
+                            // Anomalie A-06 (§E6) : le résultat d'un import
+                            // (réussite ou échec) doit être annoncé, pas
+                            // seulement affiché.
+                            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                         )
                     }
 
