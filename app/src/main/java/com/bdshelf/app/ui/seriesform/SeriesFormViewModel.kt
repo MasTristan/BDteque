@@ -6,8 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.bdshelf.app.BdShelfApplication
 import com.bdshelf.app.data.local.entities.Series
 import com.bdshelf.app.data.local.entities.SeriesStatus
-import com.bdshelf.app.domain.seriesSpineColor
-import com.bdshelf.app.domain.toArgbLong
+import com.bdshelf.app.domain.seriesSpineColorArgb
 import com.bdshelf.app.domain.toSlug
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -108,7 +107,7 @@ class SeriesFormViewModel(application: Application) : AndroidViewModel(applicati
                     title = title,
                     status = state.status,
                     isTracked = state.isTracked,
-                    color = seriesSpineColor(id).toArgbLong(),
+                    color = seriesSpineColorArgb(id),
                     knownTomeCount = knownTomeCount,
                     notes = notes,
                 )
