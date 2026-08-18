@@ -116,6 +116,7 @@ dependencies {
 
     implementation(libs.mlkit.barcode.scanning)
 
+    testImplementation(project(":core:domain"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
