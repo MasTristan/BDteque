@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -82,6 +83,13 @@ android {
         abortOnError = true
         warningsAsErrors = false
     }
+}
+
+// Porte de qualité (§E6 5.2), deuxième des trois contrôles statiques : la
+// même logique de ligne de base que Lint ci-dessus, voir detekt-baseline.xml.
+detekt {
+    buildUponDefaultConfig = true
+    baseline = file("detekt-baseline.xml")
 }
 
 kotlin {

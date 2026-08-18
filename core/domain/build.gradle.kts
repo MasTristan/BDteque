@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.detekt)
 }
 
 // §ADR-002 : module Kotlin pur, aucune dépendance Android. Le compilateur
@@ -30,4 +31,10 @@ dependencies {
     implementation(libs.bouncycastle.prov)
 
     testImplementation(libs.junit)
+}
+
+// Porte de qualité (§E6 5.2) : voir app/build.gradle.kts pour la justification.
+detekt {
+    buildUponDefaultConfig = true
+    baseline = file("detekt-baseline.xml")
 }
