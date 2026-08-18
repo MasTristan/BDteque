@@ -1,8 +1,10 @@
 package com.bdshelf.app.ui.settings
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.bdshelf.app.BdShelfApplication
@@ -41,6 +43,9 @@ data class SettingsUiState(
     val importError: Boolean = false,
     val lastBackupAt: Long? = null,
     val isBackingUp: Boolean = false,
+    val backupFolderConfigured: Boolean = false,
+    val backupFolderAccessible: Boolean = false,
+    val backupFolderName: String? = null,
 )
 
 /** Réglages & À propos (§6.9). */
@@ -80,6 +85,44 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     lastBackupAt = lastBackupAt,
                 )
             }
+            refreshBackupFolderState()
+        }
+    }
+
+    /**
+     * État du dossier de sauvegarde externe (§E4) : configuré, et — si oui —
+     * toujours accessible. Une permission SAF peut être révoquée sans
+     * notification (dossier supprimé, carte SD retirée) : on le revérifie
+     * plutôt que de faire confiance à la préférence enregistrée.
+     */
+    private suspend fun refreshBackupFolderState() {
+        val uriString = app.userPreferencesRepository.backupFolderUri.first()
+        if (uriString == null) {
+            _uiState.update { it.copy(backupFolderConfigured = false, backupFolderAccessible = false, backupFolderName = null) }
+            return
+        }
+        val accessible = app.backupManager.isBackupFolderAccessible()
+        val name = if (accessible) {
+            runCatching { DocumentFile.fromTreeUri(app, Uri.parse(uriString))?.name }.getOrNull()
+        } else {
+            null
+        }
+        _uiState.update {
+            it.copy(backupFolderConfigured = true, backupFolderAccessible = accessible, backupFolderName = name)
+        }
+    }
+
+    /** Dossier choisi ou changé via le sélecteur système (§E4). */
+    fun onBackupFolderPicked(uri: Uri) {
+        viewModelScope.launch {
+            runCatching {
+                app.contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
+                )
+            }
+            app.userPreferencesRepository.setBackupFolderUri(uri.toString())
+            refreshBackupFolderState()
         }
     }
 
@@ -101,6 +144,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             _uiState.update { it.copy(isBackingUp = true) }
             app.backupManager.backupNow()
             _uiState.update { it.copy(isBackingUp = false, lastBackupAt = app.backupManager.lastBackupAt()) }
+            refreshBackupFolderState()
         }
     }
 

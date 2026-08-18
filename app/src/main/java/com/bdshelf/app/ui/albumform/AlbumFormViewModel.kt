@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.bdshelf.app.BdShelfApplication
 import com.bdshelf.app.data.local.entities.ReadStatus
-import com.bdshelf.app.domain.GapDetector
+import com.bdshelf.app.domain.nextTomeNumber
 import com.bdshelf.app.domain.toSpineColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -75,7 +75,7 @@ class AlbumFormViewModel(application: Application) : AndroidViewModel(applicatio
                 }
             } else {
                 val albums = app.collectionRepository.albumsForSeries(seriesId).first()
-                val tomeNumber = prefilledTomeNumber ?: GapDetector.nextTomeNumber(albums)
+                val tomeNumber = prefilledTomeNumber ?: albums.nextTomeNumber()
                 _uiState.update {
                     it.copy(
                         isLoading = false,

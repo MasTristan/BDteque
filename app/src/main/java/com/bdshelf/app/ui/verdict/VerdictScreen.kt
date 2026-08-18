@@ -35,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -176,7 +178,17 @@ private fun MissingVerdict(uiState: VerdictUiState, viewModel: VerdictViewModel,
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
+            // Anomalie A-05 (§E6) : sans cet ordre explicite, un lecteur
+            // d'écran parcourt toute l'étagère avant d'atteindre l'action
+            // principale de cet écran. traversalIndex négatif = visité avant
+            // les tranches (index 0 par défaut), sans rien changer à
+            // l'agencement visuel — l'action reste en bas, où on l'attend.
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .semantics { traversalIndex = -1f },
+            ) {
                 if (!album.owned) {
                     Button(
                         onClick = viewModel::onMarkOwned,

@@ -1,7 +1,29 @@
 package com.bdshelf.app.domain
 
-import com.bdshelf.app.data.local.entities.Album
-import com.bdshelf.app.data.local.entities.Series
+/** Vue minimale d'un album pour le calcul de la liste d'achats (§ADR-002). */
+data class ShoppingAlbumInput(
+    val id: String,
+    val seriesId: String,
+    val tomeNumber: Int?,
+    val title: String?,
+    val owned: Boolean,
+)
+
+/** Vue minimale d'une série pour le calcul de la liste d'achats (§ADR-002). */
+data class ShoppingSeriesInput(
+    val id: String,
+    val title: String,
+)
+
+/** Vue minimale d'une sortie croisée avec la possession (§ADR-002). */
+data class ShoppingReleaseInput(
+    val seriesId: String,
+    val seriesTitle: String,
+    val tomeNumber: Int,
+    val title: String,
+    val status: String, // "UPCOMING" | "RELEASED"
+    val owned: Boolean,
+)
 
 /**
  * Un album à acheter (§6.10) : soit un trou connu de l'étagère (album en base,
@@ -36,9 +58,9 @@ data class ShoppingGroup(
  * Groupée par série (alphabétique), tomes croissants, hors-série en fin.
  */
 fun buildShoppingList(
-    series: List<Series>,
-    albums: List<Album>,
-    releasedUnowned: List<ReleaseWithOwnership>,
+    series: List<ShoppingSeriesInput>,
+    albums: List<ShoppingAlbumInput>,
+    releasedUnowned: List<ShoppingReleaseInput>,
 ): List<ShoppingGroup> {
     val seriesById = series.associateBy { it.id }
     val albumKeys = albums.mapNotNull { album -> album.tomeNumber?.let { album.seriesId to it } }.toSet()
@@ -58,14 +80,14 @@ fun buildShoppingList(
 
     val releaseItems = releasedUnowned
         .asSequence()
-        .filter { it.release.status == "RELEASED" && !it.owned }
-        .filter { (it.release.seriesId to it.release.tomeNumber) !in albumKeys }
+        .filter { it.status == "RELEASED" && !it.owned }
+        .filter { (it.seriesId to it.tomeNumber) !in albumKeys }
         .map {
             ShoppingItem(
-                seriesId = it.release.seriesId,
-                seriesTitle = it.release.seriesTitle,
-                tomeNumber = it.release.tomeNumber,
-                title = it.release.title.ifBlank { null },
+                seriesId = it.seriesId,
+                seriesTitle = it.seriesTitle,
+                tomeNumber = it.tomeNumber,
+                title = it.title.ifBlank { null },
                 albumId = null,
             )
         }

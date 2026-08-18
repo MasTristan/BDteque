@@ -147,18 +147,20 @@ private fun ShoppingItemRow(item: ShoppingItem, onBought: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
+            val tomeNumber = item.tomeNumber
             Text(
-                text = if (item.tomeNumber != null) {
-                    stringResource(R.string.shopping_item_tome, item.tomeNumber)
+                text = if (tomeNumber != null) {
+                    stringResource(R.string.shopping_item_tome, tomeNumber)
                 } else {
                     stringResource(R.string.album_form_unnumbered_label)
                 },
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
-            if (!item.title.isNullOrBlank()) {
+            val title = item.title
+            if (!title.isNullOrBlank()) {
                 Text(
-                    text = item.title,
+                    text = title,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

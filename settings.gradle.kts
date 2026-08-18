@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "BDShelf"
 include(":app")
+include(":core:domain")

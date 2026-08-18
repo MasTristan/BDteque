@@ -15,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ViewCarousel
+import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +34,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bdshelf.app.R
 import com.bdshelf.app.data.local.entities.SeriesStatus
+import com.bdshelf.app.data.prefs.ShelfViewMode
 import com.bdshelf.app.domain.toSpineColor
+import com.bdshelf.app.ui.components.SeriesTomeList
 import com.bdshelf.app.ui.components.Shelf
 
 /** Détail d'une série = l'étagère de tranches + en-tête de stats (§6.6). */
@@ -76,6 +80,21 @@ fun SeriesDetailScreen(
                         .padding(start = 8.dp),
                 )
                 IconButton(
+                    onClick = viewModel::onToggleViewMode,
+                    modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 56.dp),
+                ) {
+                    Icon(
+                        imageVector = if (uiState.viewMode == ShelfViewMode.SHELF) Icons.Filled.ViewList else Icons.Filled.ViewCarousel,
+                        contentDescription = stringResource(
+                            if (uiState.viewMode == ShelfViewMode.SHELF) {
+                                R.string.series_detail_view_toggle_to_list_cd
+                            } else {
+                                R.string.series_detail_view_toggle_to_shelf_cd
+                            },
+                        ),
+                    )
+                }
+                IconButton(
                     onClick = { onEditSeries(seriesId) },
                     modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 56.dp),
                 ) {
@@ -113,30 +132,40 @@ fun SeriesDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (uiState.albums.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.series_detail_empty_shelf),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                // weight(1f) borne la hauteur : indispensable à la vue liste
+                // (LazyColumn) et sans effet visuel sur la vue étagère, qui a
+                // déjà une hauteur intrinsèque fixe et s'aligne en haut.
+                Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    if (uiState.albums.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = stringResource(R.string.series_detail_empty_shelf),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    } else if (uiState.viewMode == ShelfViewMode.SHELF) {
+                        Shelf(
+                            seriesId = series.id,
+                            seriesColor = series.color.toSpineColor(),
+                            albums = uiState.albums,
+                            onAlbumClick = { album -> onAlbumClick(album.id) },
+                            onGapClick = { tomeNumber -> onGapClick(series.id, tomeNumber) },
+                        )
+                    } else {
+                        SeriesTomeList(
+                            albums = uiState.albums,
+                            onAlbumClick = { album -> onAlbumClick(album.id) },
+                            onGapClick = { tomeNumber -> onGapClick(series.id, tomeNumber) },
+                            modifier = Modifier.fillMaxSize(),
                         )
                     }
-                } else {
-                    Shelf(
-                        seriesId = series.id,
-                        seriesColor = series.color.toSpineColor(),
-                        albums = uiState.albums,
-                        onAlbumClick = { album -> onAlbumClick(album.id) },
-                        onGapClick = { tomeNumber -> onGapClick(series.id, tomeNumber) },
-                    )
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
 
                 Button(
                     onClick = { onAddTome(series.id) },

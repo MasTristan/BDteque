@@ -7,8 +7,7 @@ import com.bdshelf.app.data.local.entities.Album
 import com.bdshelf.app.data.local.entities.ReadStatus
 import com.bdshelf.app.data.local.entities.Series
 import com.bdshelf.app.data.local.entities.SeriesStatus
-import com.bdshelf.app.domain.seriesSpineColor
-import com.bdshelf.app.domain.toArgbLong
+import com.bdshelf.app.domain.seriesSpineColorArgb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -47,7 +46,7 @@ class SeedImporter(
                     title = seedSeries.title,
                     status = runCatching { SeriesStatus.valueOf(seedSeries.status) }.getOrDefault(SeriesStatus.UNKNOWN),
                     isTracked = seedSeries.tracked,
-                    color = seriesSpineColor(seedSeries.id).toArgbLong(),
+                    color = seriesSpineColorArgb(seedSeries.id),
                     knownTomeCount = seedSeries.knownTomeCount,
                     notes = seedSeries.notes.ifBlank { null },
                 ),

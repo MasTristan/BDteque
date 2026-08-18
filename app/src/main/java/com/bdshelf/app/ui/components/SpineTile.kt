@@ -150,8 +150,9 @@ private fun Modifier.highlightBorder(color: Color, cornerRadius: Dp): Modifier =
     )
 }
 
+/** Partagée avec [SeriesTomeList] (§ADR-009) : les deux vues décrivent un tome de façon identique. */
 @Composable
-private fun spineContentDescription(tomeNumber: Int?, owned: Boolean, readStatus: ReadStatus, highlighted: Boolean): String {
+internal fun spineContentDescription(tomeNumber: Int?, owned: Boolean, readStatus: ReadStatus, highlighted: Boolean): String {
     val base = if (tomeNumber != null) {
         stringResource(if (owned) R.string.spine_cd_owned else R.string.spine_cd_missing, tomeNumber)
     } else {

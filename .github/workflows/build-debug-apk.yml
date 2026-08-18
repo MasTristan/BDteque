@@ -42,8 +42,119 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon
 
+      # §E6 6 : la CI n'avait jamais exercé la variante release (minification
+      # R8 + réduction des ressources) avant ce job — un build minifié
+      # cassé (sérialisation notamment, voir proguard-rules.pro) restait
+      # invisible jusqu'à la release elle-même. Build non signé (pas de
+      # clé en CI) : suffisant pour vérifier que R8 traite le bytecode sans
+      # erreur, pas pour distribuer l'APK.
+      - name: Build release APK (R8 minification)
+        run: ./gradlew assembleRelease --no-daemon
+
+      # Budget de performance G4 (§E6) : APK < 30 Mo. Mesuré sur l'APK
+      # release (minifié, ressources réduites) — c'est celui qui compte,
+      # l'APK debug n'est pas représentatif. Le reste de G4 (démarrage
+      # < 1,2 s, verdict p95 < 1,5 s via Macrobenchmark) est délibérément
+      # hors de ce job : les runners hébergés partagés ne donnent pas des
+      # mesures de latence fiables d'une exécution à l'autre, un budget
+      # dessus produirait des échecs de CI aléatoires plutôt qu'un vrai
+      # signal — cette partie exige du matériel de référence dédié
+      # (§E6 5.5, Galaxy A14), hors de portée de cet environnement.
+      - name: Check APK size budget
+        run: |
+          apk="app/build/outputs/apk/release/app-release-unsigned.apk"
+          budget_bytes=$((30 * 1024 * 1024))
+          size_bytes=$(stat -c%s "$apk")
+          size_mb=$(awk "BEGIN { printf \"%.1f\", $size_bytes / 1024 / 1024 }")
+          echo "APK release : ${size_mb} Mo (budget : 30 Mo)"
+          if [ "$size_bytes" -gt "$budget_bytes" ]; then
+            echo "::error::APK release de ${size_mb} Mo, au-delà du budget de 30 Mo (§E6 G4)."
+            exit 1
+          fi
+
+      # Porte de qualité (§E6 5.2). Voir app/build.gradle.kts pour la
+      # justification de la ligne de base.
+      - name: Run Android Lint
+        run: ./gradlew lintDebug --no-daemon
+
+      # Troisième contrôle statique de la §5.2. Lignes de base commises
+      # (app/detekt-baseline.xml, core/domain/detekt-baseline.xml) : la CI
+      # échoue désormais sur toute anomalie nouvelle, pas sur la dette
+      # existante — même logique que Lint ci-dessus.
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon
+
+      # Toujours exécuté, même si la porte ci-dessous échoue : c'est ce qui
+      # permet de récupérer un schéma généré par le vrai compilateur Room
+      # (identityHash inclus) au lieu d'en fabriquer un à la main — voir
+      # app/schemas/README.md.
+      - name: Upload generated Room schemas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: room-schemas
+          path: app/schemas/
+          if-no-files-found: ignore
+
+      # Porte de qualité G5 (§E6) : un schéma Room exporté mais jamais
+      # committé est aussi dangereux qu'absent — c'est exactement ce qui a
+      # laissé la migration 1→2 sans preuve pendant des mois (dette D3). Le
+      # build échoue si la compilation a produit un schéma différent de celui
+      # du dépôt, pour qu'il soit structurellement impossible d'oublier de
+      # `git add app/schemas/`.
+      - name: Verify Room schemas are committed
+        run: |
+          if [ -n "$(git status --porcelain app/schemas)" ]; then
+            echo "::error::app/schemas/ a changé pendant la compilation mais n'a pas été committé."
+            echo "Récupère l'artefact 'room-schemas' de ce run et committe-le, ou lance"
+            echo "./gradlew assembleDebug en local et committe le contenu de app/schemas/."
+            git status --porcelain app/schemas
+            git diff app/schemas
+            exit 1
+          fi
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+  # Porte de qualité G2 (§E6) : les parcours critiques. `assembleDebug`
+  # ci-dessus ne compile jamais app/src/androidTest — sans ce job, des tests
+  # instrumentés pourraient rester cassés indéfiniment sans que la CI ne le
+  # voie jamais. Un seul niveau d'API pour l'instant (le plus rapide à
+  # démarrer sur les runners hébergés) ; la matrice complète 26 + 35 visée
+  # par la spec est un chantier séparé, pas un blocage pour ce premier passage.
+  instrumented-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: ./gradlew connectedDebugAndroidTest --no-daemon

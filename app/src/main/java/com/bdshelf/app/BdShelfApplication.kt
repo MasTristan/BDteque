@@ -2,6 +2,7 @@ package com.bdshelf.app
 
 import android.app.Application
 import androidx.room.Room
+import com.bdshelf.app.crash.CrashReporter
 import com.bdshelf.app.data.backup.BackupManager
 import com.bdshelf.app.data.covers.CoverRepository
 import com.bdshelf.app.data.local.AppDatabase
@@ -47,8 +48,17 @@ class BdShelfApplication : Application() {
     lateinit var backupManager: BackupManager
         private set
 
+    lateinit var crashReporter: CrashReporter
+        private set
+
     override fun onCreate() {
         super.onCreate()
+
+        // Posé avant tout le reste : un plantage pendant l'initialisation de
+        // la base ou des dépôts doit lui aussi produire un rapport (§E6 5.4).
+        crashReporter = CrashReporter(this)
+        crashReporter.install()
+        crashReporter.purgeExpired()
 
         database = Room.databaseBuilder(this, AppDatabase::class.java, AppDatabase.DATABASE_NAME)
             .addMigrations(AppDatabase.MIGRATION_1_2)
@@ -59,7 +69,7 @@ class BdShelfApplication : Application() {
         seedImporter = SeedImporter(this, database.seriesDao(), database.albumDao())
         isbnLookupService = IsbnLookupService(cache = database.isbnLookupCacheDao())
         coverRepository = CoverRepository(this, userPreferencesRepository)
-        backupManager = BackupManager(this, collectionRepository)
+        backupManager = BackupManager(this, collectionRepository, userPreferencesRepository)
 
         ReleasesSyncWorker.schedulePeriodic(this)
         BackupWorker.schedulePeriodic(this)

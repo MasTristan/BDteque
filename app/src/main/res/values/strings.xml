@@ -13,6 +13,15 @@
     <string name="spine_cd_highlighted_suffix">, tome recherché</string>
     <string name="spine_unnumbered_marker">HS</string>
 
+    <!-- Vue liste de l'étagère (§ADR-009, anomalie A-02) -->
+    <string name="tome_row_number">Tome %1$d</string>
+    <string name="tome_row_state_owned">Possédé</string>
+    <string name="tome_row_state_missing">Manquant</string>
+    <string name="tome_row_state_read">Lu</string>
+    <string name="tome_row_state_lent">Prêté</string>
+    <string name="series_detail_view_toggle_to_list_cd">Voir en liste</string>
+    <string name="series_detail_view_toggle_to_shelf_cd">Voir en étagère</string>
+
     <!-- Onboarding -->
     <string name="onboarding_subtitle">Avant de commencer, comment t\'appelles-tu ?</string>
     <string name="onboarding_name_label">Ton prénom</string>
@@ -164,7 +173,7 @@
     <string name="settings_refresh_button">Mettre à jour les nouveautés maintenant</string>
     <string name="settings_refresh_error">Mise à jour impossible. Vérifie ta connexion.</string>
     <string name="settings_notifications_label">Recevoir une notification pour les nouveautés</string>
-    <string name="settings_backup_section_title">Sauvegarde</string>
+    <string name="settings_backup_section_title">Ma collection est-elle en sécurité ?</string>
     <string name="settings_export_json_button">Exporter ma collection (JSON)</string>
     <string name="settings_export_csv_button">Exporter ma collection (CSV)</string>
     <string name="settings_import_button">Importer une sauvegarde</string>
@@ -188,10 +197,18 @@
     <string name="settings_covers_label">Télécharger la couverture des albums scannés</string>
     <string name="settings_covers_hint">Une fois téléchargée, une couverture reste sur le téléphone : rien n\'est chargé depuis Internet en parcourant la collection.</string>
 
-    <!-- Sauvegarde automatique (§6.9) -->
+    <!-- Sauvegarde automatique (§E4 "Le Coffre") -->
     <string name="settings_backup_last">Dernière sauvegarde automatique : %1$s</string>
     <string name="settings_backup_never">Aucune sauvegarde automatique pour l\'instant.</string>
     <string name="settings_backup_now_button">Sauvegarder maintenant</string>
+    <string name="settings_backup_folder_protected_title">Sauvegardée chaque jour</string>
+    <string name="settings_backup_folder_protected_body">Dossier : %1$s. Cette sauvegarde survit à la désinstallation.</string>
+    <string name="settings_backup_folder_unprotected_title">Sauvegardée chaque jour, mais seulement dans l\'application</string>
+    <string name="settings_backup_folder_unprotected_body">Si tu désinstalles l\'application, ces sauvegardes seront perdues.</string>
+    <string name="settings_backup_folder_missing_title">Le dossier choisi n\'est plus accessible</string>
+    <string name="settings_backup_folder_missing_body">Choisis un nouveau dossier pour que la protection continue. Les sauvegardes dans l\'application, elles, continuent normalement.</string>
+    <string name="settings_backup_choose_folder_button">Choisir un dossier sûr</string>
+    <string name="settings_backup_change_folder_button">Changer de dossier</string>
 
     <!-- Filtres et tris de la liste des séries (§6.5) -->
     <string name="series_list_filter_all">Toutes</string>
@@ -225,4 +242,14 @@
     <string name="shopping_share_chooser_title">Partager la liste d\'achats</string>
     <string name="shopping_item_tome">Tome %1$d</string>
     <string name="shopping_item_bought_button">Je l\'ai !</string>
+
+    <!-- Rapport de plantage local, sans télémétrie (§E6 5.4) -->
+    <string name="crash_report_banner_title">L\'application s\'est arrêtée la dernière fois</string>
+    <string name="crash_report_banner_message">Veux-tu envoyer le rapport pour qu\'on corrige le problème ?</string>
+    <string name="crash_report_view">Voir le rapport</string>
+    <string name="crash_report_send">Envoyer</string>
+    <string name="crash_report_no_thanks">Non merci</string>
+    <string name="crash_report_view_title">Rapport de plantage</string>
+    <string name="crash_report_close">Fermer</string>
+    <string name="crash_report_chooser_title">Envoyer le rapport de plantage</string>
 </resources>

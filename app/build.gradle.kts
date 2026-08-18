@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -31,8 +32,14 @@ android {
     }
 
     buildTypes {
+        // §E6 6 : minification vérifiée sur un build réel — voir
+        // proguard-rules.pro pour les règles de conservation
+        // (kotlinx.serialization notamment, qui casse silencieusement sans
+        // elles) et le job CI `./gradlew assembleRelease` qui exerce R8 à
+        // chaque build, pas seulement à la release.
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -51,11 +58,44 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 
+    sourceSets {
+        // Les schémas exportés par Room (ci-dessus) sont embarqués comme
+        // assets de test instrumenté : c'est là que MigrationTestHelper va
+        // les lire pour rejouer une base « telle qu'elle était » à une
+        // version donnée (§E6, porte de qualité G5).
+        getByName("androidTest").assets.srcDirs("$projectDir/schemas")
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // bcprov-jdk18on (JAR multi-release) et jspecify embarquent
+            // toutes les deux un fragment de manifeste OSGi au même chemin ;
+            // sans intérêt pour une application Android, jamais un module
+            // OSGi. Sans cette exclusion, mergeDebugJavaResource échoue sur
+            // le doublon.
+            excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
         }
     }
+
+    // Porte de qualité (§E6 5.2) : Android Lint en CI. La ligne de base
+    // (app/lint-baseline.xml) capture les anomalies déjà présentes au moment
+    // de l'adoption — on ne casse pas la CI sur de la dette existante, mais
+    // toute anomalie NOUVELLE au-delà de cette ligne de base fait échouer le
+    // build, comme le schéma Room (G5) : structurellement impossible d'en
+    // introduire une par inadvertance.
+    lint {
+        baseline = file("lint-baseline.xml")
+        abortOnError = true
+        warningsAsErrors = false
+    }
+}
+
+// Porte de qualité (§E6 5.2), deuxième des trois contrôles statiques : la
+// même logique de ligne de base que Lint ci-dessus, voir detekt-baseline.xml.
+detekt {
+    buildUponDefaultConfig = true
+    baseline = file("detekt-baseline.xml")
 }
 
 kotlin {
@@ -65,6 +105,10 @@ kotlin {
 }
 
 dependencies {
+    // §ADR-002 : logique de domaine pure, sans dépendance Android — voir
+    // core/domain/build.gradle.kts.
+    implementation(project(":core:domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -86,6 +130,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.documentfile)
     implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.kotlinx.serialization.json)
@@ -97,8 +142,12 @@ dependencies {
 
     implementation(libs.mlkit.barcode.scanning)
 
+    testImplementation(project(":core:domain"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

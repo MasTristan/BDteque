@@ -18,6 +18,17 @@ enum class ThemeMode {
     DARK,
 }
 
+/**
+ * Vue de l'étagère d'une série (§ADR-009, anomalie A-02) : tranches
+ * horizontales ou liste verticale — même information, même actions, deux
+ * façons de les voir. Préférence mémorisée, pas de bascule au hasard d'un
+ * écran à l'autre.
+ */
+enum class ShelfViewMode {
+    SHELF,
+    LIST,
+}
+
 /** Préférences utilisateur : prénom du destinataire, état de l'import seed, réglages avancés. */
 class UserPreferencesRepository(private val context: Context) {
 
@@ -29,6 +40,9 @@ class UserPreferencesRepository(private val context: Context) {
         val NOTIFIED_RELEASE_KEYS = stringSetPreferencesKey("notified_release_keys")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val DOWNLOAD_COVERS = booleanPreferencesKey("download_covers")
+        val BACKUP_FOLDER_URI = stringPreferencesKey("backup_folder_uri")
+        val SHELF_VIEW_MODE = stringPreferencesKey("shelf_view_mode")
+        val LAST_ACKNOWLEDGED_CRASH_FILE = stringPreferencesKey("last_acknowledged_crash_file")
     }
 
     val ownerName: Flow<String> = context.dataStore.data.map { it[Keys.OWNER_NAME] ?: "" }
@@ -87,5 +101,42 @@ class UserPreferencesRepository(private val context: Context) {
 
     suspend fun setDownloadCovers(value: Boolean) {
         context.dataStore.edit { it[Keys.DOWNLOAD_COVERS] = value }
+    }
+
+    /**
+     * Dossier choisi par l'utilisateur pour la sauvegarde automatique (SAF,
+     * URI d'arborescence persistante — §E4 "Le Coffre").
+     *
+     * C'est ce qui permet à la sauvegarde de survivre à une désinstallation :
+     * sans ce dossier, [com.bdshelf.app.data.backup.BackupManager] n'écrit
+     * que dans l'espace privé de l'application, effacé avec elle.
+     */
+    val backupFolderUri: Flow<String?> = context.dataStore.data.map { it[Keys.BACKUP_FOLDER_URI] }
+
+    suspend fun setBackupFolderUri(uri: String?) {
+        context.dataStore.edit {
+            if (uri.isNullOrBlank()) it.remove(Keys.BACKUP_FOLDER_URI) else it[Keys.BACKUP_FOLDER_URI] = uri
+        }
+    }
+
+    /** Valeur inconnue (préférence jamais écrite) = SHELF, le rendu historique. */
+    val shelfViewMode: Flow<ShelfViewMode> = context.dataStore.data.map { prefs ->
+        prefs[Keys.SHELF_VIEW_MODE]?.let { stored -> ShelfViewMode.entries.firstOrNull { it.name == stored } }
+            ?: ShelfViewMode.SHELF
+    }
+
+    suspend fun setShelfViewMode(mode: ShelfViewMode) {
+        context.dataStore.edit { it[Keys.SHELF_VIEW_MODE] = mode.name }
+    }
+
+    /**
+     * Nom du dernier rapport de plantage déjà présenté à l'utilisateur (§E6
+     * 5.4) : évite de réafficher la bannière de démarrage pour un plantage
+     * déjà vu, sans jamais supprimer le fichier avant la purge à 30 jours.
+     */
+    val lastAcknowledgedCrashFile: Flow<String?> = context.dataStore.data.map { it[Keys.LAST_ACKNOWLEDGED_CRASH_FILE] }
+
+    suspend fun setLastAcknowledgedCrashFile(fileName: String) {
+        context.dataStore.edit { it[Keys.LAST_ACKNOWLEDGED_CRASH_FILE] = fileName }
     }
 }

@@ -38,7 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -79,6 +82,10 @@ fun SettingsScreen(
 
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let(viewModel::onImportFile)
+    }
+
+    val backupFolderLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        uri?.let(viewModel::onBackupFolderPicked)
     }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -202,6 +209,10 @@ fun SettingsScreen(
                             text = stringResource(R.string.settings_refresh_error),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.error,
+                            // Anomalie A-06 (§E6) : ce message apparaît sans
+                            // que le focus ne s'y déplace — sans liveRegion,
+                            // un lecteur d'écran ne l'annonce jamais.
+                            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                         )
                     }
 
@@ -236,6 +247,15 @@ fun SettingsScreen(
                     SectionDivider()
 
                     SectionHeader(stringResource(R.string.settings_backup_section_title))
+
+                    BackupFolderStatus(
+                        configured = uiState.backupFolderConfigured,
+                        accessible = uiState.backupFolderAccessible,
+                        folderName = uiState.backupFolderName,
+                        onChooseFolder = { backupFolderLauncher.launch(null) },
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     val lastBackupAt = uiState.lastBackupAt
                     Text(
@@ -320,6 +340,10 @@ fun SettingsScreen(
                             ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = if (uiState.importSuccess) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error,
+                            // Anomalie A-06 (§E6) : le résultat d'un import
+                            // (réussite ou échec) doit être annoncé, pas
+                            // seulement affiché.
+                            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                         )
                     }
 
@@ -361,6 +385,67 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+}
+
+/**
+ * État de la sauvegarde externe (§E4 "Le Coffre") : protégée, protégée mais
+ * invisible du dossier choisi, ou pas encore protégée contre la
+ * désinstallation. Le texte porte l'information, jamais la seule couleur.
+ */
+@Composable
+private fun BackupFolderStatus(
+    configured: Boolean,
+    accessible: Boolean,
+    folderName: String?,
+    onChooseFolder: () -> Unit,
+) {
+    val (titleRes, bodyText, tone) = when {
+        configured && accessible -> Triple(
+            R.string.settings_backup_folder_protected_title,
+            stringResource(R.string.settings_backup_folder_protected_body, folderName ?: ""),
+            MaterialTheme.colorScheme.secondary,
+        )
+        configured && !accessible -> Triple(
+            R.string.settings_backup_folder_missing_title,
+            stringResource(R.string.settings_backup_folder_missing_body),
+            MaterialTheme.colorScheme.error,
+        )
+        else -> Triple(
+            R.string.settings_backup_folder_unprotected_title,
+            stringResource(R.string.settings_backup_folder_unprotected_body),
+            MaterialTheme.colorScheme.error,
+        )
+    }
+
+    Text(
+        text = stringResource(titleRes),
+        style = MaterialTheme.typography.bodyLarge,
+        color = tone,
+    )
+    Spacer(modifier = Modifier.height(4.dp))
+    Text(
+        text = bodyText,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedButton(
+        onClick = onChooseFolder,
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 56.dp),
+    ) {
+        Text(
+            text = stringResource(
+                if (configured && accessible) {
+                    R.string.settings_backup_change_folder_button
+                } else {
+                    R.string.settings_backup_choose_folder_button
+                },
+            ),
+            style = MaterialTheme.typography.labelLarge,
+        )
     }
 }
 

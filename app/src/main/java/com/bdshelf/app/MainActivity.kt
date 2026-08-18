@@ -16,6 +16,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.bdshelf.app.data.prefs.ThemeMode
+import com.bdshelf.app.ui.crash.CrashReportGate
 import com.bdshelf.app.ui.theme.BdShelfTheme
 import com.bdshelf.app.ui.theme.LocalReduceMotion
 import com.bdshelf.app.ui.theme.rememberReduceMotion
@@ -48,6 +49,8 @@ class MainActivity : ComponentActivity() {
                 val reduceMotion = rememberReduceMotion()
                 CompositionLocalProvider(LocalReduceMotion provides reduceMotion) {
                     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                        CrashReportGate()
+
                         val seedImported by remember {
                             app.userPreferencesRepository.seedImported.map<Boolean, Boolean?> { it }
                         }.collectAsStateWithLifecycle(initialValue = null)

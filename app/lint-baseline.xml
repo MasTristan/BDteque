@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.7.3" type="baseline" client="gradle" dependencies="false" name="AGP (8.7.3)" variant="all" version="8.7.3">
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+        errorLine1="        targetSdk = 35"
+        errorLine2="        ~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="19"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="FullBackupContent"
+        message="`releases_cache.json` is not in an included path"
+        errorLine1="    &lt;exclude domain=&quot;file&quot; path=&quot;releases_cache.json&quot; />"
+        errorLine2="                                 ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/backup_rules.xml"
+            line="13"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="FullBackupContent"
+        message="`releases_cache.json` is not in an included path"
+        errorLine1="        &lt;exclude domain=&quot;file&quot; path=&quot;releases_cache.json&quot; />"
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/data_extraction_rules.xml"
+            line="11"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="FullBackupContent"
+        message="`releases_cache.json` is not in an included path"
+        errorLine1="        &lt;exclude domain=&quot;file&quot; path=&quot;releases_cache.json&quot; />"
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/data_extraction_rules.xml"
+            line="17"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="RedundantLabel"
+        message="Redundant label can be removed"
+        errorLine1="            android:label=&quot;@string/app_name&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="36"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="AndroidGradlePluginVersion"
+        message="A newer version of com.android.application than 8.7.3 is available: 9.3.1"
+        errorLine1="agp = &quot;8.7.3&quot;"
+        errorLine2="      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="2"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="AndroidGradlePluginVersion"
+        message="A newer version of com.android.application than 8.7.3 is available: 9.3.1"
+        errorLine1="agp = &quot;8.7.3&quot;"
+        errorLine2="      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="2"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="AndroidGradlePluginVersion"
+        message="A newer version of com.android.application than 8.7.3 is available: 9.3.1"
+        errorLine1="agp = &quot;8.7.3&quot;"
+        errorLine2="      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="2"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.core:core-ktx than 1.15.0 is available: 1.19.0"
+        errorLine1="coreKtx = &quot;1.15.0&quot;"
+        errorLine2="          ~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="5"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.core:core-ktx than 1.15.0 is available: 1.19.0"
+        errorLine1="coreKtx = &quot;1.15.0&quot;"
+        errorLine2="          ~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="5"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.core:core-ktx than 1.15.0 is available: 1.19.0"
+        errorLine1="coreKtx = &quot;1.15.0&quot;"
+        errorLine2="          ~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="5"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.8.7 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.8.7&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="6"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.activity:activity-compose than 1.9.3 is available: 1.13.0"
+        errorLine1="activityCompose = &quot;1.9.3&quot;"
+        errorLine2="                  ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="7"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.activity:activity-compose than 1.9.3 is available: 1.13.0"
+        errorLine1="activityCompose = &quot;1.9.3&quot;"
+        errorLine2="                  ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="7"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.activity:activity-compose than 1.9.3 is available: 1.13.0"
+        errorLine1="activityCompose = &quot;1.9.3&quot;"
+        errorLine2="                  ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="7"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.compose:compose-bom than 2025.05.00 is available: 2026.08.00"
+        errorLine1="composeBom = &quot;2025.05.00&quot;"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="8"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.compose:compose-bom than 2025.05.00 is available: 2026.08.00"
+        errorLine1="composeBom = &quot;2025.05.00&quot;"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="8"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.compose:compose-bom than 2025.05.00 is available: 2026.08.00"
+        errorLine1="composeBom = &quot;2025.05.00&quot;"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="8"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-compose than 2.8.5 is available: 2.9.8"
+        errorLine1="navigationCompose = &quot;2.8.5&quot;"
+        errorLine2="                    ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="9"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-compose than 2.8.5 is available: 2.9.8"
+        errorLine1="navigationCompose = &quot;2.8.5&quot;"
+        errorLine2="                    ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="9"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-compose than 2.8.5 is available: 2.9.8"
+        errorLine1="navigationCompose = &quot;2.8.5&quot;"
+        errorLine2="                    ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="9"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-testing than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-testing than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-testing than 2.7.1 is available: 2.8.4"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="10"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1"
+        errorLine1="datastorePreferences = &quot;1.1.1&quot;"
+        errorLine2="                       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="11"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1"
+        errorLine1="datastorePreferences = &quot;1.1.1&quot;"
+        errorLine2="                       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="11"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1"
+        errorLine1="datastorePreferences = &quot;1.1.1&quot;"
+        errorLine2="                       ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="11"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.documentfile:documentfile than 1.0.1 is available: 1.1.0"
+        errorLine1="documentfile = &quot;1.0.1&quot;"
+        errorLine2="               ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="12"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.documentfile:documentfile than 1.0.1 is available: 1.1.0"
+        errorLine1="documentfile = &quot;1.0.1&quot;"
+        errorLine2="               ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="12"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.documentfile:documentfile than 1.0.1 is available: 1.1.0"
+        errorLine1="documentfile = &quot;1.0.1&quot;"
+        errorLine2="               ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="12"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.11.2"
+        errorLine1="workRuntimeKtx = &quot;2.10.0&quot;"
+        errorLine2="                 ~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="13"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.11.2"
+        errorLine1="workRuntimeKtx = &quot;2.10.0&quot;"
+        errorLine2="                 ~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="13"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.11.2"
+        errorLine1="workRuntimeKtx = &quot;2.10.0&quot;"
+        errorLine2="                 ~~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="13"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-camera2 than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-camera2 than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-camera2 than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-core than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-core than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-core than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-lifecycle than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-lifecycle than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-lifecycle than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-view than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-view than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.camera:camera-view than 1.4.1 is available: 1.6.1"
+        errorLine1="cameraX = &quot;1.4.1&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="15"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+        errorLine1="androidx-junit = { group = &quot;androidx.test.ext&quot;, name = &quot;junit&quot;, version = &quot;1.2.1&quot; }"
+        errorLine2="                                                                          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="61"
+            column="75"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+        errorLine1="androidx-junit = { group = &quot;androidx.test.ext&quot;, name = &quot;junit&quot;, version = &quot;1.2.1&quot; }"
+        errorLine2="                                                                          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="61"
+            column="75"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+        errorLine1="androidx-junit = { group = &quot;androidx.test.ext&quot;, name = &quot;junit&quot;, version = &quot;1.2.1&quot; }"
+        errorLine2="                                                                          ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="61"
+            column="75"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0"
+        errorLine1="androidx-espresso-core = { group = &quot;androidx.test.espresso&quot;, name = &quot;espresso-core&quot;, version = &quot;3.6.1&quot; }"
+        errorLine2="                                                                                               ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="62"
+            column="96"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0"
+        errorLine1="androidx-espresso-core = { group = &quot;androidx.test.espresso&quot;, name = &quot;espresso-core&quot;, version = &quot;3.6.1&quot; }"
+        errorLine2="                                                                                               ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="62"
+            column="96"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0"
+        errorLine1="androidx-espresso-core = { group = &quot;androidx.test.espresso&quot;, name = &quot;espresso-core&quot;, version = &quot;3.6.1&quot; }"
+        errorLine2="                                                                                               ~~~~~~~">
+        <location
+            file="$HOME/work/BDteque/BDteque/gradle/libs.versions.toml"
+            line="62"
+            column="96"/>
+    </issue>
+
+    <issue
+        id="UnsafeOptInUsageError"
+        message="This declaration is opt-in and its usage should be marked with `@androidx.camera.core.ExperimentalGetImage` or `@OptIn(markerClass = androidx.camera.core.ExperimentalGetImage.class)`"
+        errorLine1="        val mediaImage = imageProxy.image"
+        errorLine2="                                    ~~~~~">
+        <location
+            file="src/main/java/com/bdshelf/app/ui/scanner/ScannerComponents.kt"
+            line="255"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/bdshelf/app/ui/components/SeriesTomeList.kt"
+            line="44"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ProduceStateDoesNotAssignValue"
+        message="produceState calls should assign `value` inside the producer lambda"
+        errorLine1="    val bitmap by produceState&lt;ImageBitmap?>(initialValue = null, key1 = coverFile?.path) {"
+        errorLine2="                  ~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/bdshelf/app/ui/components/CoverImage.kt"
+            line="26"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="Typos"
+        message="&quot;existant&quot; is a common misspelling; did you mean &quot;existent&quot;?"
+        errorLine1="    &lt;string name=&quot;verdict_unknown_subtitle&quot;>Associe ce code-barres à un tome existant, ou crée un nouvel album.&lt;/string>"
+        errorLine2="                                                                             ^">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="133"
+            column="78"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;séries&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;home_collection_stats&quot;>%1$d séries · %2$d albums · %3$d trous&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="43"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;possédés&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;series_detail_owned_of_total&quot;>%1$d possédés sur %2$d&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="72"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;scannés&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;inventory_counter&quot;>%1$d scannés · %2$d ajoutés&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="225"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 26. Merge all the resources in this folder into `mipmap-anydpi`.">
+        <location
+            file="src/main/res/mipmap-anydpi-v26"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.spine_cd_add_tome_action` appears to be unused"
+        errorLine1="    &lt;string name=&quot;spine_cd_add_tome_action&quot;>Ajouter ce tome&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="12"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.onboarding_importing` appears to be unused"
+        errorLine1="    &lt;string name=&quot;onboarding_importing&quot;>Préparation de ta bibliothèque…&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="29"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MonochromeLauncherIcon"
+        message="The application adaptive icon is missing a monochrome tag"
+        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="MonochromeLauncherIcon"
+        message="The application adaptive roundIcon is missing a monochrome tag"
+        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+</issues>
