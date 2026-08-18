@@ -1,7 +1,5 @@
 package com.bdshelf.app.domain
 
-import com.bdshelf.app.data.repo.CollectionSnapshot
-
 /** Version de format de sauvegarde prise en charge par l'import (§6.9). */
 const val SUPPORTED_SNAPSHOT_VERSION = 1
 
@@ -11,6 +9,9 @@ sealed interface SnapshotValidation {
     data class Invalid(val reason: String) : SnapshotValidation
 }
 
+/** Référence minimale d'un album pour la validation (§ADR-002) : identifiant et série. */
+data class SnapshotAlbumRef(val id: String, val seriesId: String)
+
 /**
  * Valide un instantané de collection avant de remplacer la collection existante.
  *
@@ -19,11 +20,10 @@ sealed interface SnapshotValidation {
  * On contrôle donc la version, l'unicité des identifiants et l'intégrité
  * référentielle (tout album pointe vers une série présente).
  */
-fun CollectionSnapshot.validate(): SnapshotValidation {
+fun validateSnapshot(version: Int, seriesIds: List<String>, albums: List<SnapshotAlbumRef>): SnapshotValidation {
     if (version != SUPPORTED_SNAPSHOT_VERSION) {
         return SnapshotValidation.Invalid("Version de sauvegarde non prise en charge ($version).")
     }
-    val seriesIds = series.map { it.id }
     if (seriesIds.any { it.isBlank() }) {
         return SnapshotValidation.Invalid("Identifiant de série vide.")
     }
