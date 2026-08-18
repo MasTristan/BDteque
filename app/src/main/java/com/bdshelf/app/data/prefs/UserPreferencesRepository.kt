@@ -42,6 +42,7 @@ class UserPreferencesRepository(private val context: Context) {
         val DOWNLOAD_COVERS = booleanPreferencesKey("download_covers")
         val BACKUP_FOLDER_URI = stringPreferencesKey("backup_folder_uri")
         val SHELF_VIEW_MODE = stringPreferencesKey("shelf_view_mode")
+        val LAST_ACKNOWLEDGED_CRASH_FILE = stringPreferencesKey("last_acknowledged_crash_file")
     }
 
     val ownerName: Flow<String> = context.dataStore.data.map { it[Keys.OWNER_NAME] ?: "" }
@@ -126,5 +127,16 @@ class UserPreferencesRepository(private val context: Context) {
 
     suspend fun setShelfViewMode(mode: ShelfViewMode) {
         context.dataStore.edit { it[Keys.SHELF_VIEW_MODE] = mode.name }
+    }
+
+    /**
+     * Nom du dernier rapport de plantage déjà présenté à l'utilisateur (§E6
+     * 5.4) : évite de réafficher la bannière de démarrage pour un plantage
+     * déjà vu, sans jamais supprimer le fichier avant la purge à 30 jours.
+     */
+    val lastAcknowledgedCrashFile: Flow<String?> = context.dataStore.data.map { it[Keys.LAST_ACKNOWLEDGED_CRASH_FILE] }
+
+    suspend fun setLastAcknowledgedCrashFile(fileName: String) {
+        context.dataStore.edit { it[Keys.LAST_ACKNOWLEDGED_CRASH_FILE] = fileName }
     }
 }

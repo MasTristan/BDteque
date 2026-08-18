@@ -242,4 +242,14 @@
     <string name="shopping_share_chooser_title">Partager la liste d\'achats</string>
     <string name="shopping_item_tome">Tome %1$d</string>
     <string name="shopping_item_bought_button">Je l\'ai !</string>
+
+    <!-- Rapport de plantage local, sans télémétrie (§E6 5.4) -->
+    <string name="crash_report_banner_title">L\'application s\'est arrêtée la dernière fois</string>
+    <string name="crash_report_banner_message">Veux-tu envoyer le rapport pour qu\'on corrige le problème ?</string>
+    <string name="crash_report_view">Voir le rapport</string>
+    <string name="crash_report_send">Envoyer</string>
+    <string name="crash_report_no_thanks">Non merci</string>
+    <string name="crash_report_view_title">Rapport de plantage</string>
+    <string name="crash_report_close">Fermer</string>
+    <string name="crash_report_chooser_title">Envoyer le rapport de plantage</string>
 </resources>
