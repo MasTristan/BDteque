@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -21,11 +22,12 @@ import org.junit.runner.RunWith
 
 /**
  * Parcours critiques bout en bout, sur une vraie base Room en mémoire (§E6,
- * porte de qualité G2). Ces trois-là ne dépendent pas de la caméra ni de
+ * porte de qualité G2). Ceux-ci ne dépendent pas de la caméra ni de
  * l'interface Compose ; ils vérifient la couche qui, si elle casse, casse
  * silencieusement une vraie collection :
  *
  * - P1 : premier lancement → import du seed → collection consultable.
+ * - P2 : scan d'un EAN → verdict (possédé/manquant/inconnu) → collection à jour.
  * - P3 : basculer un tome possédé/manquant met les trous à jour.
  * - P4 : export → base neuve → import → collection identique.
  */
@@ -68,6 +70,79 @@ class CollectionRepositoryTest {
         importer.import()
         assertEquals(series.size, repository.allSeriesWithCounts().first().size)
         assertEquals(albums.size, repository.allAlbums().first().size)
+    }
+
+    /**
+     * P2 — la boucle centrale : scanner un EAN déjà possédé le confirme sans
+     * rien changer à la collection. C'est le verdict le plus fréquent — le
+     * rassurer ne doit jamais, par erreur, réinitialiser une date d'ajout ou
+     * un statut de lecture.
+     */
+    @Test
+    fun scanningKnownOwnedEan_yieldsOwnedVerdict_withoutAlteringTheAlbum() = runBlocking {
+        val series = Series(
+            id = "xiii", title = "XIII", status = SeriesStatus.ONGOING,
+            isTracked = true, color = 0L, knownTomeCount = null, notes = null,
+        )
+        repository.upsertSeries(series)
+        val created = repository.addAlbum(
+            seriesId = "xiii", tomeNumber = 1, title = "Le Jour du soleil noir",
+            owned = true, readStatus = ReadStatus.READ, edition = null, ean = "9782505001325",
+        )!!
+
+        val scanned = repository.albumByEan("9782505001325")
+        assertEquals(created, scanned)
+        assertTrue("un EAN déjà possédé donne un verdict Possédé", scanned!!.owned)
+    }
+
+    /**
+     * P2 — l'autre verdict connu : un tome manquant scanné en librairie doit
+     * pouvoir être marqué possédé sur-le-champ (« Je viens de l'acheter »),
+     * exactement le geste qui déclenche l'achat impulsif que l'app sert.
+     */
+    @Test
+    fun scanningKnownMissingEan_thenMarkingOwned_updatesTheCollection() = runBlocking {
+        val series = Series(
+            id = "xiii", title = "XIII", status = SeriesStatus.ONGOING,
+            isTracked = true, color = 0L, knownTomeCount = null, notes = null,
+        )
+        repository.upsertSeries(series)
+        repository.addAlbum(
+            seriesId = "xiii", tomeNumber = 2, title = null,
+            owned = false, readStatus = ReadStatus.UNREAD, edition = null, ean = "9782505001332",
+        )
+
+        val scanned = repository.albumByEan("9782505001332")
+        assertFalse("un EAN manquant donne un verdict Manquant", scanned!!.owned)
+
+        repository.setOwned(scanned, true)
+
+        val updated = repository.albumByEan("9782505001332")
+        assertTrue("marquer possédé depuis le verdict doit persister", updated!!.owned)
+    }
+
+    /**
+     * P2 — le verdict Inconnu : un EAN absent de toute la collection doit
+     * pouvoir devenir un nouvel album, immédiatement retrouvable — sinon le
+     * scan d'une nouveauté ne sert à rien.
+     */
+    @Test
+    fun scanningUnknownEan_addsNewAlbum_thenFindableByTheSameEan() = runBlocking {
+        val series = Series(
+            id = "xiii", title = "XIII", status = SeriesStatus.ONGOING,
+            isTracked = true, color = 0L, knownTomeCount = null, notes = null,
+        )
+        repository.upsertSeries(series)
+
+        assertEquals(null, repository.albumByEan("9782505009994"))
+
+        val created = repository.addAlbum(
+            seriesId = "xiii", tomeNumber = 24, title = "Le Dossier Jason Fly",
+            owned = true, readStatus = ReadStatus.UNREAD, edition = null, ean = "9782505009994",
+        )!!
+
+        val scanned = repository.albumByEan("9782505009994")
+        assertEquals(created.id, scanned!!.id)
     }
 
     /** P3 — l'usage librairie : voir ses trous, et les voir bouger quand on achète. */
