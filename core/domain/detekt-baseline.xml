@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:BnfUnimarcParser.kt$private fun parseRecord(record: Element): IsbnBook?</ID>
+    <ID>CyclomaticComplexMethod:CatalogBundleParser.kt$CatalogBundleParser$fun parse(lines: Sequence&lt;String&gt;): BundleParseResult</ID>
+    <ID>LoopWithTooManyJumpStatements:BnfUnimarcParser.kt$for</ID>
+    <ID>LoopWithTooManyJumpStatements:CatalogBundleParser.kt$CatalogBundleParser$for</ID>
+    <ID>MagicNumber:BnfUnimarcParser.kt$0x88</ID>
+    <ID>MagicNumber:BnfUnimarcParser.kt$0x89</ID>
+    <ID>MagicNumber:BnfUnimarcParser.kt$3</ID>
+    <ID>MagicNumber:CatalogChecksum.kt$CatalogChecksum$0xFF</ID>
+    <ID>MagicNumber:Ean.kt$10</ID>
+    <ID>MagicNumber:Ean.kt$11</ID>
+    <ID>MagicNumber:Ean.kt$12</ID>
+    <ID>MagicNumber:Ean.kt$13</ID>
+    <ID>MagicNumber:Ean.kt$3</ID>
+    <ID>MagicNumber:Ean.kt$7</ID>
+    <ID>MagicNumber:Ean.kt$8</ID>
+    <ID>MagicNumber:Ean.kt$9</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF4A7A9BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF5B6B9BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF5B7B5BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF5B8A6FL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF6B5B8BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF6B8B7BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF7B6B8DL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF7B8B5BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF8B5B6BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF8B6B3DL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF9B6B5BL</ID>
+    <ID>MagicNumber:SpineColor.kt$0xFF9B7B4AL</ID>
+    <ID>MatchingDeclarationName:CollectionExport.kt$ExportRow</ID>
+    <ID>MatchingDeclarationName:CrashReport.kt$CrashReportInput</ID>
+    <ID>MaxLineLength:BnfUnimarcParser.kt$albumTitle = if (cleanMainTitle != null &amp;&amp; cleanSubtitle != null) "$cleanMainTitle : $cleanSubtitle" else cleanMainTitle</ID>
+    <ID>MaxLineLength:CatalogBundleVerifier.kt$CatalogBundleVerifier$fun</ID>
+    <ID>MaxLineLength:CatalogBundleVerifier.kt$CatalogVerificationResult$/** Issue de la chaîne de confiance d'un bundle (§E1 §4.5) : soit un contenu digne d'import, soit un motif de rejet en clair. */</ID>
+    <ID>MaxLineLength:CatalogBundleVerifier.kt$CatalogVerificationResult$Accepted : CatalogVerificationResult</ID>
+    <ID>MaxLineLength:CatalogBundleVerifierTest.kt$CatalogBundleVerifierTest$appendLine("""{"t":"a","ean":"97800000${i.toString().padStart(3, '0')}${j}","seriesId":"serie-$i","tome":$j,"title":"Tome $j"}""")</ID>
+    <ID>MaxLineLength:CatalogBundleVerifierTest.kt$CatalogBundleVerifierTest$body = CatalogBodyRef(file = "catalog-2026.11.jsonl", bytes = body.length.toLong(), sha256 = CatalogChecksum.sha256Hex(body.toByteArray()))</ID>
+    <ID>ReturnCount:BarcodeConfirmer.kt$BarcodeConfirmer$fun offer(raw: String): String?</ID>
+    <ID>ReturnCount:BarcodeSuggestion.kt$fun guessTomeNumber(text: String): Int?</ID>
+    <ID>ReturnCount:CatalogBundleVerifier.kt$CatalogBundleVerifier$fun verify(manifestBytes: ByteArray, manifestSignature: ByteArray, bodyBytes: ByteArray): CatalogVerificationResult</ID>
+    <ID>ReturnCount:CatalogPlausibility.kt$CatalogPlausibility$fun check(manifestCounts: CatalogCounts, actualSeriesCount: Int, actualAlbumCount: Int): PlausibilityResult</ID>
+    <ID>ReturnCount:Ean.kt$fun isValidIsbn10(code: String): Boolean</ID>
+    <ID>ReturnCount:SnapshotValidation.kt$fun validateSnapshot(version: Int, seriesIds: List&lt;String&gt;, albums: List&lt;SnapshotAlbumRef&gt;): SnapshotValidation</ID>
+  </CurrentIssues>
+</SmellBaseline>

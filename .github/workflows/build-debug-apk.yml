@@ -47,24 +47,12 @@ jobs:
       - name: Run Android Lint
         run: ./gradlew lintDebug --no-daemon
 
-      # Troisième contrôle statique de la §5.2 : génère les lignes de base
-      # (app/detekt-baseline.xml, core/domain/detekt-baseline.xml), pas
-      # encore committées. Étape temporaire — remplacée par le vrai contrôle
-      # `detekt` une fois les lignes de base commises, comme pour Lint.
-      - name: Generate detekt baseline
-        run: ./gradlew detektBaseline --no-daemon
-
-      - name: Dump generated detekt baselines (temporary, for initial adoption)
-        if: always()
-        run: |
-          for f in app/detekt-baseline.xml core/domain/detekt-baseline.xml; do
-            if [ -f "$f" ]; then
-              echo "::group::$f (base64)"
-              base64 -w0 "$f"
-              echo ""
-              echo "::endgroup::"
-            fi
-          done
+      # Troisième contrôle statique de la §5.2. Lignes de base commises
+      # (app/detekt-baseline.xml, core/domain/detekt-baseline.xml) : la CI
+      # échoue désormais sur toute anomalie nouvelle, pas sur la dette
+      # existante — même logique que Lint ci-dessus.
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon
 
       # Toujours exécuté, même si la porte ci-dessous échoue : c'est ce qui
       # permet de récupérer un schéma généré par le vrai compilateur Room

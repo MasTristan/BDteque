@@ -1,0 +1,166 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:SettingsScreen.kt$@Composable fun SettingsScreen( onBack: () -&gt; Unit, viewModel: SettingsViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:AlbumFormScreen.kt$@Composable fun AlbumFormScreen( seriesId: String, albumId: String?, prefilledTomeNumber: Int?, prefilledEan: String? = null, onBack: () -&gt; Unit, onSaved: () -&gt; Unit, onDeleted: () -&gt; Unit, viewModel: AlbumFormViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:AlbumFormScreen.kt$@Composable private fun ReadStatusOption(label: String, selected: Boolean, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:BigScanButton.kt$@Composable fun BigScanButton(onClick: () -&gt; Unit, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:CoverImage.kt$@Composable fun CoverImage(coverFile: File?, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:CrashReportDialog.kt$@Composable fun CrashReportGate(viewModel: CrashReportViewModel = viewModel())</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@Composable fun HomeScreen( onScanClick: () -&gt; Unit, onCollectionClick: () -&gt; Unit, onReleasesClick: () -&gt; Unit, onShoppingClick: () -&gt; Unit, onSettingsClick: () -&gt; Unit, viewModel: HomeViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@Composable private fun HomeSummaryCard(title: String, value: String, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:InventoryScreen.kt$@Composable fun InventoryScreen( onOpenVerdict: (String) -&gt; Unit, onBack: () -&gt; Unit, viewModel: InventoryViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:InventoryScreen.kt$@Composable private fun InventoryScanCard( scan: InventoryScan, onMarkOwned: () -&gt; Unit, onAddSuggested: () -&gt; Unit, onOpenVerdict: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:NavGraph.kt$@Composable fun BdShelfNavGraph( startDestination: String, navController: NavHostController = rememberNavController(), )</ID>
+    <ID>FunctionNaming:OnboardingScreen.kt$@Composable fun OnboardingScreen( onImportComplete: () -&gt; Unit, viewModel: OnboardingViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:ReleasesScreen.kt$@Composable fun ReleasesScreen( onBack: () -&gt; Unit, viewModel: ReleasesViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:ReleasesScreen.kt$@Composable private fun OwnershipBadge(owned: Boolean)</ID>
+    <ID>FunctionNaming:ReleasesScreen.kt$@Composable private fun ReleaseRow(item: ReleaseWithOwnership)</ID>
+    <ID>FunctionNaming:ReleasesScreen.kt$@Composable private fun SectionHeader(title: String)</ID>
+    <ID>FunctionNaming:ScannerComponents.kt$@Composable internal fun ManualIsbnDialog( onConfirm: (String) -&gt; Unit, onDismiss: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ScannerComponents.kt$@Composable internal fun ScanCameraArea( lifecycleOwner: LifecycleOwner, onBarcodeDetected: (String) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ScannerComponents.kt$@Composable private fun CameraPreview( lifecycleOwner: LifecycleOwner, onBarcodeDetected: (String) -&gt; Unit, onCameraReady: (Camera) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ScannerScreen.kt$@Composable fun ScannerScreen( onBarcodeScanned: (String) -&gt; Unit, onManualEntry: () -&gt; Unit, onInventoryMode: () -&gt; Unit, onBack: () -&gt; Unit, viewModel: ScannerViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:ScannerScreen.kt$@Composable internal fun CameraPermissionRationale(onOpenSettings: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:SeriesDetailScreen.kt$@Composable fun SeriesDetailScreen( seriesId: String, onBack: () -&gt; Unit, onEditSeries: (String) -&gt; Unit, onAlbumClick: (String) -&gt; Unit, onAddTome: (String) -&gt; Unit, onGapClick: (String, Int) -&gt; Unit, viewModel: SeriesDetailViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:SeriesFormScreen.kt$@Composable fun SeriesFormScreen( seriesId: String?, onBack: () -&gt; Unit, onSaved: (createdSeriesId: String?) -&gt; Unit, onDeleted: () -&gt; Unit, prefilledTitle: String? = null, viewModel: SeriesFormViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:SeriesFormScreen.kt$@Composable private fun StatusOption(label: String, selected: Boolean, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:SeriesListScreen.kt$@Composable fun SeriesListScreen( onBack: () -&gt; Unit, onSeriesClick: (String) -&gt; Unit, onAddSeries: () -&gt; Unit, viewModel: SeriesListViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:SeriesListScreen.kt$@Composable private fun SeriesRow(series: SeriesWithCounts, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:SeriesListScreen.kt$@Composable private fun SortMenuButton(sort: SeriesSort, onSortChange: (SeriesSort) -&gt; Unit)</ID>
+    <ID>FunctionNaming:SeriesListScreen.kt$@Composable private fun SortMenuItem(label: String, selected: Boolean, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:SeriesTomeList.kt$@Composable fun SeriesTomeList( albums: List&lt;Album&gt;, highlightedAlbumId: String? = null, onAlbumClick: (Album) -&gt; Unit, onGapClick: (Int) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:SeriesTomeList.kt$@Composable private fun TomeRow( tomeNumber: Int?, title: String?, owned: Boolean, readStatus: ReadStatus, highlighted: Boolean, onClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SettingsScreen.kt$@Composable fun SettingsScreen( onBack: () -&gt; Unit, viewModel: SettingsViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:SettingsScreen.kt$@Composable private fun BackupFolderStatus( configured: Boolean, accessible: Boolean, folderName: String?, onChooseFolder: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SettingsScreen.kt$@Composable private fun SectionDivider()</ID>
+    <ID>FunctionNaming:SettingsScreen.kt$@Composable private fun SectionHeader(title: String)</ID>
+    <ID>FunctionNaming:SettingsScreen.kt$@Composable private fun ThemeModeOption(label: String, selected: Boolean, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:Shelf.kt$@Composable fun Shelf( seriesId: String, seriesColor: Color, albums: List&lt;Album&gt;, highlightedAlbumId: String? = null, onAlbumClick: (Album) -&gt; Unit, onGapClick: (Int) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ShoppingScreen.kt$@Composable fun ShoppingScreen( onBack: () -&gt; Unit, viewModel: ShoppingViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:ShoppingScreen.kt$@Composable private fun ShoppingGroupHeader(group: ShoppingGroup)</ID>
+    <ID>FunctionNaming:ShoppingScreen.kt$@Composable private fun ShoppingItemRow(item: ShoppingItem, onBought: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:SpineTile.kt$@Composable private fun ReadStatusMarker(readStatus: ReadStatus, tint: Color, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:SpineTile.kt$@OptIn(ExperimentalFoundationApi::class) @Composable fun SpineTile( tomeNumber: Int?, seriesColor: Color, owned: Boolean, readStatus: ReadStatus, height: Dp, highlighted: Boolean = false, onClick: () -&gt; Unit, onLongClick: (() -&gt; Unit)? = null, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:Theme.kt$@Composable fun BdShelfTheme( darkTheme: Boolean = false, content: @Composable () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable fun VerdictScreen( ean: String, onBackToHome: () -&gt; Unit, onCreateAlbum: (seriesId: String, ean: String, tomeNumber: Int?) -&gt; Unit, onCreateNewSeries: (suggestedTitle: String, ean: String, tomeNumber: Int?) -&gt; Unit, viewModel: VerdictViewModel = viewModel(), )</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun AlbumPickerRow(album: Album, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun IdentifiedBookCard(title: String, authors: String?, coverFile: File?)</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun MissingVerdict(uiState: VerdictUiState, viewModel: VerdictViewModel, onBackToHome: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun NewSeriesSuggestionCard( seriesName: String, onAccept: () -&gt; Unit, onDismiss: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun OwnedVerdict(uiState: VerdictUiState, onBackToHome: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun SeriesPickerRow(series: SeriesWithCounts, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun SuggestionCard( seriesTitle: String, tomeNumber: Int?, onAccept: () -&gt; Unit, onDismiss: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:VerdictScreen.kt$@Composable private fun UnknownVerdict( uiState: VerdictUiState, viewModel: VerdictViewModel, onBackToHome: () -&gt; Unit, onCreateAlbum: (String, String, Int?) -&gt; Unit, onCreateNewSeries: (String, String, Int?) -&gt; Unit, )</ID>
+    <ID>LongMethod:AlbumFormScreen.kt$@Composable fun AlbumFormScreen( seriesId: String, albumId: String?, prefilledTomeNumber: Int?, prefilledEan: String? = null, onBack: () -&gt; Unit, onSaved: () -&gt; Unit, onDeleted: () -&gt; Unit, viewModel: AlbumFormViewModel = viewModel(), )</ID>
+    <ID>LongMethod:HomeScreen.kt$@Composable fun HomeScreen( onScanClick: () -&gt; Unit, onCollectionClick: () -&gt; Unit, onReleasesClick: () -&gt; Unit, onShoppingClick: () -&gt; Unit, onSettingsClick: () -&gt; Unit, viewModel: HomeViewModel = viewModel(), )</ID>
+    <ID>LongMethod:InventoryScreen.kt$@Composable fun InventoryScreen( onOpenVerdict: (String) -&gt; Unit, onBack: () -&gt; Unit, viewModel: InventoryViewModel = viewModel(), )</ID>
+    <ID>LongMethod:NavGraph.kt$@Composable fun BdShelfNavGraph( startDestination: String, navController: NavHostController = rememberNavController(), )</ID>
+    <ID>LongMethod:OnboardingScreen.kt$@Composable fun OnboardingScreen( onImportComplete: () -&gt; Unit, viewModel: OnboardingViewModel = viewModel(), )</ID>
+    <ID>LongMethod:ReleasesScreen.kt$@Composable fun ReleasesScreen( onBack: () -&gt; Unit, viewModel: ReleasesViewModel = viewModel(), )</ID>
+    <ID>LongMethod:ScannerScreen.kt$@Composable fun ScannerScreen( onBarcodeScanned: (String) -&gt; Unit, onManualEntry: () -&gt; Unit, onInventoryMode: () -&gt; Unit, onBack: () -&gt; Unit, viewModel: ScannerViewModel = viewModel(), )</ID>
+    <ID>LongMethod:SeriesDetailScreen.kt$@Composable fun SeriesDetailScreen( seriesId: String, onBack: () -&gt; Unit, onEditSeries: (String) -&gt; Unit, onAlbumClick: (String) -&gt; Unit, onAddTome: (String) -&gt; Unit, onGapClick: (String, Int) -&gt; Unit, viewModel: SeriesDetailViewModel = viewModel(), )</ID>
+    <ID>LongMethod:SeriesFormScreen.kt$@Composable fun SeriesFormScreen( seriesId: String?, onBack: () -&gt; Unit, onSaved: (createdSeriesId: String?) -&gt; Unit, onDeleted: () -&gt; Unit, prefilledTitle: String? = null, viewModel: SeriesFormViewModel = viewModel(), )</ID>
+    <ID>LongMethod:SeriesListScreen.kt$@Composable fun SeriesListScreen( onBack: () -&gt; Unit, onSeriesClick: (String) -&gt; Unit, onAddSeries: () -&gt; Unit, viewModel: SeriesListViewModel = viewModel(), )</ID>
+    <ID>LongMethod:SettingsScreen.kt$@Composable fun SettingsScreen( onBack: () -&gt; Unit, viewModel: SettingsViewModel = viewModel(), )</ID>
+    <ID>LongMethod:ShoppingScreen.kt$@Composable fun ShoppingScreen( onBack: () -&gt; Unit, viewModel: ShoppingViewModel = viewModel(), )</ID>
+    <ID>LongMethod:VerdictScreen.kt$@Composable private fun MissingVerdict(uiState: VerdictUiState, viewModel: VerdictViewModel, onBackToHome: () -&gt; Unit)</ID>
+    <ID>LongMethod:VerdictScreen.kt$@Composable private fun UnknownVerdict( uiState: VerdictUiState, viewModel: VerdictViewModel, onBackToHome: () -&gt; Unit, onCreateAlbum: (String, String, Int?) -&gt; Unit, onCreateNewSeries: (String, String, Int?) -&gt; Unit, )</ID>
+    <ID>LongParameterList:AlbumFormScreen.kt$( seriesId: String, albumId: String?, prefilledTomeNumber: Int?, prefilledEan: String? = null, onBack: () -&gt; Unit, onSaved: () -&gt; Unit, onDeleted: () -&gt; Unit, viewModel: AlbumFormViewModel = viewModel(), )</ID>
+    <ID>LongParameterList:CollectionRepository.kt$CollectionRepository$( seriesId: String, tomeNumber: Int?, title: String?, owned: Boolean, readStatus: ReadStatus, edition: String?, ean: String? = null, )</ID>
+    <ID>LongParameterList:HomeScreen.kt$( onScanClick: () -&gt; Unit, onCollectionClick: () -&gt; Unit, onReleasesClick: () -&gt; Unit, onShoppingClick: () -&gt; Unit, onSettingsClick: () -&gt; Unit, viewModel: HomeViewModel = viewModel(), )</ID>
+    <ID>LongParameterList:SeriesDetailScreen.kt$( seriesId: String, onBack: () -&gt; Unit, onEditSeries: (String) -&gt; Unit, onAlbumClick: (String) -&gt; Unit, onAddTome: (String) -&gt; Unit, onGapClick: (String, Int) -&gt; Unit, viewModel: SeriesDetailViewModel = viewModel(), )</ID>
+    <ID>LongParameterList:SeriesFormScreen.kt$( seriesId: String?, onBack: () -&gt; Unit, onSaved: (createdSeriesId: String?) -&gt; Unit, onDeleted: () -&gt; Unit, prefilledTitle: String? = null, viewModel: SeriesFormViewModel = viewModel(), )</ID>
+    <ID>LongParameterList:SeriesTomeList.kt$( tomeNumber: Int?, title: String?, owned: Boolean, readStatus: ReadStatus, highlighted: Boolean, onClick: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:Shelf.kt$( seriesId: String, seriesColor: Color, albums: List&lt;Album&gt;, highlightedAlbumId: String? = null, onAlbumClick: (Album) -&gt; Unit, onGapClick: (Int) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongParameterList:SpineTile.kt$( tomeNumber: Int?, seriesColor: Color, owned: Boolean, readStatus: ReadStatus, height: Dp, highlighted: Boolean = false, onClick: () -&gt; Unit, onLongClick: (() -&gt; Unit)? = null, modifier: Modifier = Modifier, )</ID>
+    <ID>LongParameterList:TestFixtures.kt$( id: String, title: String = id, status: SeriesStatus = SeriesStatus.ONGOING, isTracked: Boolean = true, knownTomeCount: Int? = null, notes: String? = null, )</ID>
+    <ID>LongParameterList:TestFixtures.kt$( seriesId: String, tomeNumber: Int?, owned: Boolean, id: String = if (tomeNumber != null) "$seriesId-$tomeNumber" else "$seriesId-hs", title: String? = null, readStatus: ReadStatus = ReadStatus.UNREAD, edition: String? = null, ean: String? = null, )</ID>
+    <ID>MagicNumber:Color.kt$0xFF17140F</ID>
+    <ID>MagicNumber:Color.kt$0xFF1C1A17</ID>
+    <ID>MagicNumber:Color.kt$0xFF1F5E3E</ID>
+    <ID>MagicNumber:Color.kt$0xFF221E17</ID>
+    <ID>MagicNumber:Color.kt$0xFF5A534A</ID>
+    <ID>MagicNumber:Color.kt$0xFF7BC9A0</ID>
+    <ID>MagicNumber:Color.kt$0xFF7C7460</ID>
+    <ID>MagicNumber:Color.kt$0xFF8C8371</ID>
+    <ID>MagicNumber:Color.kt$0xFFA83024</ID>
+    <ID>MagicNumber:Color.kt$0xFFB8AF9F</ID>
+    <ID>MagicNumber:Color.kt$0xFFE0796B</ID>
+    <ID>MagicNumber:Color.kt$0xFFEDE6D8</ID>
+    <ID>MagicNumber:Color.kt$0xFFF5EFE2</ID>
+    <ID>MagicNumber:Color.kt$0xFFFFFDF7</ID>
+    <ID>MagicNumber:HttpText.kt$300L</ID>
+    <ID>MagicNumber:HttpText.kt$429</ID>
+    <ID>MagicNumber:HttpText.kt$500</ID>
+    <ID>MagicNumber:HttpText.kt$599</ID>
+    <ID>MagicNumber:InventoryScreen.kt$3</ID>
+    <ID>MagicNumber:ReleasesApi.kt$ReleasesApi$10_000</ID>
+    <ID>MagicNumber:ScannerComponents.kt$0.8f</ID>
+    <ID>MagicNumber:ScannerComponents.kt$1.6f</ID>
+    <ID>MagicNumber:ScannerComponents.kt$1280</ID>
+    <ID>MagicNumber:ScannerComponents.kt$13</ID>
+    <ID>MagicNumber:ScannerComponents.kt$720</ID>
+    <ID>MagicNumber:SeriesListViewModel.kt$SeriesListViewModel$5_000</ID>
+    <ID>MagicNumber:SettingsScreen.kt$3000</ID>
+    <ID>MagicNumber:Shelf.kt$21</ID>
+    <ID>MagicNumber:ShoppingViewModel.kt$ShoppingViewModel$5_000</ID>
+    <ID>MagicNumber:SpineTile.kt$6f</ID>
+    <ID>MagicNumber:SpineTile.kt$8f</ID>
+    <ID>MagicNumber:StampAnimation.kt$1.15f</ID>
+    <ID>MagicNumber:StampAnimation.kt$150</ID>
+    <ID>MagicNumber:StampAnimation.kt$300</ID>
+    <ID>MagicNumber:Type.kt$400</ID>
+    <ID>MagicNumber:Type.kt$500</ID>
+    <ID>MagicNumber:Type.kt$50f</ID>
+    <ID>MagicNumber:Type.kt$600</ID>
+    <ID>MagicNumber:Type.kt$72f</ID>
+    <ID>MatchingDeclarationName:ReleaseMatch.kt$ReleaseWithOwnership</ID>
+    <ID>MatchingDeclarationName:Shelf.kt$ShelfItem</ID>
+    <ID>MatchingDeclarationName:StampAnimation.kt$StampAnimationState</ID>
+    <ID>MaxLineLength:AlbumFormScreen.kt$text = stringResource(if (uiState.isNew) R.string.album_form_title_add else R.string.album_form_title_edit)</ID>
+    <ID>MaxLineLength:AlbumFormViewModel.kt$AlbumFormViewModel$_uiState.update { current -&gt; if (current.title.isBlank()) current.copy(title = suggestedTitle) else current }</ID>
+    <ID>MaxLineLength:AlbumFormViewModel.kt$AlbumFormViewModel$val isDuplicate = app.collectionRepository.isDuplicateTome(state.seriesId, tomeNumber, excludingAlbumId = albumId)</ID>
+    <ID>MaxLineLength:CollectionRepository.kt$CollectionRepository$val updated = if (owned) album.copy(owned = true, dateAdded = System.currentTimeMillis()) else album.copy(owned = false)</ID>
+    <ID>MaxLineLength:InventoryScreen.kt$Text(stringResource(R.string.inventory_action_add), style = MaterialTheme.typography.labelLarge)</ID>
+    <ID>MaxLineLength:InventoryScreen.kt$Text(stringResource(R.string.inventory_action_open), style = MaterialTheme.typography.labelLarge)</ID>
+    <ID>MaxLineLength:InventoryScreen.kt$Text(stringResource(R.string.inventory_action_owned), style = MaterialTheme.typography.labelLarge)</ID>
+    <ID>MaxLineLength:InventoryScreen.kt$scan.actionTaken || scan.status == InventoryScanStatus.OWNED -&gt; MaterialTheme.colorScheme.secondary</ID>
+    <ID>MaxLineLength:NavGraph.kt$navController.navigate(Routes.seriesForm(title = suggestedTitle, ean = scannedEan, tomeNumber = tomeNumber))</ID>
+    <ID>MaxLineLength:NavGraph.kt$onGapClick = { id, tomeNumber -&gt; navController.navigate(Routes.albumForm(id, tomeNumber = tomeNumber)) }</ID>
+    <ID>MaxLineLength:ReleasesScreen.kt$items</ID>
+    <ID>MaxLineLength:ReleasesScreen.kt$text = stringResource(R.string.releases_item_subtitle, item.release.tomeNumber, formatReleaseDate(item.release.expectedDate))</ID>
+    <ID>MaxLineLength:ReleasesSyncWorker.kt$ReleasesSyncWorker$ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED</ID>
+    <ID>MaxLineLength:ReleasesSyncWorker.kt$ReleasesSyncWorker$val body = context.resources.getQuantityString(R.plurals.notif_new_releases_body, newOnes.size, newOnes.size)</ID>
+    <ID>MaxLineLength:ReleasesViewModel.kt$ReleasesViewModel$released = crossed.filter { r -&gt; r.release.status == "RELEASED" }.sortedByDescending { r -&gt; r.release.expectedDate }</ID>
+    <ID>MaxLineLength:ReleasesViewModel.kt$ReleasesViewModel$upcoming = crossed.filter { r -&gt; r.release.status == "UPCOMING" }.sortedBy { r -&gt; r.release.expectedDate }</ID>
+    <ID>MaxLineLength:Routes.kt$Routes$fun</ID>
+    <ID>MaxLineLength:SeriesDetailScreen.kt$imageVector = if (uiState.viewMode == ShelfViewMode.SHELF) Icons.Filled.ViewList else Icons.Filled.ViewCarousel</ID>
+    <ID>MaxLineLength:SeriesDetailScreen.kt$text = stringResource(R.string.series_detail_owned_of_total, uiState.ownedCount, uiState.totalCount)</ID>
+    <ID>MaxLineLength:SeriesFilteringSupport.kt$private fun Album.toFilterAlbum()</ID>
+    <ID>MaxLineLength:SeriesFormScreen.kt$text = stringResource(if (uiState.isNew) R.string.series_form_title_add else R.string.series_form_title_edit)</ID>
+    <ID>MaxLineLength:SettingsScreen.kt$color = if (uiState.importSuccess) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error</ID>
+    <ID>MaxLineLength:SettingsScreen.kt$if (uiState.importSuccess) R.string.settings_import_success else R.string.settings_import_error</ID>
+    <ID>MaxLineLength:SettingsScreen.kt$val</ID>
+    <ID>MaxLineLength:SettingsViewModel.kt$SettingsViewModel$_uiState.update { it.copy(backupFolderConfigured = false, backupFolderAccessible = false, backupFolderName = null) }</ID>
+    <ID>MaxLineLength:SpineTile.kt$if (highlighted) Modifier.highlightBorder(color = highlightColor, cornerRadius = CornerRadiusDp) else Modifier</ID>
+    <ID>MaxLineLength:SpineTile.kt$internal</ID>
+    <ID>MaxLineLength:UserPreferencesRepository.kt$UserPreferencesRepository$val</ID>
+    <ID>ReturnCount:BackupManager.kt$BackupManager$private fun accessibleFolder(uriString: String): DocumentFile?</ID>
+    <ID>ReturnCount:BackupManager.kt$BackupManager$private suspend fun backupToFolder(content: String)</ID>
+    <ID>ReturnCount:CollectionRepository.kt$CollectionRepository$suspend fun isDuplicateTome(seriesId: String, tomeNumber: Int?, excludingAlbumId: String?): Boolean</ID>
+    <ID>ReturnCount:CoverRepository.kt$CoverRepository$suspend fun ensureCover(ean: String?): File?</ID>
+    <ID>ReturnCount:HttpText.kt$internal fun httpGetBytes(url: String, timeoutMs: Int = 8_000, attempts: Int = 2): ByteArray?</ID>
+    <ID>ReturnCount:IsbnLookupService.kt$IsbnLookupService$suspend fun lookup(rawEan: String): IsbnBook?</ID>
+    <ID>ReturnCount:ReleasesSyncWorker.kt$ReleasesSyncWorker$override suspend fun doWork(): Result</ID>
+    <ID>SwallowedException:HttpText.kt$e: Exception</ID>
+    <ID>SwallowedException:ReleasesSyncWorker.kt$ReleasesSyncWorker$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:HttpText.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReleasesSyncWorker.kt$ReleasesSyncWorker$e: Exception</ID>
+    <ID>TooManyFunctions:AlbumDao.kt$AlbumDao</ID>
+    <ID>TooManyFunctions:CollectionRepository.kt$CollectionRepository</ID>
+    <ID>TooManyFunctions:SeriesDao.kt$SeriesDao</ID>
+    <ID>TooManyFunctions:SettingsViewModel.kt$SettingsViewModel : AndroidViewModel</ID>
+  </CurrentIssues>
+</SmellBaseline>
