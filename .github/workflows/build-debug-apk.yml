@@ -47,16 +47,6 @@ jobs:
       - name: Run Android Lint
         run: ./gradlew lintDebug --no-daemon
 
-      - name: Dump generated lint baseline (temporary, for initial adoption)
-        if: always()
-        run: |
-          if [ -f app/lint-baseline.xml ]; then
-            echo "::group::app/lint-baseline.xml (base64)"
-            base64 -w0 app/lint-baseline.xml
-            echo ""
-            echo "::endgroup::"
-          fi
-
       # Toujours exécuté, même si la porte ci-dessous échoue : c'est ce qui
       # permet de récupérer un schéma généré par le vrai compilateur Room
       # (identityHash inclus) au lieu d'en fabriquer un à la main — voir
