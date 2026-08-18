@@ -51,6 +51,27 @@ jobs:
       - name: Build release APK (R8 minification)
         run: ./gradlew assembleRelease --no-daemon
 
+      # Budget de performance G4 (§E6) : APK < 30 Mo. Mesuré sur l'APK
+      # release (minifié, ressources réduites) — c'est celui qui compte,
+      # l'APK debug n'est pas représentatif. Le reste de G4 (démarrage
+      # < 1,2 s, verdict p95 < 1,5 s via Macrobenchmark) est délibérément
+      # hors de ce job : les runners hébergés partagés ne donnent pas des
+      # mesures de latence fiables d'une exécution à l'autre, un budget
+      # dessus produirait des échecs de CI aléatoires plutôt qu'un vrai
+      # signal — cette partie exige du matériel de référence dédié
+      # (§E6 5.5, Galaxy A14), hors de portée de cet environnement.
+      - name: Check APK size budget
+        run: |
+          apk="app/build/outputs/apk/release/app-release-unsigned.apk"
+          budget_bytes=$((30 * 1024 * 1024))
+          size_bytes=$(stat -c%s "$apk")
+          size_mb=$(awk "BEGIN { printf \"%.1f\", $size_bytes / 1024 / 1024 }")
+          echo "APK release : ${size_mb} Mo (budget : 30 Mo)"
+          if [ "$size_bytes" -gt "$budget_bytes" ]; then
+            echo "::error::APK release de ${size_mb} Mo, au-delà du budget de 30 Mo (§E6 G4)."
+            exit 1
+          fi
+
       # Porte de qualité (§E6 5.2). Voir app/build.gradle.kts pour la
       # justification de la ligne de base.
       - name: Run Android Lint
