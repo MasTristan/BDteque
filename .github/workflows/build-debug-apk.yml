@@ -42,6 +42,15 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon
 
+      # §E6 6 : la CI n'avait jamais exercé la variante release (minification
+      # R8 + réduction des ressources) avant ce job — un build minifié
+      # cassé (sérialisation notamment, voir proguard-rules.pro) restait
+      # invisible jusqu'à la release elle-même. Build non signé (pas de
+      # clé en CI) : suffisant pour vérifier que R8 traite le bytecode sans
+      # erreur, pas pour distribuer l'APK.
+      - name: Build release APK (R8 minification)
+        run: ./gradlew assembleRelease --no-daemon
+
       # Porte de qualité (§E6 5.2). Voir app/build.gradle.kts pour la
       # justification de la ligne de base.
       - name: Run Android Lint

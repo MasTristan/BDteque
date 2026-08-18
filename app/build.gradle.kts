@@ -32,8 +32,14 @@ android {
     }
 
     buildTypes {
+        // §E6 6 : minification vérifiée sur un build réel — voir
+        // proguard-rules.pro pour les règles de conservation
+        // (kotlinx.serialization notamment, qui casse silencieusement sans
+        // elles) et le job CI `./gradlew assembleRelease` qui exerce R8 à
+        // chaque build, pas seulement à la release.
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
