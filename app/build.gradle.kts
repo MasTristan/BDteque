@@ -70,6 +70,18 @@ android {
             excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
         }
     }
+
+    // Porte de qualité (§E6 5.2) : Android Lint en CI. La ligne de base
+    // (app/lint-baseline.xml) capture les anomalies déjà présentes au moment
+    // de l'adoption — on ne casse pas la CI sur de la dette existante, mais
+    // toute anomalie NOUVELLE au-delà de cette ligne de base fait échouer le
+    // build, comme le schéma Room (G5) : structurellement impossible d'en
+    // introduire une par inadvertance.
+    lint {
+        baseline = file("lint-baseline.xml")
+        abortOnError = true
+        warningsAsErrors = false
+    }
 }
 
 kotlin {
