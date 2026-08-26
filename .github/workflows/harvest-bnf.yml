@@ -1,0 +1,35 @@
+name: Harvest BnF (diagnostic)
+
+# Déclenché manuellement uniquement (§E1, ADR-004) : ce n'est pas un job de
+# build, c'est un outil de moissonnage/mesure exécuté avec un accès réseau
+# réel vers le catalogue BnF, absent de l'environnement de développement.
+# Pas de déclenchement automatique tant qu'il ne fait qu'imprimer des réponses
+# brutes pour vérification humaine — voir tools/bnf-harvester/.
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Gradle configure tout le graphe multi-module avant d'exécuter la
+      # moindre tâche, y compris :app (plugin Android) — nécessaire même si
+      # ce job ne construit jamais l'app elle-même.
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Query the BnF SRU endpoint
+        run: ./gradlew :tools:bnf-harvester:run --no-daemon
