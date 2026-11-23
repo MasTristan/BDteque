@@ -10,9 +10,3 @@ local.properties
 *.apk
 app/build/
 
-# AI instruction and planning files: never commit to this public repo
-CLAUDE.md
-SPEC.md
-PLAN.md
-IMPROVEMENTS.md
-docs/internal/
